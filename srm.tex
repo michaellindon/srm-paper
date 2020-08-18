@@ -75,18 +75,19 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 
 
 \section{Introduction}
+\label{sec:intro}
 Randomized treatment assignment satisfies many purposes in controlled experiments (see \cite{kempthorne}, \cite{cox} and \cite{rubin}). Arguably the least controversial justfication is the attempt to remove any personal, systematic or selection bias in the treatment assignment mechanism, although this is neither without criticism nor without alternative (see \cite{lindley} and \cite{kadane}). Consider for example a medical researcher who selects patients most likely to recover to receive her preferred experimental drug. Without explicitly conditioning on this information in the assignment mechanism, causal estimands such as the average treatment effect may be biased, overestimating the efficacy of the new drug (\cite{berry}).
 Simply randomized experiments attempt to remove the possibility of bias by randomly assigning experimental units independently to treatment groups with a constant probability vector.
-This design is useful in contexts where units enter the experiment sequentially, as opposed to being simultaneously available like in completely randomized designs, and are often used in the technology industry to run online controlled experiments (OCEs) (\cite{oce}). Formally let there be $d$ treamtent groups, $\theta \in \mathcal{S}^d$ be a probability vector where element $\theta_i$ denotes the probability of any unit being assigned to treatment group $i$, and $x_j$ a random variable denoting the assignment outcome of the $j'th$ experimental unit. The simply randomized design can then be summarized by the following probabilistic assignment mechanism
+This design is useful in contexts where units enter the experiment sequentially, as opposed to being simultaneously available like in completely randomized designs, and are often used in the technology industry to run online controlled experiments (OCEs) (\cite{oce}). Formally let there be $d$ treamtent groups, $\theta_0 \in \mathcal{S}^d$ be a probability vector where element $\theta_{0,i}$ denotes the probability of any unit being assigned to treatment group $i$, and $x_j$ a random variable denoting the assignment outcome of the $j'th$ experimental unit. The simply randomized design can then be summarized by the following probabilistic assignment mechanism
 \begin{equation}
   \label{eq:multinomialassignment}
-  x_1,x_2, \dots \sim \text{Multinomial}(1,\theta).
+  x_1,x_2, \dots \sim \text{Multinomial}(1,\theta_0).
 \end{equation}
 The statistician may not be personally involved with the data collection process and may simply be told the assignment mechanism after being presented with the data for analysis. The observant statistican has a right for concern, therefore, when they are provided with data which does not support the purported assignment mechanism. For simply randomized experiments the total unit counts assigned to each treatment group can provide evidence against equation \eqref{eq:multinomialassignment}.
 Indeed this is a strong indicator that the experiment has not been conducted as expected, either through a biased assignment mechanism depending on unreported covariates which the statistician cannot control for, or through an unintential missing data mechanism in the collection and reporting process, which could depend on the outcome being meaured such as censoring or other ``missing not at random'' (MNAR) mechanisms (\cite{missing-data}).
 Such observations occurs frequently in OCEs and are colloquially referred to in the technology industry as \textit{sample ratio mismatches} (SRMs).
 
-OCEs automate the assignment mechanism through code and instrument data collection and cleaning through complex transformtions which often introduce bugs and logical errors. It is unsurprising, therefore, that \cite{fabijan} reports that 6\% of all experiments performed in a at Microsoft contained bugs which were revealed by SRMs. The authors describe a simple experiment to study user engagement on an improved version of a web page. Not all visitors to a web page are human, however, and data must be cleaned to remove non-human interactions with the page, such as from web crawlers and scrapers. Unfortunately the classification between human and non-human visitors is performed algorithmically, and some users in the treatment group were so engaged with the new page that they were accidentally classified as non-human and removed prior to the analysis - essentially removing units most in favour of the treatment, resulting in fewer units than expected being reported in the treatment group. This is not an issue with the assignment mechanism, but is an example of a \textit{censoring} missing data mechanism, a special case of MNAR.
+OCEs automate the assignment mechanism through code and instrument data collection and cleaning through complex transformtions which often introduce bugs and logical errors. It is unsurprising, therefore, that \cite{fabijan} reports that 6\% of all experiments performed in a at Microsoft contained bugs which were revealed by SRMs. The authors describe in detail the engineering architecture required for assignment and data collection in OCEs and highlight how SRMs frequently reveal bugs therein. An example a simple experiment to study user engagement on an improved version of a web page is provided. Not all visitors to a web page are human, however, and data must be cleaned to remove non-human interactions with the page, such as from web crawlers and scrapers. Unfortunately the classification between human and non-human visitors is performed algorithmically, and some users in the treatment group were so engaged with the new page that they were accidentally classified as non-human and removed prior to the analysis - essentially removing units most in favour of the treatment, resulting in fewer units than expected being reported in the treatment group. This is not an issue with the assignment mechanism, but in the data collection. It is an example of a \textit{censoring} missing data mechanism, a special case of MNAR.
 
 \cite{zhao} describes an example in which the user identifer becomes lost, preventing users from receiving a consistent experience over time, with some users initially assigned to the treatment becoming exposed to and recorded in the control - an example of noncompliance (\cite{imbens}). 
 
@@ -94,7 +95,7 @@ Many other practical abnormalities can be revealed by considering the total coun
 The authors note two deficiencies of this check. The first deficiency, and most obvious, is that one learns about a problem in the data only after data collection has completed. It ia ssumed that there is an implicit cost of including a unit in an experiment, and so ideally one would like to learn about such problems as soon as possible to prevent further units from entering an improperly executed-experiment. The second deficiency, and motivated from the first, is that this encourages practitioners to incorrectly \textit{continuously monitor} their experiments through the repeated application of significance tests without any multiplicity correction (\cite{armitage}).
 
 In order to develop a test that performs well under optional stopping and continuation the authors take inspiration from Bayesian methods satisfying the \textit{stopping rule principle}, that the reason for stopping an experiment should be irrelevant to the hypothesis being tested, which follows from the likelihood principle \cite{likelihood}. The contributions of this paper focus, however, on obtaining frequentist properties of such a sequential test.
-The paper is outlined as follows. Section \ref{sec:srm_testing} defines a common Bayesian test through conjugate multinomial-Dirichlet models. Section \ref{sec:theory} establish the Martingale properties of the posterior odds under the null hypothesis, enabling a modified test to be developed which controls frequentist Type-I error probabilities below a nominal value under both optional stopping and continuation through maximal inequalities.  This safely permits the online testing of hypothesis \eqref{eq:multinomialassignment} after every single observation, without inflating frequentist false positive probabilities, with the obvious advantage of being able to safely reject the null and discover a practical implementation error early in the beginning of an experiment - preventing experimental units being wasted on a faulty experiment. Instance-specific upper-bounds on time-to-rejection are provided in terms of the KL divergence  between $\theta_0$ and the actual generating distribution of the samples. This sequential test is then inverted to define confidence sequences which possess nominal frequentist coverage probabilities. Section \ref{sec:simulation} presents a number of simulation studies illustrating how false positive probabilities are dramatically inflated through the repeated significance testing using a Chi-squared test compared to the guarantees afforded by the proposed test, in addition to how quickly the proposed test is able to reject the null when it is invalid. The final section \ref{sec:discussion} connects these contributions with existing literature. In particuar, the confidence sequence defined in \ref{sec:theory} is identified as the Bayesian support interval of \cite{support_interval} through an application of the Savage-Dickey density ratio. The differences between the pure Bayesian test and the proposed test are discussed in the context of recent work in conditional frequentist testing (\cite{conditional_frequentist_simple}, \cite{conditional_frequentist_precise}, \cite{conditional_frequentist_composite}).
+The paper is outlined as follows. Section \ref{sec:srm_testing} defines a common Bayesian test through conjugate multinomial-Dirichlet models. Section \ref{sec:theory} establish the Martingale properties of the posterior odds under the null hypothesis, enabling a modified test to be developed which controls frequentist Type-I error probabilities below a nominal value under both optional stopping and continuation through maximal inequalities.  This safely permits the online testing of hypothesis \eqref{eq:multinomialassignment} after every single observation, without inflating frequentist false positive probabilities, with the obvious advantage of being able to safely reject the null and discover a practical implementation error early in the beginning of an experiment - preventing experimental units being wasted on a faulty experiment. Instance-specific upper-bounds on time-to-rejection are provided in terms of the KL divergence  between $\theta_0$ and the actual generating distribution of the samples. This sequential test is then inverted to define confidence sequences which possess nominal frequentist coverage probabilities. Section \ref{sec:simulation} presents a number of simulation studies illustrating how false positive probabilities are dramatically inflated through the repeated significance testing using a Chi-squared test compared to the guarantees afforded by the proposed test, in addition to how quickly the proposed test is able to reject the null when it is invalid. The final section \ref{sec:discussion} connects these contributions with existing literature. In particuar, the confidence sequence defined in \ref{sec:theory} is identified as the Bayesian support interval of \cite{support_interval} through an application of the Savage-Dickey density ratio. The differences between the pure Bayesian test and the proposed test are discussed from the perspective of conditional frequentist testing (\cite{conditional_frequentist_simple}, \cite{conditional_frequentist_precise}, \cite{conditional_frequentist_composite}).
 
 
 
@@ -103,55 +104,42 @@ The paper is outlined as follows. Section \ref{sec:srm_testing} defines a common
 
 \section{Conjugate Multinomial-Dirichlet Test}
 \label{sec:srm_testing}
-Let $x_1, x_2 ,\dots $ be a sequence of i.i.d. $\text{Multinomial}(1,\theta)$ random variables and consider the task of developing a sequential test for the simple hypothesis $\theta=\theta_0$. To do this, we consider the sequential properties of the Bayes factor resulting from the following model. Denote the null model as $M_0$ 
+The assignment outcome of an experimental unit to a treatment group is a $\text{Categorical}(\theta)$ random variable with the allocation probabilities $\theta=\theta_0$ the specified as part of the design. Practitioners may not, however, have such granularity. They may know, instead, only the number of units allocation to each treatment group after certain intervals, such as every hour or day etc. For this reason it is helpful to express the problem as observing a sequence of multinomial random variables $x_i \sim \text{Multinomial}(n_i, \theta)$, which naturally provides observations after every unit assignment a special case with $n_i = 1$. The likelihood doesn't change however, and so neither does the analysis.
+The sequentially recorded observations may differ from this null hypothesis, which we will denote $M_0$, if there is an unintended bias in the assignment mechanism or if an unknown missing data mechanism, as discussed in section \ref{sec:intro}.
+
+To develop a Bayesian hypothesis test it is necessary to specify an alternative model for the data, denoted $M_1$, which we specify as follows
 \begin{align}
-    x_1, x_2, \dots &| M_0 \sim \text{Multinomial}(1,\theta_0),
+    x_i | \theta, M_1 &\sim \text{Multinomial}(n_i,\theta), \hspace{1cm} \text{independently for }\, i=1,2,\dots\\
+  \theta | M_1 &\sim \text{Dirichlet}(\alpha_0).\notag
 \end{align}
-and the alternative model as $M_1$
+Prior mass is concentrated aroound $\theta_0$ by specifying $\alpha_{0,i} = k \theta_{0,i}$ for concentration parameter $k \in \mathbb{R}^+$, in line with a ``Jeffreys-type'' testing procedure - for if the null weren't at least somewhat plausible, then a statistical test wouldn't be needed. The choice of Dirichlet prior leads to analytically tractable updating rules for the posterior odds of alternative to null as 
 \begin{align}
-  \theta &| M_1 \sim \text{Dirichlet}(\alpha),\\
-  x_1, x_2, \dots &| \theta, M_1 \sim \text{Multinomial}(1,\theta).\notag
-\end{align}
-The Posterior odds in favour of $M_1$ to $M_0$ after observing $x_{1:t}$ is defined as
-\begin{align}
-  \label{eq:general_posterior_odds}
-  \frac{p(M_1|x_{1:t})}{p(M_0|x_{1:t})}  &= \frac{\int p(x_{1:t}|\theta,M_1)p(\theta,M_1)d\theta}{p(x_{1:t}|M_0)}\frac{P(M_1)}{P(M_0)},\\
-                      &=\frac{p(x_{1:t}|M_1)}{p(x_{1:t}|M_0)}\frac{p(M_1)}{p(M_0)},\\
-                      &=\frac{\prod_{i=1}^{t}p(x_i|x_{1:i-1}|M_1)}{\prod_{i=1}^{t}p(x_i|x_{1:i-1}|M_0)}\frac{p(M_1)}{p(M_0)},\\
-                      &=\frac{p(x_t|x_{1:t-1},M_1)}{p(x_t|x_{1:t-1},M_0)} \frac{p(M_1|x_{1:t-1})}{p(M_0|x_{1:t-1})},\\
-    &=\frac{\int p(x_t|\theta,x_{1:t-1},M_1)p(\theta|x_{1:t-1},M_1)d\theta}{p(x_t|x_{1:t-1},M_0)}  \frac{p(M_1|x_{1:t-1})}{p(M_0|x_{1:t-1})} ,
-\end{align}
-where the last expression really stressess the recursive definition of the Bayes factor in terms of products of posterior predictive densities. The posterior distribution of $\theta| x_{1:t}, M_1 \sim \text{Dirichlet}(\alpha_t)$ where $\alpha_t = \alpha_{t-1}+x_t$ with $\alpha_0$ the initial prior parameter choice. The posterior predictive densities are easily computed as
-\begin{equation}
-  \label{eq:posterior_predictive_m1}
-   p(x_t|x_{1:t-1},M_1) = \frac{ \Gamma(\sum_i x_{t,i}+ 1)}{\prod_i \Gamma(x_{t,i} + 1)} \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\Gamma(\sum_i \alpha_{t-1,i} + x_{t,i})},
-\end{equation}
-and
-\begin{equation}
-  \label{eq:posterior_predictive_m2}
-   p(x_t|x_{1:t-1},M_0) = \frac{ \Gamma(\sum_i x_{t,i} + 1)}{\prod_i \Gamma(x_{t,i} + 1)} \prod p_i^{x_{t,i}}.
- \end{equation}
- It will be useful later on to introduce the following notation for the posterior odds at time $t$ as $O_t(\theta_0)$, which explicitly states the value of $\theta$ under the null hypothesis. The recursive definition of the posterior odds can then be expressed as
-\begin{align}
+  \label{eq:update_rule}
   O_{t}(\theta_0) &= \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\Gamma(\sum_i \alpha_{t-1,i} +  x_{t,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{1}{\prod_i \theta_{0,i}^{x_{t,i}}}  O_{t-1}(\theta_0),\\
 \end{align}
-with
-\begin{align}
-  \label{eq:alpha_update}
-  \alpha_{t}&= \alpha_{t-1}+x_t.
-\end{align}
-and initial value
-\begin{align}
-  \label{eq:bayes_factor_seed}
-O_0(\theta_0) = \frac{p(M_1)}{p(M_0)}.
-\end{align}
-Recall that for integer values $\Gamma(n)=(n-1)!$. In addition, $x_{t,i}$ is zero for all but one $i$. Let $j$ denote the index such that $x_{t,j}=1$. If $\alpha_0$ is integer valued, therefore, the recursive definition simplifies substantially to
+where $\alpha_t = \alpha_{t-1}+x_t$ and $O_0(\theta_0)=p(M_1)/p(M_0)$ (see appendix section \ref{app:posterior_odds}). If $\alpha_0$ is integer valued, and observations occur after every unit assignment ($n_i=1$) so that all but one of the $x_{t,j}$ is 1 with the others 0, the recursive definition simplifies substantially to
 \begin{align}
   \label{eq:simplified_bayes_factor}
-  O_{t}(\theta_0) &= \frac{\alpha_{t-1,j}}{\sum_i \alpha_{t-1,i}} \frac{1}{\theta_{0,j}} O_{t-1}(\theta_0),\\
-  &=\frac{E[\theta_j|x_{1:t-1}]}{\theta_{0,j}}  O_{t-1}(\theta_0),
+  O_{t}(\theta_0) &= \prod_{j=1}^{d} \left(\frac{\alpha_{t-1,j}}{\sum_i \alpha_{t-1,i}} \frac{1}{\theta_{0,j}}\right)^{x_{t,j}} O_{t-1}(\theta_0),\\
+  &=\prod_{j=1}^{d}\left(\frac{E[\theta_j|x_{1:t-1}]}{\theta_{0,j}} \right)^{x_{t,j}} O_{t-1}(\theta_0),
 \end{align}
-where the last line follows from the mean of the Dirichlet posterior distribution. This multiplicative update has some intuitive appeal - it is the expected probability, based on our current Bayesian belief, divided by the null probability of the event that occured. We now consider properties of the sequence of posterior odds $\lbrace O_{i}(\theta_0) \rbrace_{i=1}^\infty $
+where the last line follows from the mean of the Dirichlet posterior predictive distribution. This multiplicative update has some intuitive appeal - it is the expected probability, based on our current Bayesian belief, divided by the null probability of the event that occured.
+A pure Bayesian analysis could proceed by rasing an alert when $O_t(\theta_0) > c$ and reporting a subjective error probability of less than $1/(1+c)$ (see chapter 5 of \cite{bernardo}).
+Many would argue, however, that it is not possible to develop a subjective prior on the $\theta$ resulting from a practical implementation error if one were to exist (although it is our experience across multiple experiments that the resulting $\theta$ is usually very close to $\theta_0$).
+We instead, therefore, develop a test based on $O_t(\theta_0)$ which controls the frequentist Type-I error under optional stopping and continuation, regardless of the choice of $\alpha_0$.
+
+Let $p_t = \min(p_{t-1}, 1/O_t(\theta_0))$ with $p_0=1$, then $p_t$ defines a conservative sequential p-value process (\cite{johari}) in the following sense
+\begin{thm}
+  \label{thm:type_1_error}
+Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta)$ random variables and consider the sequence $p_t = \min(p_{t-1}, 1/O_t(\theta_0))$ with $p_0=1$ and $O_t(\theta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\theta_0)=1$, then
+\begin{equation}
+  P_{\theta = \theta_0}\left( \exists t \in \mathbb{N}: p_t \leq u \right) \leq u,
+\end{equation}
+for all $u \in [0,1]$ and for all choices of $\alpha_0$. 
+\end{thm}
+The proof can be found in appendix section \ref{app:type_1_error}.
+The uniform condition in \ref{thm:type_1_error} suggests the stopping rule $\tau = \inf \lbrace t \in \mathbb{N}: p_t \leq u \rbrace$. Simply stated, a practitioner who rejects the null hypothesis as soon as the posterior odds become larger than $1/u$ (equivalently the sequential p-value $p_t$ becomes less than $u$) incurs a frequentist type-I error probability of at most $u$.
+
 \section{Obtaining a Frequentist Test}
 \label{sec:theory}
 \begin{thm}
@@ -808,7 +796,52 @@ Unfortunately, the $\gamma$ must be chosen ahead of time. We may approximate thi
 
 
 \appendix
+\section{Posterior Odds Updating Rules}
+\label{app:posterior_odds}
+The Bayes factor after $t$ observations is analytically tractable, given by
+\begin{equation}
+  \label{eq:bayes_factor}
+ \frac{p(x_{1:t}|M_1)}{p(x_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_j)}{\Gamma(\sum_{j=1}^{d} \alpha_j + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_j + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_j )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}}.
+\end{equation}
+It is helpful to introduce some further notation to explicitly express the sequential nature inherent to the problem.
 
+The Posterior odds in favour of $M_1$ to $M_0$ after observing $x_{1:t}$ is defined as
+\begin{align}
+  \label{eq:general_posterior_odds}
+  \frac{p(M_1|x_{1:t})}{p(M_0|x_{1:t})}  &= \frac{\int p(x_{1:t}|\theta,M_1)p(\theta,M_1)d\theta}{p(x_{1:t}|M_0)}\frac{P(M_1)}{P(M_0)},\\
+                      &=\frac{p(x_{1:t}|M_1)}{p(x_{1:t}|M_0)}\frac{p(M_1)}{p(M_0)},\\
+                      &=\frac{\prod_{i=1}^{t}p(x_i|x_{1:i-1}|M_1)}{\prod_{i=1}^{t}p(x_i|x_{1:i-1}|M_0)}\frac{p(M_1)}{p(M_0)},\\
+                      &=\frac{p(x_t|x_{1:t-1},M_1)}{p(x_t|x_{1:t-1},M_0)} \frac{p(M_1|x_{1:t-1})}{p(M_0|x_{1:t-1})},\\
+    &=\frac{\int p(x_t|\theta,x_{1:t-1},M_1)p(\theta|x_{1:t-1},M_1)d\theta}{p(x_t|x_{1:t-1},M_0)}  \frac{p(M_1|x_{1:t-1})}{p(M_0|x_{1:t-1})} ,
+\end{align}
+where the last expression stresses the recursive definition of the Posterior odds factor in terms of products of posterior predictive densities. The posterior distribution of $\theta| x_{1:t}, M_1 \sim \text{Dirichlet}(\alpha_t)$ where $\alpha_t = \alpha_{t-1}+x_t$ with $\alpha_0$ the initial prior parameter choice. The posterior predictive densities are easily computed as
+\begin{equation}
+  \label{eq:posterior_predictive_m1}
+   p(x_t|x_{1:t-1},M_1) = \frac{ \Gamma(\sum_i x_{t,i}+ 1)}{\prod_i \Gamma(x_{t,i} + 1)} \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\Gamma(\sum_i \alpha_{t-1,i} + x_{t,i})},
+\end{equation}
+and
+\begin{equation}
+  \label{eq:posterior_predictive_m2}
+   p(x_t|x_{1:t-1},M_0) = \frac{ \Gamma(\sum_i x_{t,i} + 1)}{\prod_i \Gamma(x_{t,i} + 1)} \prod p_i^{x_{t,i}}.
+ \end{equation}
+ It will be useful later on to introduce the following notation for the posterior odds at time $t$ as $O_t(\theta_0)$, which explicitly states the value of $\theta$ under the null hypothesis. The recursive definition of the posterior odds can then be expressed as
+\begin{align}
+  O_{t}(\theta_0) &= \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\Gamma(\sum_i \alpha_{t-1,i} +  x_{t,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{1}{\prod_i \theta_{0,i}^{x_{t,i}}}  O_{t-1}(\theta_0),\\
+\end{align}
+with
+\begin{align}
+  \label{eq:alpha_update}
+  \alpha_{t}&= \alpha_{t-1}+x_t.
+\end{align}
+and initial value
+\begin{align}
+  \label{eq:bayes_factor_seed}
+O_0(\theta_0) = \frac{p(M_1)}{p(M_0)}.
+\end{align}
+
+\section{Uniform Bounds on the Type-I Error}
+\label{app:type_1_error}
+Insert proof here
 \section{Trying to use a sub-Bernoulli boundary}
 The difficulty in trying to use the CGF of the Bernoulli random variables directly is that the typical Chernoff method applied to Bernoullis provide a bound of the form
 \[
