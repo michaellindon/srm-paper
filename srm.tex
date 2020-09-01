@@ -227,14 +227,14 @@ Consider null and true parameter value of $\theta_0=[1/2, 1/4, 1/4]$ and $\theta
   To illustrate this point further, 100 datasets were simulated under the null hypothesis up to $t=1000$. The Chi-squared ($u=0.05$) test was applied after every observation and by $t=1000$ 44 out of the 100 datasets resulted in the erroneous rejection of the null hypothesis. If left to run for longer, the total number of false positives would surely increase beyond 44. This is shown in figure \ref{fig:chi_fp}.
   \begin{figure}[h!]
   \centering
-  \includegraphics[scale=0.5]{images/chi_fp.png}
+  \includegraphics[scale=0.35]{images/chi_fp.png}
   \caption{Simulation Study of False Positives produced by continuously monitoring with a Chi-squared test. The orange and magenta curves are the same as in figure \ref{fig:critical}. Each blue trace is an independent simulation of $\hat{\rho}(x_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner. }
     \label{fig:chi_fp}
   \end{figure}
   The simulation can be repeated, using the same random number seed, to demonstrate the control over false positives of the proposed test. Under identical conditions, the proposed test resulted in 2 out of 100 false positives, illustrated in figure \ref{fig:ssrm_fp}.
     \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.5]{images/ssrm_fp.png}
+  \includegraphics[scale=0.35]{images/ssrm_fp.png}
   \caption{Simulation Study of False Positives produced by continuously monitoring with the proposed test. The orange and magenta curves are the same as in figure \ref{fig:critical}. Each blue trace is an independent simulation of $\hat{\rho}(x_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner. }
     \label{fig:ssrm_fp}
   \end{figure}
@@ -242,7 +242,7 @@ Consider null and true parameter value of $\theta_0=[1/2, 1/4, 1/4]$ and $\theta
   Figure \ref{fig:ssrm_reject} demonstrates that the proposed test rapidly rejects the null way before the end of the experiment, saving further units from entering an incorrectly executed experiment.
       \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.5]{images/ssrm_reject.png}
+  \includegraphics[scale=0.35]{images/ssrm_reject.png}
   \caption{Simulation Study of time to reject the null under the proposed test. The magenta curve is the same as in figure \ref{fig:critical}. Each blue trace is an independent simulation of $\hat{\rho}(x_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner. }
     \label{fig:ssrm_reject}
   \end{figure}
