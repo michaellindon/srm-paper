@@ -48,6 +48,7 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 
 \DeclareBoldMathCommand{\balpha}{\alpha}
 \DeclareBoldMathCommand{\bbeta}{\beta}
+\DeclareBoldMathCommand{\bS}{S}
 %
 
 %%My Definitions
@@ -60,8 +61,8 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 %%
 \begin{document}
 \vspace{-1in}
-\title{A Sequential Hypothesis Test for Implementation Errors and Missing Data in Simply Randomized Experiments}
-\author{\Large Michael Lindon \\ Optimizely \and Alan Malek \\ Optimizely?}
+\title{A Sequential Hypothesis Test for Implementation Errors and Missing Data in Simply Randomized Experiments with Applications to A/B Testing}
+\author{\Large Michael Lindon \\ Optimizely \and \Large Alan Malek \\ Optimizely}
 \maketitle 
 %\centerline{{\color{RoyalBlue2}{Due: someday.}}}\bigskip
 %\thispagestyle{empty}
@@ -273,7 +274,38 @@ When the $x_i$ are independently distributed according to $\text{Multinomial}(n_
 under model $M_\star$, then the second term converges to the Kullback-Leibler divergence between models $M_\star$ and $M_0$ by the strong law of large numbers.
 To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\theta|x_{1:t}, M_1)$ concentrates mass on $\theta_\star$, consequently bringing the posterior predictive $p(x_{t+1}|x_{1:t},M_1) =\int p(x_{t+1}|\theta,M_1),p(\theta|x_{1:t},M_1) d\theta$ closer to the ``true'' density $p(x_{t+1}|M_{\star})$.
 For $t$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
-We empirically illustrate this Theorem in the next section.
+
+To complement this asymptotic result, we now provide the following finite sample result.
+\begin{thm}
+  \label{thm:finite_sample}
+\noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta_{\star})$ random variables with $\theta_{\star} \neq \theta_0$ and consider the sequence of posterior odds $O_t(\theta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\theta_0)=1$ and a given choice of $\balpha_0$, then
+for all $\delta > 0$ and $u > 0$ there exists $N > 0$ such that 
+\begin{equation}
+  \label{eq:finite_sample}
+\mathbb{P}_{\theta_{\star}}\left( O_n(\theta_0) \geq 1/u, \, \forall n \geq N\right) \geq 1-\delta.
+\end{equation}
+This $N$ is the solution to 
+\[
+  N \df
+  \min
+  \left\{
+    n:\;
+      \left(1 + \frac{4\rho}{n}\right)
+      \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}
+    +
+      \frac{2|\balpha_0|^2}{n^2} + \frac{2|\balpha_0|}{n}
+      +
+    \frac{2}{n}\log\frac{\Beta(\balpha_0)}{u}
+    \leq
+    \frac{1}{2}\Vert \theta_0- \theta_{\star}\Vert_{1}^2
+  \right\},
+\] for any choice of $\rho > 0$. \todo{Minimize bound with respect to rho?}
+\end{thm}
+
+While Theorem~\ref{thm:consistency} shows that the posterior odds converge to infinity under the alternative, Theorem~\ref{thm:finite_sample} gives an $N$
+for which the posterior odds will subsequently remain above a desired threshold $1/u$ with an arbitrarily large probability $1-\delta$.
+The proof is given in appendix section \ref{app:finite_sample}.
+
 
 \section{Simulation Studies}
 \label{sec:simulation}
@@ -513,5 +545,8 @@ Note that under model $M_0$, the prior on $\theta$ is a point mass at $\theta_0$
 Let the KL divergence of the null model from the true model be denoted $\delta_0$, it is clear that $\int_{A(q)} p(\theta|M_0) d\theta = 0$ if $q<\delta_0$ and 1 otherwise.
 Hence KL divergence of the null $\theta_0$ from the true $\theta_\star$ is the relevant $\delta_0$ for model $M_0$ in lemma \ref{lemma:walker}.
 The value of $\delta_1$ for the Dirichlet prior under model $M_1$, however, is zero.
+
+\section{Finite Sample Properties}
+\label{app:finite_sample}
 
 \end{document}
