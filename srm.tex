@@ -257,7 +257,7 @@ We first establish the following result for the consistency of the posterior odd
 \begin{thm}(Asymptotic Properties of Posterior Odds)\todo{$\btheta_\star$ might indicate it's the solution to an optimization problem, maybe $\theta'$?}
   
   \label{thm:consistency}
-\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(n_i,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
 \begin{equation}
   \label{eq:consistency}
   \frac{1}{t} \log O_t(\btheta_0) \rightarrow D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0)) \hspace{1cm} a.s.
@@ -272,8 +272,8 @@ The first compares $M_{\star}$ to $M_1$, and the second compares $M_{\star}$ to 
 \begin{align*}
  \frac{1}{t} \log BF_{10}(\bx_{1:t}) = - \frac{1}{t}\sum_{i=1}^{t}\log \left( \frac{p(\bx_{i}|M_\star)}{p(\bx_{i}|\bx_{1:i-1},M_1)}\right) + \frac{1}{t}\sum_{i=1}^{t} \log  \left( \frac{p(\bx_{i}|M_\star)}{p(\bx_{i}|M_0)}\right),\\
 \end{align*}
-where  $p(\bx_i|M_\star)$ is the density of a $\text{Multinomial}(n_i,\btheta_{\star})$ distribution.
-When the $\bx_i$ are independently distributed according to $\text{Multinomial}(n_i, \btheta_\star)$, i.e.
+where  $p(\bx_i|M_\star)$ is the density of a $\text{Multinomial}(1,\btheta_{\star})$ distribution.
+When the $\bx_i$ are independently distributed according to $\text{Multinomial}(1, \btheta_\star)$, i.e.
 under model $M_\star$, then the second term converges to the Kullback-Leibler divergence between models $M_\star$ and $M_0$ by the strong law of large numbers.
 To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\btheta|\bx_{1:t}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(\bx_{t+1}|\bx_{1:t},M_1) =\int p(\bx_{t+1}|\btheta,M_1),p(\btheta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(\bx_{t+1}|M_{\star})$.
 For $t$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
@@ -281,7 +281,7 @@ For $t$ large the logarithm of the fraction of densities becomes zero, and these
 To complement this asymptotic result, we now provide the following finite sample result.
 \begin{thm}
   \label{thm:finite_sample}
-\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(n_i,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$, then
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$, then
 for all $\delta > 0$ and $u > 0$ there exists $N > 0$ such that 
 \begin{equation}
   \label{eq:finite_sample}
@@ -406,7 +406,7 @@ The challenge in conditional frequentist testing is to find an appropriate condi
 We note that the confidence sequences described in Theorem~\ref{thm:confidence_sequence} share a connection with other Bayesian intervals discussed in the literature.
 To see this it is necessary to express the Bayes factor in terms of the Savage-Dickey density ratio (\cite{dickey}) as
 \begin{equation}
-    B(\bx_{1:t}|\btheta_0) = \frac{p(\btheta_0| M_1)}{p(\btheta_0|\bx_{1:t},M_1)}.
+    BF(\bx_{1:t}|\btheta_0) = \frac{p(\btheta_0| M_1)}{p(\btheta_0|\bx_{1:t},M_1)}.
 \end{equation}
 This, with $O_0(\btheta_0)=1$, implies that $I_t(u) = \lbrace \btheta \in \triangle^d : O_t(\btheta) \leq 1/u \rbrace = \lbrace \btheta  \in \triangle^d : p(\btheta| M_1)\leq p(\btheta|\bx_{1:t}, M_1)/u \rbrace $, which is identified as the Bayesian \textit{support interval} proposed by \cite{support_interval}.
 The authors proposed this as an alternative to the more commonly reported Bayesian credible intervals, argueing that the support interval is based on evidence in the data (how the data changes belief), whereas credible intervals are based on posterior belief directly.
@@ -471,7 +471,7 @@ O_0(\btheta_0) = \frac{p(M_1)}{p(M_0)}.
 To result follows from the application of the following two lemmas.
 \begin{lemma}(Martingale property of posterior odds under the null hypothesis)
   
-  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(n_i,\btheta)$ random variables and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_t(\btheta_0)$ is a nonnegative martingale under $M_0$.
+  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta)$ random variables and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_t(\btheta_0)$ is a nonnegative martingale under $M_0$.
   \label{lem:posterior_odds_martingale}
     \end{lemma}
   \begin{proof}
@@ -480,7 +480,7 @@ To result follows from the application of the following two lemmas.
     &=  O_{t}(\btheta_0) \int p(\bx_{t+1}|\bx_{1:t},M_1) d\bx_{t+1}\\
     &=  O_{t}(\btheta_0),
   \end{align*}
-  where $\mathcal{F}_{t} = \sigma(x_1,x_2,\dots, \bx_t)$
+  where $\mathcal{F}_{t} = \sigma(\bx_1,\bx_2,\dots, \bx_t)$
 \end{proof}
 
 \begin{lemma}(Ville's Maximal Inequality)
@@ -520,7 +520,7 @@ then
     =& -\log \frac{p(\bx_t|M_\star)}{p(\bx_t|\bx_{1:t-1},M_j)} + D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t-1}, M_j) ) +\\
     &S_{jt-1},\\
   \end{align*}
-  from which it follows that $\mathbb{E}[S_{jt}|\mathcal{F}_t] = S_{jt-1}$ with $\mathcal{F}_t = \sigma(x_1,\dots,x_{t-1})$.
+  from which it follows that $\mathbb{E}[S_{jt}|\mathcal{F}_t] = S_{jt-1}$ with $\mathcal{F}_t = \sigma(\bx_1,\dots,\bx_{t-1})$.
 From the assumption that  $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(\bx_t|\bx_{1:t-1},M_j)}{p(\bx_t|M_\star )}]\right) < \infty$, it follows that $S_{jt}/t \rightarrow 0$ a.s.
 and consequentially
   \begin{align*}
