@@ -145,12 +145,12 @@ The differences between the pure Bayesian test and the proposed test are discuss
 \section{Sequential Bayesian Multinomial Test}
 \label{sec:srm_testing}
 The sequentially recorded observations may differ from the null hypothesis, which we will denote $M_0$, if there is an unintended bias in the assignment mechanism or if an unknown missing data mechanism, as discussed in section \ref{sec:intro}.
-We therefore wish to test the null hypothesis $\theta = \btheta_0$ vs.\ $\theta = \triangle^d \setminus \btheta_0$.
+We therefore wish to test the null hypothesis $\btheta = \btheta_0$ vs.\ $\btheta = \triangle^d \setminus \btheta_0$.
 To develop a Bayesian hypothesis test, it is necessary to specify an alternative model for the data, denoted $M_1$.
 Consider the following model studied in \cite{good},
 \begin{align}
-    \bx_i | \theta, M_1 &\sim \text{Multinomial}(1,\theta), \hspace{1cm} \text{independently for }\, i=1,2,\dots\\
-  \theta | M_1 &\sim \text{Dirichlet}(\balpha_0).\notag
+    \bx_i | \btheta, M_1 &\sim \text{Multinomial}(1,\theta), \hspace{1cm} \text{independently for }\, i=1,2,\dots\\
+  \btheta | M_1 &\sim \text{Dirichlet}(\balpha_0).\notag
 \end{align}
 Prior mass is concentrated around $\btheta_0$ by specifying $\alpha_{0,i} = k \theta_{0,i}$ for concentration parameter $k \in \mathbb{R}^+$, in line with a ``Jeffreys-type'' testing procedure - if the null were not at least somewhat plausible, then a statistical test would not be needed.
 The Bayes factor comparing models $M_1$ to $M_0$ is analytically tractable and is given by
@@ -190,7 +190,7 @@ Time-uniform bounds under the null hypothesis are essential for proving correctn
 Consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
 \begin{equation}
   \label{eq:type_1_error}
-  \mathbb{P}_{\theta = \btheta_0}\left( \exists t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \right) \leq u,
+  \mathbb{P}_{\btheta = \btheta_0}\left( \exists t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \right) \leq u,
 \end{equation}
 for all $u \in [0,1]$ and for all choices of $\balpha_0$.
 \end{thm}
@@ -211,17 +211,17 @@ In the language of \cite{johari} one can define a conservative sequential p-valu
 which satisfies the following sequential analogue of a conservative p-value
 \begin{equation}
   \label{eq:conservative_p_value}
-  \mathbb{P}_{\theta = \btheta_0}\left( \exists t \in \mathbb{N}: p_t \leq u \right) \leq u.
+  \mathbb{P}_{\btheta = \btheta_0}\left( \exists t \in \mathbb{N}: p_t \leq u \right) \leq u.
 \end{equation}
 Further connections between sequential p-value processes and Bayes factors are discussed in \cite{shafer}.
 The following Theorem exploits the duality between p-values and confidence intervals to derive sequential confidence sequences \todo{this is redundant, though we need to define a confidence sequence somewhere}.
 \begin{thm}(Confidence Sequences)
   
   \label{thm:confidence_sequence}
-  \noindent Under the assumptions of Theorem~\ref{thm:type_1_error} let $I_t(u) = \lbrace \theta \in \mathbb{S}^d : O_t(\theta) < 1/u  \rbrace$, then
+  \noindent Under the assumptions of Theorem~\ref{thm:type_1_error} let $I_t(u) = \lbrace \btheta \in \mathbb{S}^d : O_t(\theta) < 1/u  \rbrace$, then
 \begin{equation}
   \label{eq:confidence_sequence}
-  \mathbb{P}_{\theta}\left( \theta \in \bigcap_{t=1}^{\infty} I_t(u) \right) \geq 1- u
+  \mathbb{P}_{\btheta}\left( \btheta \in \bigcap_{t=1}^{\infty} I_t(u) \right) \geq 1- u
 \end{equation}
 for all $u \in [0,1]$ and for all choices of $\balpha_0$.
 
@@ -244,13 +244,13 @@ The objective is linear, while the constraints defining the feasible set $I_t(u)
 Let $j^{u}_{t,i}(u)$ and $j^{l}_{t,i}(u)$ be the solution to the maximization and minimization of $\theta_i$ over $I_t(u)$ and let $J_{t,i}(u)=[j^{l}_{t,i}(u), j^{u}_{t,i}(u)]$, then
 \begin{equation}
   \label{eq:marginal_confidence_sequence}
-  \mathbb{P}_{\theta}\left( \theta_i \in \bigcap_{t=1}^{\infty} J_{t,i}(u),\, \text{for}\, i = 1,2, \dots, d \right) \geq 1- u.
+  \mathbb{P}_{\btheta}\left( \theta_i \in \bigcap_{t=1}^{\infty} J_{t,i}(u),\, \text{for}\, i = 1,2, \dots, d \right) \geq 1- u.
 \end{equation}
 These provide intervals which posess a nominal frequentist coverage probability for all time $t$ over all components simultaneously.
 \todo{maybe make this a corollary}
 
-Control over Type-I error probabilities would be of little value if the test were to have little ability to reject the null when $\theta \neq \btheta_0$.
-To prove that this test is not trivial, we prove that the test rejects the null when $\theta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
+Control over Type-I error probabilities would be of little value if the test were to have little ability to reject the null when $\btheta \neq \btheta_0$.
+To prove that this test is not trivial, we prove that the test rejects the null when $\btheta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
 We first establish the following result for the consistency of the posterior odds
 
 \begin{thm}(Asymptotic Properties of Posterior Odds)\todo{$\btheta_\star$ might indicate it's the solution to an optimization problem, maybe $\theta'$?}
@@ -274,7 +274,7 @@ The first compares $M_{\star}$ to $M_1$, and the second compares $M_{\star}$ to 
 where  $p(\bx_i|M_\star)$ is the density of a $\text{Multinomial}(n_i,\btheta_{\star})$ distribution.
 When the $\bx_i$ are independently distributed according to $\text{Multinomial}(n_i, \btheta_\star)$, i.e.
 under model $M_\star$, then the second term converges to the Kullback-Leibler divergence between models $M_\star$ and $M_0$ by the strong law of large numbers.
-To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\theta|\bx_{1:t}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(x_{t+1}|\bx_{1:t},M_1) =\int p(x_{t+1}|\theta,M_1),p(\theta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(x_{t+1}|M_{\star})$.
+To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\btheta|\bx_{1:t}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(\bx_{t+1}|\bx_{1:t},M_1) =\int p(\bx_{t+1}|\btheta,M_1),p(\btheta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(\bx_{t+1}|M_{\star})$.
 For $t$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
 
 To complement this asymptotic result, we now provide the following finite sample result.
@@ -326,7 +326,7 @@ The blue line shows $\log(BF_{10}(\bx_{1:t}))/t$ and the red dashed line shows $
   In the following simulation we demonstrate the control over false positives provided by the proposed test.
 In addition, we demonstrate how continuously monitoring experiments can result in an incredibly large number of false positives when misusing a Chi-squared test.
 This is easiest to visualize in an example with one treatment group with assignment probability denoted $\rho$.
-The assignment is therefore a $\text{Bernoulli}(\rho)$ random variable, but sticking with the general framework developed earlier, the assignment outcome is $\text{Multinomial}(1,\theta)$ random variable with $\theta = [(1-\rho)\, \rho]$.
+The assignment is therefore a $\text{Bernoulli}(\rho)$ random variable, but sticking with the general framework developed earlier, the assignment outcome is $\text{Multinomial}(1,\theta)$ random variable with $\btheta = [(1-\rho)\, \rho]$.
 The Bayes factor in this case is then just a function of the sufficient statistic $\sum_{i=1}^t x_{i,1}$, or equivalently, $\hat{\rho}(\bx_{1:t}) = 1/t \sum_{i=1}^{t} x_{i,1}$, given by
 \begin{equation}
   \label{eq:bayes_factor}
@@ -407,7 +407,7 @@ To see this it is necessary to express the Bayes factor in terms of the Savage-D
 \begin{equation}
     B(\bx_{1:t}|\btheta_0) = \frac{p(\btheta_0| M_1)}{p(\btheta_0|\bx_{1:t},M_1)}.
 \end{equation}
-This, with $O_0(\btheta_0)=1$, implies that $I_t(u) = \lbrace \theta \in \mathbb{S}^d : O_t(\theta) \leq 1/u \rbrace = \lbrace \theta  \in \mathbb{S}^d : p(\theta| M_1)\leq p(\theta|\bx_{1:t}, M_1)/u \rbrace $, which is identified as the Bayesian \textit{support interval} proposed by \cite{support_interval}.
+This, with $O_0(\btheta_0)=1$, implies that $I_t(u) = \lbrace \btheta \in \mathbb{S}^d : O_t(\theta) \leq 1/u \rbrace = \lbrace \btheta  \in \mathbb{S}^d : p(\btheta| M_1)\leq p(\btheta|\bx_{1:t}, M_1)/u \rbrace $, which is identified as the Bayesian \textit{support interval} proposed by \cite{support_interval}.
 The authors proposed this as an alternative to the more commonly reported Bayesian credible intervals, argueing that the support interval is based on evidence in the data (how the data changes belief), whereas credible intervals are based on posterior belief directly.
 These intervals have some intuitive appeal as they are the parameter values for which their posterior density has increased beyond some factor of their prior density after observing the data.
 We are the first, however, to identify the sequential frequentist coverage probabilities, in the sense of Theorem~\ref{thm:confidence_sequence}, of these support intervals.
@@ -430,14 +430,14 @@ It is helpful to introduce some further notation to explicitly express the seque
 The Posterior odds in favour of $M_1$ to $M_0$ after observing $\bx_{1:t}$ is defined as
 \begin{align}
   \label{eq:general_posterior_odds}
-  \frac{p(M_1|\bx_{1:t})}{p(M_0|\bx_{1:t})}  &= \frac{\int p(\bx_{1:t}|\theta,M_1)p(\theta,M_1)d\theta}{p(\bx_{1:t}|M_0)}\frac{P(M_1)}{P(M_0)},\\
+  \frac{p(M_1|\bx_{1:t})}{p(M_0|\bx_{1:t})}  &= \frac{\int p(\bx_{1:t}|\btheta,M_1)p(\btheta,M_1)d\btheta}{p(\bx_{1:t}|M_0)}\frac{P(M_1)}{P(M_0)},\\
                       &=\frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)}\frac{p(M_1)}{p(M_0)},\\
                       &=\frac{\prod_{i=1}^{t}p(\bx_i|x_{1:i-1}|M_1)}{\prod_{i=1}^{t}p(\bx_i|x_{1:i-1}|M_0)}\frac{p(M_1)}{p(M_0)},\\
                       &=\frac{p(\bx_t|\bx_{1:t-1},M_1)}{p(\bx_t|\bx_{1:t-1},M_0)} \frac{p(M_1|\bx_{1:t-1})}{p(M_0|\bx_{1:t-1})},\\
-    &=\frac{\int p(\bx_t|\theta,\bx_{1:t-1},M_1)p(\theta|\bx_{1:t-1},M_1)d\theta}{p(\bx_t|\bx_{1:t-1},M_0)}  \frac{p(M_1|\bx_{1:t-1})}{p(M_0|\bx_{1:t-1})} ,
+    &=\frac{\int p(\bx_t|\btheta,\bx_{1:t-1},M_1)p(\btheta|\bx_{1:t-1},M_1)d\btheta}{p(\bx_t|\bx_{1:t-1},M_0)}  \frac{p(M_1|\bx_{1:t-1})}{p(M_0|\bx_{1:t-1})} ,
 \end{align}
 where the last expression stresses the recursive definition of the Posterior odds factor in terms of products of posterior predictive densities.
-The posterior distribution of $\theta| \bx_{1:t}, M_1 \sim \text{Dirichlet}(\balpha_t)$ where $\balpha_t = \balpha_{t-1}+\bx_t$ with $\balpha_0$ the initial prior parameter choice.
+The posterior distribution of $\btheta| \bx_{1:t}, M_1 \sim \text{Dirichlet}(\balpha_t)$ where $\balpha_t = \balpha_{t-1}+\bx_t$ with $\balpha_0$ the initial prior parameter choice.
 The posterior predictive densities are easily computed as
 \begin{equation}
   \label{eq:posterior_predictive_m1}
@@ -475,8 +475,8 @@ To result follows from the application of the following two lemmas.
     \end{lemma}
   \begin{proof}
   \begin{align*}
-    E_{M_0}[O_{t+1}(\btheta_0)|\mathcal{F}_t]  &= \int \frac{p(x_{t+1}|\bx_{1:t},M_1)}{p(x_{t+1}|\bx_{1:t},M_0)} O_{t}(\btheta_0) p(x_{t+1}|\bx_{1:t},M_0) dx_{t+1}\\
-    &=  O_{t}(\btheta_0) \int p(x_{t+1}|\bx_{1:t},M_1) dx_{t+1}\\
+    E_{M_0}[O_{t+1}(\btheta_0)|\mathcal{F}_t]  &= \int \frac{p(\bx_{t+1}|\bx_{1:t},M_1)}{p(\bx_{t+1}|\bx_{1:t},M_0)} O_{t}(\btheta_0) p(\bx_{t+1}|\bx_{1:t},M_0) d\bx_{t+1}\\
+    &=  O_{t}(\btheta_0) \int p(\bx_{t+1}|\bx_{1:t},M_1) d\bx_{t+1}\\
     &=  O_{t}(\btheta_0),
   \end{align*}
   where $\mathcal{F}_{t} = \sigma(x_1,x_2,\dots, \bx_t)$
@@ -500,10 +500,10 @@ The result of the Theorem is obtained by using lemma \ref{lem:posterior_odds_mar
 We first narrow the focus of a general result found in Theorem~1 of \cite{walker}.
 Let $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\theta) )$ denote the Kullback-Leibler divergence of a multinomial distribution indexed by a parameter $\theta$ from the true multinomial distribution with true parameter $\btheta_{\star}$.
 Moreover let $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t}, M_j) )$ denote the KL divergence of the posterior predictive distribution under model $j$ at time $t$ from the true multinomial distribution.
-Let $A(q) = \lbrace \theta \in \mathbb{S}^d : D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\theta) ) < q \rbrace$
+Let $A(q) = \lbrace \btheta \in \mathbb{S}^d : D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\theta) ) < q \rbrace$
 \begin{lemma}
   \label{lemma:walker}
-  If $\int_{A(q)} p(\theta|M_j) d\theta > 0$ only for, and for all, $q > \delta_j$, and $\lim \inf_t D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t}, M_j) ) \geq \delta_j$ a.s.
+  If $\int_{A(q)} p(\btheta|M_j) d\btheta > 0$ only for, and for all, $q > \delta_j$, and $\lim \inf_t D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t}, M_j) ) \geq \delta_j$ a.s.
 then
   \begin{equation}
     \label{eq:bayes_factor_convergence}
@@ -544,7 +544,7 @@ It follows that
 
 The application of this lemma to the multinomial Dirichlet model is then straight forward.
 Note that under model $M_0$, the prior on $\theta$ is a point mass at $\btheta_0$.
-Let the KL divergence of the null model from the true model be denoted $\delta_0$, it is clear that $\int_{A(q)} p(\theta|M_0) d\theta = 0$ if $q<\delta_0$ and 1 otherwise.
+Let the KL divergence of the null model from the true model be denoted $\delta_0$, it is clear that $\int_{A(q)} p(\btheta|M_0) d\btheta = 0$ if $q<\delta_0$ and 1 otherwise.
 Hence KL divergence of the null $\btheta_0$ from the true $\btheta_\star$ is the relevant $\delta_0$ for model $M_0$ in lemma \ref{lemma:walker}.
 The value of $\delta_1$ for the Dirichlet prior under model $M_1$, however, is zero.
 
