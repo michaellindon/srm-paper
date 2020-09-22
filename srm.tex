@@ -48,7 +48,9 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 
 \DeclareBoldMathCommand{\balpha}{\alpha}
 \DeclareBoldMathCommand{\bbeta}{\beta}
+\DeclareBoldMathCommand{\btheta}{\theta}
 \DeclareBoldMathCommand{\bS}{S}
+\DeclareBoldMathCommand{\bx}{x}
 %
 
 %%My Definitions
@@ -88,11 +90,11 @@ Consider, for example, a medical researcher who administers a preferred experime
 Without explicitly conditioning on this information in the assignment mechanism, causal estimands such as the average treatment effect may be biased and overestimate the efficacy of the new drug (\cite{berry}).
 Simply randomized experiments attempt to remove the possibility of bias by randomly assigning experimental units independently to treatment groups.
 This design is useful in contexts where units enter the experiment sequentially, as opposed to all being simultaneously available like in completely randomized designs, and are often used in the technology industry to run online controlled experiments (OCEs) (\cite{oce}).
-Formally, let there be $d$ treamtent groups, $\theta_0 \in \triangle^d$ be a probability vector where element $\theta_{0,i}$ denotes the probability of any unit being assigned to treatment group $i$, and $x_j$ a random variable denoting the assignment outcome of the $j$th experimental unit.
+Formally, let there be $d$ treamtent groups, $\btheta_0 \in \triangle^d$ be a probability vector where element $\theta_{0,i}$ denotes the probability of any unit being assigned to treatment group $i$, and $x_j$ a random variable denoting the assignment outcome of the $j$th experimental unit.
 The simply randomized design can then be summarized by the following probabilistic assignment mechanism
 \begin{equation}
   \label{eq:multinomialassignment}
-  x_1,x_2, \dots \sim \text{Multinomial}(1,\theta_0).
+  x_1,x_2, \dots \sim \text{Multinomial}(1,\btheta_0).
 \end{equation}
 The statistician may not be personally involved with the data collection process and may simply be told the assignment mechanism after being presented with the data for analysis.
 The observant statistican has a right for concern, therefore, when they are provided with data which does not support the purported assignment mechanism.
@@ -128,7 +130,7 @@ The paper is outlined as follows.
 Section \ref{sec:srm_testing} defines a common Bayesian test through conjugate multinomial-Dirichlet models.
 Section \ref{sec:theory} establishes the Martingale properties of the posterior odds under the null hypothesis, enabling a modified test to be developed which allows control of the frequentist Type-I error probabilities under both optional stopping and continuation.
 This safely permits the online testing of hypothesis \eqref{eq:multinomialassignment} after every single observation, without inflating frequentist Type-I error, with the obvious advantage of being able to safely reject the null and discover a practical implementation error early in the beginning of an experiment - preventing experimental units being wasted on a faulty experiment.
-Instance-specific upper-bounds on time-to-rejection are provided in terms of the KL divergence  between $\theta_0$ and the actual generating distribution of the samples.
+Instance-specific upper-bounds on time-to-rejection are provided in terms of the KL divergence  between $\btheta_0$ and the actual generating distribution of the samples.
 This sequential test is then inverted to define confidence sequences which possess nominal frequentist coverage probabilities.
 Section \ref{sec:simulation} presents a number of simulation studies illustrating how false positive probabilities are dramatically inflated through the repeated significance testing using a Chi-squared test compared to the guarantees afforded by the proposed test.
 We also study the number of samples needed to reject the null when the null is invalid.
@@ -143,40 +145,40 @@ The differences between the pure Bayesian test and the proposed test are discuss
 \section{Sequential Bayesian Multinomial Test}
 \label{sec:srm_testing}
 The sequentially recorded observations may differ from the null hypothesis, which we will denote $M_0$, if there is an unintended bias in the assignment mechanism or if an unknown missing data mechanism, as discussed in section \ref{sec:intro}.
-We therefore wish to test the null hypothesis $\theta = \theta_0$ vs.\ $\theta = \triangle^d \setminus \theta_0$.
+We therefore wish to test the null hypothesis $\theta = \btheta_0$ vs.\ $\theta = \triangle^d \setminus \btheta_0$.
 To develop a Bayesian hypothesis test, it is necessary to specify an alternative model for the data, denoted $M_1$.
 Consider the following model studied in \cite{good},
 \begin{align}
     x_i | \theta, M_1 &\sim \text{Multinomial}(1,\theta), \hspace{1cm} \text{independently for }\, i=1,2,\dots\\
-  \theta | M_1 &\sim \text{Dirichlet}(\alpha_0).\notag
+  \theta | M_1 &\sim \text{Dirichlet}(\balpha_0).\notag
 \end{align}
-Prior mass is concentrated around $\theta_0$ by specifying $\alpha_{0,i} = k \theta_{0,i}$ for concentration parameter $k \in \mathbb{R}^+$, in line with a ``Jeffreys-type'' testing procedure - if the null were not at least somewhat plausible, then a statistical test would not be needed.
+Prior mass is concentrated around $\btheta_0$ by specifying $\alpha_{0,i} = k \theta_{0,i}$ for concentration parameter $k \in \mathbb{R}^+$, in line with a ``Jeffreys-type'' testing procedure - if the null were not at least somewhat plausible, then a statistical test would not be needed.
 The Bayes factor comparing models $M_1$ to $M_0$ is analytically tractable and is given by
 \begin{equation}
   \label{eq:bayes_factor}
- BF_{10}(x_{1:t}) = \frac{p(x_{1:t}|M_1)}{p(x_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_{0,j})}{\Gamma(\sum_{j=1}^{d} \alpha_{0,j} + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}},
+ BF_{10}(\bx_{1:t}) = \frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_{0,j})}{\Gamma(\sum_{j=1}^{d} \alpha_{0,j} + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}},
 \end{equation}
 which, when combined with the prior odds, yields the posterior odds of model $M_1$ to $M_0$.
 It is helpful to consider the posterior odds as computed sequentially through the following recursive definition,
 \begin{equation}
   \label{eq:update_rule}
-  O_{t}(\theta_0) = \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\Gamma(\sum_i \alpha_{t-1,i} +  x_{t,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{1}{\prod_i \theta_{0,i}^{x_{t,i}}}  O_{t-1}(\theta_0),
+  O_{t}(\btheta_0) = \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\Gamma(\sum_i \alpha_{t-1,i} +  x_{t,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{1}{\prod_i \theta_{0,i}^{x_{t,i}}}  O_{t-1}(\btheta_0),
 \end{equation}
-where $\alpha_t = \alpha_{t-1}+x_t$ and $O_0(\theta_0)=p(M_1)/p(M_0)$ (see appendix section \ref{app:posterior_odds}).
+where $\alpha_t = \alpha_{t-1}+x_t$ and $O_0(\btheta_0)=p(M_1)/p(M_0)$ (see appendix section \ref{app:posterior_odds}).
 In the rest of this paper, we will always assume that the prior odds are unity, and so the posterior odds are interchangeable with the Bayes factor.
 Recursive definitions require an initial value and for that reason we choose to work with the posterior odds.
-The dependence of $O_t(\theta_0)$ on the observed data $x_{1:t}$ is implicit in this notation, yet the null value $\theta_0$ being tested is made explicit to aid the discussion of confidence sequences in Theorem~\ref{thm:confidence_sequence}.
-If $\alpha_0$ is integer valued, and noting that all but one of the $x_{t,j}$ is 1 with the others 0, then the recursive definition simplifies substantially to
+The dependence of $O_t(\btheta_0)$ on the observed data $\bx_{1:t}$ is implicit in this notation, yet the null value $\btheta_0$ being tested is made explicit to aid the discussion of confidence sequences in Theorem~\ref{thm:confidence_sequence}.
+If $\balpha_0$ is integer valued, and noting that all but one of the $x_{t,j}$ is 1 with the others 0, then the recursive definition simplifies substantially to
 \begin{align}
   \label{eq:simplified_bayes_factor}
-  O_{t}(\theta_0) &= \prod_{j=1}^{d} \left(\frac{\alpha_{t-1,j}}{\sum_i \alpha_{t-1,i}} \frac{1}{\theta_{0,j}}\right)^{x_{t,j}} O_{t-1}(\theta_0),\\
-  &=\prod_{j=1}^{d}\left(\frac{E[\theta_j|x_{1:t-1}]}{\theta_{0,j}} \right)^{x_{t,j}} O_{t-1}(\theta_0),
+  O_{t}(\btheta_0) &= \prod_{j=1}^{d} \left(\frac{\alpha_{t-1,j}}{\sum_i \alpha_{t-1,i}} \frac{1}{\theta_{0,j}}\right)^{x_{t,j}} O_{t-1}(\btheta_0),\\
+  &=\prod_{j=1}^{d}\left(\frac{E[\theta_j|\bx_{1:t-1}]}{\theta_{0,j}} \right)^{x_{t,j}} O_{t-1}(\btheta_0),
 \end{align}
 where the last line follows from the mean of the Dirichlet posterior predictive distribution.
 This multiplicative update has some intuitive appeal - it is the expected probability, based on our current Bayesian belief, divided by the null probability of the event that occured.
-A pure Bayesian analysis could proceed by rejecting the null when $O_t(\theta_0) > c$ and reporting a posterior error probability of less than $1/(1+c)$ \citep[Chapter 5]{bernardo}.
+A pure Bayesian analysis could proceed by rejecting the null when $O_t(\btheta_0) > c$ and reporting a posterior error probability of less than $1/(1+c)$ \citep[Chapter 5]{bernardo}.
 Many find the pure Bayesian approach unsettling, unable to formulate a prior belief on $\theta$ under the alternative model.
-We instead develop a test based on $O_t(\theta_0)$ which controls the frequentist Type-I error under optional stopping and continuation, regardless of the choice of $\alpha_0$.
+We instead develop a test based on $O_t(\btheta_0)$ which controls the frequentist Type-I error under optional stopping and continuation, regardless of the choice of $\balpha_0$.
 
 \section{Theoretical Results}
 \label{sec:theory}
@@ -185,15 +187,15 @@ Time-uniform bounds under the null hypothesis are essential for proving correctn
 \begin{thm}  
   \label{thm:type_1_error}
   Let $x_t\sim \mathrm{Multinomial}(1,\theta)$ for all $t in \mathbb{N}$.
-Consider the sequence of posterior odds $O_t(\theta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\theta_0)=1$, then
+Consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
 \begin{equation}
   \label{eq:type_1_error}
-  \mathbb{P}_{\theta = \theta_0}\left( \exists t \in \mathbb{N}: O_t(\theta_0) \geq 1/u \right) \leq u,
+  \mathbb{P}_{\theta = \btheta_0}\left( \exists t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \right) \leq u,
 \end{equation}
-for all $u \in [0,1]$ and for all choices of $\alpha_0$.
+for all $u \in [0,1]$ and for all choices of $\balpha_0$.
 \end{thm}
 
-The uniform condition in equation \ref{eq:type_1_error} suggests to reject the null at time $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\theta_0) \geq 1/u \rbrace$.
+The uniform condition in equation \ref{eq:type_1_error} suggests to reject the null at time $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$.
 Simply stated, a practitioner who rejects the null hypothesis as soon as the posterior odds become larger than $1/u$ incurs a frequentist type-I error probability of at most $u$.
 The proof, based on Martingale maximal inequalities, can be found in appendix section \ref{app:type_1_error}.
 Results of this form can be found in the literature as early as \cite{ville}.
@@ -203,13 +205,13 @@ The test statistic in the mSPRT is formed by integrating the alternative likelih
 When the weight function is equal to the prior distribution, the mSPRT test statistic is simply the Bayes factor, and results of this form can be established for other Bayesian simple null vs.\ composite alternative hypothesis tests.
 In the language of \cite{johari} one can define a conservative sequential p-value process by
 \begin{align*}
-  p_t &= \min(p_{t-1}, 1/O_t(\theta_0)),\\
+  p_t &= \min(p_{t-1}, 1/O_t(\btheta_0)),\\
   p_0 &=1,
 \end{align*}
 which satisfies the following sequential analogue of a conservative p-value
 \begin{equation}
   \label{eq:conservative_p_value}
-  \mathbb{P}_{\theta = \theta_0}\left( \exists t \in \mathbb{N}: p_t \leq u \right) \leq u.
+  \mathbb{P}_{\theta = \btheta_0}\left( \exists t \in \mathbb{N}: p_t \leq u \right) \leq u.
 \end{equation}
 Further connections between sequential p-value processes and Bayes factors are discussed in \cite{shafer}.
 The following Theorem exploits the duality between p-values and confidence intervals to derive sequential confidence sequences \todo{this is redundant, though we need to define a confidence sequence somewhere}.
@@ -221,7 +223,7 @@ The following Theorem exploits the duality between p-values and confidence inter
   \label{eq:confidence_sequence}
   \mathbb{P}_{\theta}\left( \theta \in \bigcap_{t=1}^{\infty} I_t(u) \right) \geq 1- u
 \end{equation}
-for all $u \in [0,1]$ and for all choices of $\alpha_0$.
+for all $u \in [0,1]$ and for all choices of $\balpha_0$.
 
 \end{thm}
 \noindent Each $I_t(u)$ is a convex subset of $\mathbb{S}^d$.
@@ -247,42 +249,42 @@ Let $j^{u}_{t,i}(u)$ and $j^{l}_{t,i}(u)$ be the solution to the maximization an
 These provide intervals which posess a nominal frequentist coverage probability for all time $t$ over all components simultaneously.
 \todo{maybe make this a corollary}
 
-Control over Type-I error probabilities would be of little value if the test were to have little ability to reject the null when $\theta \neq \theta_0$.
-To prove that this test is not trivial, we prove that the test rejects the null when $\theta \neq \theta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
+Control over Type-I error probabilities would be of little value if the test were to have little ability to reject the null when $\theta \neq \btheta_0$.
+To prove that this test is not trivial, we prove that the test rejects the null when $\theta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
 We first establish the following result for the consistency of the posterior odds
 
 \begin{thm}(Asymptotic Properties of Posterior Odds)\todo{$\theta_\star$ might indicate it's the solution to an optimization problem, maybe $\theta'$?}
   
   \label{thm:consistency}
-\noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta_{\star})$ random variables with $\theta_{\star} \neq \theta_0$ and consider the sequence of posterior odds $O_t(\theta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\theta_0)=1$, then
+\noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta_{\star})$ random variables with $\theta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
 \begin{equation}
   \label{eq:consistency}
-  \frac{1}{t} \log O_t(\theta_0) \rightarrow D_{KL}(p(\cdot|\theta_{\star}) || p(\cdot|\theta_0)) \hspace{1cm} a.s.
+  \frac{1}{t} \log O_t(\btheta_0) \rightarrow D_{KL}(p(\cdot|\theta_{\star}) || p(\cdot|\btheta_0)) \hspace{1cm} a.s.
 \end{equation}
-as $t \rightarrow \infty$, for all choices of $\alpha_0$, where $D_{KL}(p(\cdot|\theta_{\star}) || p(\cdot|\theta_0))$ is the Kullback Leibler divergence of a multinomial distribution index by parameter $\theta_0$ from a multinomial distribution indexed by parameter $\theta_{\star}$.
+as $t \rightarrow \infty$, for all choices of $\balpha_0$, where $D_{KL}(p(\cdot|\theta_{\star}) || p(\cdot|\btheta_0))$ is the Kullback Leibler divergence of a multinomial distribution index by parameter $\btheta_0$ from a multinomial distribution indexed by parameter $\theta_{\star}$.
 
 \end{thm}
-\noindent When $\theta_{\star} \neq \theta_0$, we must have $D_{KL}(p(\cdot|\theta_{\star}) || p(\cdot|\theta_0)) > 0$, and so Theorem~\ref{thm:consistency} can be restated as $O_t(\theta_0) \rightarrow \infty$ almost surely as $t \rightarrow \infty$, which consequently rejects the null almost surely for any choice of Type-I error probability $u$.
+\noindent When $\theta_{\star} \neq \btheta_0$, we must have $D_{KL}(p(\cdot|\theta_{\star}) || p(\cdot|\btheta_0)) > 0$, and so Theorem~\ref{thm:consistency} can be restated as $O_t(\btheta_0) \rightarrow \infty$ almost surely as $t \rightarrow \infty$, which consequently rejects the null almost surely for any choice of Type-I error probability $u$.
 The formal proof is given in appendix section \ref{app:asymptotics}, which relies on Theorem~1 of \cite{walker}.
 Conceptually, the proof proceeds by expressing the Bayes factor comparing $M_1$ to $M_0$ in terms of two seperate Bayes factors.
 The first compares $M_{\star}$ to $M_1$, and the second compares $M_{\star}$ to $M_0$ as follows
 \begin{align*}
- \frac{1}{t} \log BF_{10}(x_{1:t}) = - \frac{1}{t}\sum_{i=1}^{t}\log \left( \frac{p(x_{i}|M_\star)}{p(x_{i}|x_{1:i-1},M_1)}\right) + \frac{1}{t}\sum_{i=1}^{t} \log  \left( \frac{p(x_{i}|M_\star)}{p(x_{i}|M_0)}\right),\\
+ \frac{1}{t} \log BF_{10}(\bx_{1:t}) = - \frac{1}{t}\sum_{i=1}^{t}\log \left( \frac{p(x_{i}|M_\star)}{p(x_{i}|x_{1:i-1},M_1)}\right) + \frac{1}{t}\sum_{i=1}^{t} \log  \left( \frac{p(x_{i}|M_\star)}{p(x_{i}|M_0)}\right),\\
 \end{align*}
 where  $p(x_i|M_\star)$ is the density of a $\text{Multinomial}(n_i,\theta_{\star})$ distribution.
 When the $x_i$ are independently distributed according to $\text{Multinomial}(n_i, \theta_\star)$, i.e.
 under model $M_\star$, then the second term converges to the Kullback-Leibler divergence between models $M_\star$ and $M_0$ by the strong law of large numbers.
-To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\theta|x_{1:t}, M_1)$ concentrates mass on $\theta_\star$, consequently bringing the posterior predictive $p(x_{t+1}|x_{1:t},M_1) =\int p(x_{t+1}|\theta,M_1),p(\theta|x_{1:t},M_1) d\theta$ closer to the ``true'' density $p(x_{t+1}|M_{\star})$.
+To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\theta|\bx_{1:t}, M_1)$ concentrates mass on $\theta_\star$, consequently bringing the posterior predictive $p(x_{t+1}|\bx_{1:t},M_1) =\int p(x_{t+1}|\theta,M_1),p(\theta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(x_{t+1}|M_{\star})$.
 For $t$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
 
 To complement this asymptotic result, we now provide the following finite sample result.
 \begin{thm}
   \label{thm:finite_sample}
-\noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta_{\star})$ random variables with $\theta_{\star} \neq \theta_0$ and consider the sequence of posterior odds $O_t(\theta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\theta_0)=1$ and a given choice of $\balpha_0$, then
+\noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta_{\star})$ random variables with $\theta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$, then
 for all $\delta > 0$ and $u > 0$ there exists $N > 0$ such that 
 \begin{equation}
   \label{eq:finite_sample}
-\mathbb{P}_{\theta_{\star}}\left( O_n(\theta_0) \geq 1/u, \, \forall n \geq N\right) \geq 1-\delta.
+\mathbb{P}_{\theta_{\star}}\left( O_n(\btheta_0) \geq 1/u, \, \forall n \geq N\right) \geq 1-\delta.
 \end{equation}
 This $N$ is the solution to 
 \[
@@ -297,7 +299,7 @@ This $N$ is the solution to
       +
     \frac{2}{n}\log\frac{\Beta(\balpha_0)}{u}
     \leq
-    \frac{1}{2}\Vert \theta_0- \theta_{\star}\Vert_{1}^2
+    \frac{1}{2}\Vert \btheta_0- \theta_{\star}\Vert_{1}^2
   \right\},
 \] for any choice of $\rho > 0$. \todo{Minimize bound with respect to rho?}
 \end{thm}
@@ -309,33 +311,33 @@ The proof is given in appendix section \ref{app:finite_sample}.
 
 \section{Simulation Studies}
 \label{sec:simulation}
-Consider null and true parameter value of $\theta_0=[\frac{1}{2}\, \frac{1}{4}\, \frac{1}{4}]$ and $\theta_\star=[\frac{1}{2}\, \frac{1}{8}\, \frac{3}{8}]$ respectively.
-The Kullback Leibler divergence of the null from the true multinomial distribution is $D_{KL}(p(\cdot|\theta_\star)||p(\cdot||\theta_0)) = 0.0654$ (to 4dp).
-A simulation of 1 million data points with $x_i \sim \text{Multinomial}(1, \theta_\star)$ and a Dirichlet prior with $\alpha_0 = 100\theta_0$ was used.
-The values of $\log(BF_{10}(x_{1:t}))/t$ were computed and are shown in figure \ref{fig:lbf}.
-The figure illustrates the convergence as described in Theorem~\ref{thm:consistency} of $\log(BF_{10}(x_{1:t}))/t$ to the Kullback Leibler divergence of the null from the true multinomial distribution.
+Consider null and true parameter value of $\btheta_0=[\frac{1}{2}\, \frac{1}{4}\, \frac{1}{4}]$ and $\theta_\star=[\frac{1}{2}\, \frac{1}{8}\, \frac{3}{8}]$ respectively.
+The Kullback Leibler divergence of the null from the true multinomial distribution is $D_{KL}(p(\cdot|\theta_\star)||p(\cdot||\btheta_0)) = 0.0654$ (to 4dp).
+A simulation of 1 million data points with $x_i \sim \text{Multinomial}(1, \theta_\star)$ and a Dirichlet prior with $\balpha_0 = 100\btheta_0$ was used.
+The values of $\log(BF_{10}(\bx_{1:t}))/t$ were computed and are shown in figure \ref{fig:lbf}.
+The figure illustrates the convergence as described in Theorem~\ref{thm:consistency} of $\log(BF_{10}(\bx_{1:t}))/t$ to the Kullback Leibler divergence of the null from the true multinomial distribution.
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.35]{images/consistency.png}
   \caption{Consistency of Bayes factor.
-The blue line shows $\log(BF_{10}(x_{1:t}))/t$ and the red dashed line shows $D_{KL}(p(\cdot|\theta_\star)||p(\cdot||\theta_0)) = 0.0654$.}
+The blue line shows $\log(BF_{10}(\bx_{1:t}))/t$ and the red dashed line shows $D_{KL}(p(\cdot|\theta_\star)||p(\cdot||\btheta_0)) = 0.0654$.}
     \label{fig:lbf}
   \end{figure}
   In the following simulation we demonstrate the control over false positives provided by the proposed test.
 In addition, we demonstrate how continuously monitoring experiments can result in an incredibly large number of false positives when misusing a Chi-squared test.
 This is easiest to visualize in an example with one treatment group with assignment probability denoted $\rho$.
 The assignment is therefore a $\text{Bernoulli}(\rho)$ random variable, but sticking with the general framework developed earlier, the assignment outcome is $\text{Multinomial}(1,\theta)$ random variable with $\theta = [(1-\rho)\, \rho]$.
-The Bayes factor in this case is then just a function of the sufficient statistic $\sum_{i=1}^t x_{i,1}$, or equivalently, $\hat{\rho}(x_{1:t}) = 1/t \sum_{i=1}^{t} x_{i,1}$, given by
+The Bayes factor in this case is then just a function of the sufficient statistic $\sum_{i=1}^t x_{i,1}$, or equivalently, $\hat{\rho}(\bx_{1:t}) = 1/t \sum_{i=1}^{t} x_{i,1}$, given by
 \begin{equation}
   \label{eq:bayes_factor}
- BF_{10}(x_{1:t})  = \frac{\Gamma(\alpha_{0,0}+\alpha_{0,1})}{\Gamma(\alpha_{0,0}+\alpha_{0,1}+t)}\frac{\Gamma(\alpha_{0,0} + t-t\hat{\rho}(x_{1:t} ))\Gamma(\alpha_{0,1} + t\hat{\rho}(x_{1:t} )) }{\Gamma(\alpha_{0,0} )+\Gamma(\alpha_{0,1} )}\frac{1}{\theta_{0,0}^{t-t\hat{\rho}(x_{1:t})}\theta_{0,1}^{t\hat{\rho}(x_{1:t})}}.
+ BF_{10}(\bx_{1:t})  = \frac{\Gamma(\alpha_{0,0}+\alpha_{0,1})}{\Gamma(\alpha_{0,0}+\alpha_{0,1}+t)}\frac{\Gamma(\alpha_{0,0} + t-t\hat{\rho}(\bx_{1:t} ))\Gamma(\alpha_{0,1} + t\hat{\rho}(\bx_{1:t} )) }{\Gamma(\alpha_{0,0} )+\Gamma(\alpha_{0,1} )}\frac{1}{\theta_{0,0}^{t-t\hat{\rho}(\bx_{1:t})}\theta_{0,1}^{t\hat{\rho}(\bx_{1:t})}}.
 \end{equation}
-  Rejection of the null when the posterior odds $O_t(\theta_0)$ exceeds $1/u$, is equivalent to rejecting the null whenever the test statistic $\hat{\rho}(x_{1:t})$ falls outside a certain interval.
-This interval for $\theta_0 = [\frac{1}{2}\, \frac{1}{2}]$, $\alpha_0 = 100\theta_0 $, and $u=0.05$ is shown along with the interval for the Chi-squared test is shown in figure \ref{fig:critical}.
+  Rejection of the null when the posterior odds $O_t(\btheta_0)$ exceeds $1/u$, is equivalent to rejecting the null whenever the test statistic $\hat{\rho}(\bx_{1:t})$ falls outside a certain interval.
+This interval for $\btheta_0 = [\frac{1}{2}\, \frac{1}{2}]$, $\balpha_0 = 100\btheta_0 $, and $u=0.05$ is shown along with the interval for the Chi-squared test is shown in figure \ref{fig:critical}.
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.35]{images/critical_regions.png}
-  \caption{Rejection boundaries for the proposed test ($\alpha_0 = 100\theta_0$) in magenta and the Chi-squared test in orange for testing the null hypothesis $\theta_0 = [\frac{1}{2} \, \frac{1}{2}]$ at a $u=0.05$ level.
+  \caption{Rejection boundaries for the proposed test ($\balpha_0 = 100\btheta_0$) in magenta and the Chi-squared test in orange for testing the null hypothesis $\btheta_0 = [\frac{1}{2} \, \frac{1}{2}]$ at a $u=0.05$ level.
 }
     \label{fig:critical}
   \end{figure}
@@ -352,7 +354,7 @@ This is shown in figure \ref{fig:chi_fp}.
   \includegraphics[scale=0.35]{images/chi_fp.png}
   \caption{Simulation Study of False Positives produced by continuously monitoring with a Chi-squared test.
 The orange and magenta curves are the same as in figure \ref{fig:critical}.
-Each blue trace is an independent simulation of $\hat{\rho}(x_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner.
+Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner.
 }
     \label{fig:chi_fp}
   \end{figure}
@@ -363,7 +365,7 @@ Under identical conditions, the proposed test resulted in 2 out of 100 false pos
   \includegraphics[scale=0.35]{images/ssrm_fp.png}
   \caption{Simulation Study of False Positives produced by continuously monitoring with the proposed test.
 The orange and magenta curves are the same as in figure \ref{fig:critical}.
-Each blue trace is an independent simulation of $\hat{\rho}(x_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner.
+Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner.
 }
     \label{fig:ssrm_fp}
   \end{figure}
@@ -376,12 +378,12 @@ The intended treatment assignment probability is 0.5, yet due to a bug in the co
   \includegraphics[scale=0.35]{images/ssrm_reject.png}
   \caption{Simulation Study of time to reject the null under the proposed test.
 The magenta curve is the same as in figure \ref{fig:critical}.
-Each blue trace is an independent simulation of $\hat{\rho}(x_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner.
+Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner.
 }
     \label{fig:ssrm_reject}
   \end{figure}
-  \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that the rection region at time $t$ converges to $[0,1]\setminus \theta_0$, yet $\theta_0 \rightarrow \theta_\star$ $a.s.$ as $t\rightarrow \infty$.
-In this specific example, the region of indifference degenerates onto $\lbrace 0.5 \rbrace$, yet $\hat{\rho}(x_{1:t})$ converges to 0.6 almost surely as $t \rightarrow \infty$ by the strong law of large numbers, which provides an alternative argument to Theorem~\ref{thm:consistency} for rejecting the null almost surely.
+  \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that the rection region at time $t$ converges to $[0,1]\setminus \btheta_0$, yet $\btheta_0 \rightarrow \theta_\star$ $a.s.$ as $t\rightarrow \infty$.
+In this specific example, the region of indifference degenerates onto $\lbrace 0.5 \rbrace$, yet $\hat{\rho}(\bx_{1:t})$ converges to 0.6 almost surely as $t \rightarrow \infty$ by the strong law of large numbers, which provides an alternative argument to Theorem~\ref{thm:consistency} for rejecting the null almost surely.
   \section{Discussion}
   \label{sec:discussion}
 The main purpose of this paper was to provide a tool that can be used sequentially to detect practical implementation errors in an experiment, such as identifying biased assignment mechanisms or surfacing missing data mechanisms which are frequently observed in online controlled experiments.
@@ -403,9 +405,9 @@ The challenge in conditional frequentist testing is to find an appropriate condi
 We note that the confidence sequences described in Theorem~\ref{thm:confidence_sequence} share a connection with other Bayesian intervals discussed in the literature.
 To see this it is necessary to express the Bayes factor in terms of the Savage-Dickey density ratio (\cite{dickey}) as
 \begin{equation}
-    B(x_{1:t}|\theta_0) = \frac{p(\theta_0| M_1)}{p(\theta_0|x_{1:t},M_1)}.
+    B(\bx_{1:t}|\btheta_0) = \frac{p(\btheta_0| M_1)}{p(\btheta_0|\bx_{1:t},M_1)}.
 \end{equation}
-This, with $O_0(\theta_0)=1$, implies that $I_t(u) = \lbrace \theta \in \mathbb{S}^d : O_t(\theta) \leq 1/u \rbrace = \lbrace \theta  \in \mathbb{S}^d : p(\theta| M_1)\leq p(\theta|x_{1:t}, M_1)/u \rbrace $, which is identified as the Bayesian \textit{support interval} proposed by \cite{support_interval}.
+This, with $O_0(\btheta_0)=1$, implies that $I_t(u) = \lbrace \theta \in \mathbb{S}^d : O_t(\theta) \leq 1/u \rbrace = \lbrace \theta  \in \mathbb{S}^d : p(\theta| M_1)\leq p(\theta|\bx_{1:t}, M_1)/u \rbrace $, which is identified as the Bayesian \textit{support interval} proposed by \cite{support_interval}.
 The authors proposed this as an alternative to the more commonly reported Bayesian credible intervals, argueing that the support interval is based on evidence in the data (how the data changes belief), whereas credible intervals are based on posterior belief directly.
 These intervals have some intuitive appeal as they are the parameter values for which their posterior density has increased beyond some factor of their prior density after observing the data.
 We are the first, however, to identify the sequential frequentist coverage probabilities, in the sense of Theorem~\ref{thm:confidence_sequence}, of these support intervals.
@@ -421,35 +423,35 @@ We are the first, however, to identify the sequential frequentist coverage proba
 The Bayes factor after $t$ observations is analytically tractable, given by
 \begin{equation}
   \label{eq:bayes_factor}
- \frac{p(x_{1:t}|M_1)}{p(x_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_j)}{\Gamma(\sum_{j=1}^{d} \alpha_j + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_j + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_j )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}}.
+ \frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_j)}{\Gamma(\sum_{j=1}^{d} \alpha_j + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_j + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_j )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}}.
 \end{equation}
 It is helpful to introduce some further notation to explicitly express the sequential nature inherent to the problem.
 
-The Posterior odds in favour of $M_1$ to $M_0$ after observing $x_{1:t}$ is defined as
+The Posterior odds in favour of $M_1$ to $M_0$ after observing $\bx_{1:t}$ is defined as
 \begin{align}
   \label{eq:general_posterior_odds}
-  \frac{p(M_1|x_{1:t})}{p(M_0|x_{1:t})}  &= \frac{\int p(x_{1:t}|\theta,M_1)p(\theta,M_1)d\theta}{p(x_{1:t}|M_0)}\frac{P(M_1)}{P(M_0)},\\
-                      &=\frac{p(x_{1:t}|M_1)}{p(x_{1:t}|M_0)}\frac{p(M_1)}{p(M_0)},\\
+  \frac{p(M_1|\bx_{1:t})}{p(M_0|\bx_{1:t})}  &= \frac{\int p(\bx_{1:t}|\theta,M_1)p(\theta,M_1)d\theta}{p(\bx_{1:t}|M_0)}\frac{P(M_1)}{P(M_0)},\\
+                      &=\frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)}\frac{p(M_1)}{p(M_0)},\\
                       &=\frac{\prod_{i=1}^{t}p(x_i|x_{1:i-1}|M_1)}{\prod_{i=1}^{t}p(x_i|x_{1:i-1}|M_0)}\frac{p(M_1)}{p(M_0)},\\
-                      &=\frac{p(x_t|x_{1:t-1},M_1)}{p(x_t|x_{1:t-1},M_0)} \frac{p(M_1|x_{1:t-1})}{p(M_0|x_{1:t-1})},\\
-    &=\frac{\int p(x_t|\theta,x_{1:t-1},M_1)p(\theta|x_{1:t-1},M_1)d\theta}{p(x_t|x_{1:t-1},M_0)}  \frac{p(M_1|x_{1:t-1})}{p(M_0|x_{1:t-1})} ,
+                      &=\frac{p(x_t|\bx_{1:t-1},M_1)}{p(x_t|\bx_{1:t-1},M_0)} \frac{p(M_1|\bx_{1:t-1})}{p(M_0|\bx_{1:t-1})},\\
+    &=\frac{\int p(x_t|\theta,\bx_{1:t-1},M_1)p(\theta|\bx_{1:t-1},M_1)d\theta}{p(x_t|\bx_{1:t-1},M_0)}  \frac{p(M_1|\bx_{1:t-1})}{p(M_0|\bx_{1:t-1})} ,
 \end{align}
 where the last expression stresses the recursive definition of the Posterior odds factor in terms of products of posterior predictive densities.
-The posterior distribution of $\theta| x_{1:t}, M_1 \sim \text{Dirichlet}(\alpha_t)$ where $\alpha_t = \alpha_{t-1}+x_t$ with $\alpha_0$ the initial prior parameter choice.
+The posterior distribution of $\theta| \bx_{1:t}, M_1 \sim \text{Dirichlet}(\alpha_t)$ where $\alpha_t = \alpha_{t-1}+x_t$ with $\balpha_0$ the initial prior parameter choice.
 The posterior predictive densities are easily computed as
 \begin{equation}
   \label{eq:posterior_predictive_m1}
-   p(x_t|x_{1:t-1},M_1) = \frac{ \Gamma(\sum_i x_{t,i}+ 1)}{\prod_i \Gamma(x_{t,i} + 1)} \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\Gamma(\sum_i \alpha_{t-1,i} + x_{t,i})},
+   p(x_t|\bx_{1:t-1},M_1) = \frac{ \Gamma(\sum_i x_{t,i}+ 1)}{\prod_i \Gamma(x_{t,i} + 1)} \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\Gamma(\sum_i \alpha_{t-1,i} + x_{t,i})},
 \end{equation}
 and
 \begin{equation}
   \label{eq:posterior_predictive_m2}
-   p(x_t|x_{1:t-1},M_0) = \frac{ \Gamma(\sum_i x_{t,i} + 1)}{\prod_i \Gamma(x_{t,i} + 1)} \prod \theta_{0,i}^{x_{t,i}}.
+   p(x_t|\bx_{1:t-1},M_0) = \frac{ \Gamma(\sum_i x_{t,i} + 1)}{\prod_i \Gamma(x_{t,i} + 1)} \prod \theta_{0,i}^{x_{t,i}}.
  \end{equation}
- It will be useful later on to introduce the following notation for the posterior odds at time $t$ as $O_t(\theta_0)$, which explicitly states the value of $\theta$ under the null hypothesis.
+ It will be useful later on to introduce the following notation for the posterior odds at time $t$ as $O_t(\btheta_0)$, which explicitly states the value of $\theta$ under the null hypothesis.
 The recursive definition of the posterior odds can then be expressed as
 \begin{align}
-  O_{t}(\theta_0) &= \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\Gamma(\sum_i \alpha_{t-1,i} +  x_{t,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{1}{\prod_i \theta_{0,i}^{x_{t,i}}}  O_{t-1}(\theta_0),\\
+  O_{t}(\btheta_0) &= \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\Gamma(\sum_i \alpha_{t-1,i} +  x_{t,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{1}{\prod_i \theta_{0,i}^{x_{t,i}}}  O_{t-1}(\btheta_0),\\
 \end{align}
 with
 \begin{align}
@@ -459,7 +461,7 @@ with
 and initial value
 \begin{align}
   \label{eq:bayes_factor_seed}
-O_0(\theta_0) = \frac{p(M_1)}{p(M_0)}.
+O_0(\btheta_0) = \frac{p(M_1)}{p(M_0)}.
 \end{align}
 
 
@@ -468,14 +470,14 @@ O_0(\theta_0) = \frac{p(M_1)}{p(M_0)}.
 To result follows from the application of the following two lemmas.
 \begin{lemma}(Martingale property of posterior odds under the null hypothesis)
   
-  \noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta)$ random variables and consider the sequence of posterior odds $O_t(\theta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\theta_0)=1$, then $O_t(\theta_0)$ is a nonnegative martingale under $M_0$.
+  \noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta)$ random variables and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_t(\btheta_0)$ is a nonnegative martingale under $M_0$.
   \label{lem:posterior_odds_martingale}
     \end{lemma}
   \begin{proof}
   \begin{align*}
-    E_{M_0}[O_{t+1}(\theta_0)|\mathcal{F}_t]  &= \int \frac{p(x_{t+1}|x_{1:t},M_1)}{p(x_{t+1}|x_{1:t},M_0)} O_{t}(\theta_0) p(x_{t+1}|x_{1:t},M_0) dx_{t+1}\\
-    &=  O_{t}(\theta_0) \int p(x_{t+1}|x_{1:t},M_1) dx_{t+1}\\
-    &=  O_{t}(\theta_0),
+    E_{M_0}[O_{t+1}(\btheta_0)|\mathcal{F}_t]  &= \int \frac{p(x_{t+1}|\bx_{1:t},M_1)}{p(x_{t+1}|\bx_{1:t},M_0)} O_{t}(\btheta_0) p(x_{t+1}|\bx_{1:t},M_0) dx_{t+1}\\
+    &=  O_{t}(\btheta_0) \int p(x_{t+1}|\bx_{1:t},M_1) dx_{t+1}\\
+    &=  O_{t}(\btheta_0),
   \end{align*}
   where $\mathcal{F}_{t} = \sigma(x_1,x_2,\dots, x_t)$
 \end{proof}
@@ -492,71 +494,71 @@ To result follows from the application of the following two lemmas.
 \begin{proof}
   See Proof 6.1 of \cite{howard}
 \end{proof}
-The result of the Theorem is obtained by using lemma \ref{lem:posterior_odds_martingale} to establish that the posterior odds $O_t(\theta_0)$ are a nonnnegative supermartingale under the null hypothesis, and using this obseravtion in lemma \ref{lem:durrett} together with  $O_0(\theta_0) = 1$  to obtain the main inequality of the Theorem.
+The result of the Theorem is obtained by using lemma \ref{lem:posterior_odds_martingale} to establish that the posterior odds $O_t(\btheta_0)$ are a nonnnegative supermartingale under the null hypothesis, and using this obseravtion in lemma \ref{lem:durrett} together with  $O_0(\btheta_0) = 1$  to obtain the main inequality of the Theorem.
 \section{Asymptotic Properties of Bayes Factors}
 \label{app:asymptotics}
 We first narrow the focus of a general result found in Theorem~1 of \cite{walker}.
 Let $D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\theta) )$ denote the Kullback-Leibler divergence of a multinomial distribution indexed by a parameter $\theta$ from the true multinomial distribution with true parameter $\theta_{\star}$.
-Moreover let $D_{KL}(p(\cdot|\theta_\star)||p(\cdot|x_{1:t}, M_j) )$ denote the KL divergence of the posterior predictive distribution under model $j$ at time $t$ from the true multinomial distribution.
+Moreover let $D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t}, M_j) )$ denote the KL divergence of the posterior predictive distribution under model $j$ at time $t$ from the true multinomial distribution.
 Let $A(q) = \lbrace \theta \in \mathbb{S}^d : D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\theta) ) < q \rbrace$
 \begin{lemma}
   \label{lemma:walker}
-  If $\int_{A(q)} p(\theta|M_j) d\theta > 0$ only for, and for all, $q > \delta_j$, and $\lim \inf_t D_{KL}(p(\cdot|\theta_\star)||p(\cdot|x_{1:t}, M_j) ) \geq \delta_j$ a.s.
+  If $\int_{A(q)} p(\theta|M_j) d\theta > 0$ only for, and for all, $q > \delta_j$, and $\lim \inf_t D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t}, M_j) ) \geq \delta_j$ a.s.
 then
   \begin{equation}
     \label{eq:bayes_factor_convergence}
-    \frac{1}{t} \log B_{10}(x_{1:t}) \rightarrow \delta_0 - \delta_1,
+    \frac{1}{t} \log B_{10}(\bx_{1:t}) \rightarrow \delta_0 - \delta_1,
   \end{equation}
-  provided that $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(x_t|x_{1:t-1},M_j)}{p(x_t|M_\star )}]\right) < \infty$.
+  provided that $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(x_t|\bx_{1:t-1},M_j)}{p(x_t|M_\star )}]\right) < \infty$.
 \end{lemma}
 \begin{proof}
   For $j=0,1$ consider the following martingale
   \begin{align*}
     \label{eq:walker_martingale}
     S_{jt} =& \sum_{i=1}^{t} \log \frac{p(x_i|x_{1:i-1},M_j)}{p(x_i|M_\star)} + D_{KL}(p(\cdot|\theta_\star)||p(\cdot|x_{1:i-1}, M_j) ),\\
-    =& -\log \frac{p(x_t|M_\star)}{p(x_t|x_{1:t-1},M_j)} + D_{KL}(p(\cdot|\theta_\star)||p(\cdot|x_{1:t-1}, M_j) ) +\\
+    =& -\log \frac{p(x_t|M_\star)}{p(x_t|\bx_{1:t-1},M_j)} + D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t-1}, M_j) ) +\\
     &S_{jt-1},\\
   \end{align*}
   from which it follows that $\mathbb{E}[S_{jt}|\mathcal{F}_t] = S_{jt-1}$ with $\mathcal{F}_t = \sigma(x_1,\dots,x_{t-1})$.
-From the assumption that  $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(x_t|x_{1:t-1},M_j)}{p(x_t|M_\star )}]\right) < \infty$, it follows that $S_{jt}/t \rightarrow 0$ a.s.
+From the assumption that  $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(x_t|\bx_{1:t-1},M_j)}{p(x_t|M_\star )}]\right) < \infty$, it follows that $S_{jt}/t \rightarrow 0$ a.s.
 and consequentially
   \begin{align*}
-    \frac{1}{t} \log \frac{p(x_{1:t}|M_j)}{p(x_{1:t}|M_\star)} + \frac{1}{t}\sum_{i=1}^t  D_{KL}(p(\cdot|\theta_\star)||p(\cdot|x_{1:t-1}, M_j) )\rightarrow 0.
+    \frac{1}{t} \log \frac{p(\bx_{1:t}|M_j)}{p(\bx_{1:t}|M_\star)} + \frac{1}{t}\sum_{i=1}^t  D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t-1}, M_j) )\rightarrow 0.
   \end{align*}
-  From the additional assumption of $\lim \inf_t D_{KL}(p(\cdot|\theta_\star)||p(\cdot|x_{1:t}, M_j) ) \geq \delta_j$ a.s.
+  From the additional assumption of $\lim \inf_t D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t}, M_j) ) \geq \delta_j$ a.s.
 , it follows that
   \begin{align*}
-    \lim \sup   \frac{1}{t} \log \frac{p(x_{1:t}|M_j)}{p(x_{1:t}|M_\star)} \leq - \delta_j \hspace{1cm} a.s.
+    \lim \sup   \frac{1}{t} \log \frac{p(\bx_{1:t}|M_j)}{p(\bx_{1:t}|M_\star)} \leq - \delta_j \hspace{1cm} a.s.
   \end{align*}
   With the Kullback Leibler property of the prior it follows that
   \begin{align*}
-     \lim \inf   \frac{1}{t} \log \frac{p(x_{1:t}|M_j)}{p(x_{1:t}|M_\star)} \geq - \delta_j \hspace{1cm} a.s.
+     \lim \inf   \frac{1}{t} \log \frac{p(\bx_{1:t}|M_j)}{p(\bx_{1:t}|M_\star)} \geq - \delta_j \hspace{1cm} a.s.
   \end{align*}
   from \cite{barron}.
 It follows that
     \begin{align*}
-     \lim   \frac{1}{t} \log \frac{p(x_{1:t}|M_j)}{p(x_{1:t}|M_\star)} \rightarrow - \delta_j \hspace{1cm} a.s.
+     \lim   \frac{1}{t} \log \frac{p(\bx_{1:t}|M_j)}{p(\bx_{1:t}|M_\star)} \rightarrow - \delta_j \hspace{1cm} a.s.
     \end{align*}
     Combining this result for models $M_1$ and $M_0$ completes the proof.
 \end{proof}
 
 The application of this lemma to the multinomial Dirichlet model is then straight forward.
-Note that under model $M_0$, the prior on $\theta$ is a point mass at $\theta_0$.
+Note that under model $M_0$, the prior on $\theta$ is a point mass at $\btheta_0$.
 Let the KL divergence of the null model from the true model be denoted $\delta_0$, it is clear that $\int_{A(q)} p(\theta|M_0) d\theta = 0$ if $q<\delta_0$ and 1 otherwise.
-Hence KL divergence of the null $\theta_0$ from the true $\theta_\star$ is the relevant $\delta_0$ for model $M_0$ in lemma \ref{lemma:walker}.
+Hence KL divergence of the null $\btheta_0$ from the true $\theta_\star$ is the relevant $\delta_0$ for model $M_0$ in lemma \ref{lemma:walker}.
 The value of $\delta_1$ for the Dirichlet prior under model $M_1$, however, is zero.
 
 \section{Finite Sample Properties}
 \label{app:finite_sample}
-The false positive guarantees the validity of the sequential SRM test, but they are only half of the equation. This section established good performance on the other side; namely, that the SSRM will find true differences quickly. In particular, we provide high probability bounds on the stopping time for data generated from some true alternative distribution $\theta_1$ in terms of some TBD distance measure of $\theta_1 - \theta_0$.
+The false positive guarantees the validity of the sequential SRM test, but they are only half of the equation. This section established good performance on the other side; namely, that the SSRM will find true differences quickly. In particular, we provide high probability bounds on the stopping time for data generated from some true alternative distribution $\theta_1$ in terms of some TBD distance measure of $\theta_1 - \btheta_0$.
 
 For the general multinomial case, we will use bold greek letters $\balpha = (\alpha_1,\ldots, \alpha_d)$ for vectors (in particular, distinguishing from the scalar $\alpha$); we will also use $\balpha^\bbeta = \prod_{i}^d \alpha_i^{\beta_i}$ to denote elementwise exponentiation, and we will use $|\balpha| = \sum_i\alpha_i$ for the sum. For the vector of counts, we will write $S_n=(S_1^n,\ldots, S_d^n)\in\Reals^d$, which lets of easily define the empirical probability of outcome $i$ as $\hat \theta_i^n \df S_n^i/n$. For any $\balpha,\bbeta\in\Reals^d$, we interpret exponentiation to be elementwise and define 
 
-For convenience, we will also define $\Beta(\bbeta) \df \prod_i \Gamma(\beta_i) / \Gamma(\sum_i\beta_i)$ for any vector $\bbeta$. The test rejects the null hypothesis corresponding to $\theta_0$ when the event
+For convenience, we will also define $\Beta(\bbeta) \df \prod_i \Gamma(\beta_i) / \Gamma(\sum_i\beta_i)$ for any vector $\bbeta$. The test rejects the null hypothesis corresponding to $\btheta_0$ when the event
 \begin{equation}\label{eq:multinomial.rejection.region}
   \mathcal E_n \df \left\{\frac{\Beta(\balpha + S_n)}
   {\Beta(\balpha)}
-  \theta_0 ^{-S_n} \geq \frac{1}{\alpha}\right\}
+  \btheta_0 ^{-S_n} \geq \frac{1}{\alpha}\right\}
 \end{equation}
 occurs.
 
@@ -565,17 +567,17 @@ Our goal is to provide a guarantee of the form: if $S^n\sim\mathrm{multinomial}(
   P \left(\forall n \geq N,\;
       \frac{\Beta(\balpha + S_n)}
   {\Beta(\balpha)}
-  \theta_0 ^{-S_n} \geq \frac{1}{\alpha}
+  \btheta_0 ^{-S_n} \geq \frac{1}{\alpha}
   \right) \geq 1-\delta.
 \end{equation*}
-We would also like to upper bound this $N$ as a function of $\theta_1$ and $\theta_0$.
+We would also like to upper bound this $N$ as a function of $\theta_1$ and $\btheta_0$.
 
 We will accomplish this goal in two parts. First, we will lower bound 
 $
   P \left(
       \frac{\Beta(\balpha + S_n)}
   {\Beta(\balpha)}
-  \theta_0 ^{-S_n} \geq \frac{1}{\alpha}
+  \btheta_0 ^{-S_n} \geq \frac{1}{\alpha}
   \right) 
 $
 as a function of $S_n$. Then, we will construct a confidence sequence on $S_n$ (in terms of $n$ and $\theta_1$) and combine the two.
@@ -611,7 +613,7 @@ This $\mathcal E_n'$ is much more convenient. For example, if $\alpha_i = 1$ for
 
 The proof is by explicit construction, and we begin by deriving a lower bound on 
 $
- \frac{\Beta(\balpha + S_n)} {\Beta(\balpha)} \theta_0 ^{-S_n}
+ \frac{\Beta(\balpha + S_n)} {\Beta(\balpha)} \btheta_0 ^{-S_n}
 $.
 There are many ways to bound the Beta function; for the two dimensional case, it suffices to use
 \begin{equation}\label{eq:Beta.lower.bound}
@@ -813,7 +815,7 @@ which implies that $\mathcal E_n' \subseteq \mathcal E_n$ (the bound on the summ
 \end{proof}
 
 \subsection{Deriving a Confidence Sequence for $S_n$}
-The next step in the argument is to derive a confidence sequence for $S_n$ under some alternative hypothesis. In fact, we only need to derive a lower bound on $\KL (\hat\theta_n||\theta_0)$ in order to apply the results of the previous section.
+The next step in the argument is to derive a confidence sequence for $S_n$ under some alternative hypothesis. In fact, we only need to derive a lower bound on $\KL (\hat\theta_n||\btheta_0)$ in order to apply the results of the previous section.
 
 In particular, we will prove a confidence sequence on the total variation norm directly. This confidence sequence is novel and may be of independent interest.
 \begin{lemma}\label{lem:CS}
@@ -888,9 +890,9 @@ We can now combine the two lemmas of this section into a finite-sample power gua
   \frac{1}{n}\log\frac{\Beta(\balpha)}{\alpha}.
 \]
 \begin{thm}\label{thm:power_lower_bound}
-  Assume that $S_n$ has a multinomial $\tilde\theta$ distribution. For every $\balpha$, $\delta$, $\alpha$, $\tilde\theta$, and $\theta_0$, there exists an $N$ such that
+  Assume that $S_n$ has a multinomial $\tilde\theta$ distribution. For every $\balpha$, $\delta$, $\alpha$, $\tilde\theta$, and $\btheta_0$, there exists an $N$ such that
   \begin{equation*}
-    P\left(\forall n \geq N: \KL(\hat\theta_n \Vert \theta_0) \geq \Gamma_n(\balpha)\right)
+    P\left(\forall n \geq N: \KL(\hat\theta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)\right)
     \geq 1-\delta.
   \end{equation*}
 \end{thm}
@@ -900,18 +902,18 @@ We can now combine the two lemmas of this section into a finite-sample power gua
     \mathcal R_n
     \df
     \left\{
-    \KL(\hat\theta_n \Vert \theta_0) \geq \Gamma_n(\balpha)
+    \KL(\hat\theta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)
   \right\}.
 \]
 By Applying Pinsker's inequality then the triangle inequality, we can show that
 \[
   \mathcal R_n \supseteq
   \left\{
-    \Vert \hat\theta_n - \theta_0\Vert_1 \geq \sqrt{2\Gamma_n(\balpha)}
+    \Vert \hat\theta_n - \btheta_0\Vert_1 \geq \sqrt{2\Gamma_n(\balpha)}
   \right\}
   \supseteq
     \left\{
-      \Vert \tilde\theta - \theta_0\Vert_1
+      \Vert \tilde\theta - \btheta_0\Vert_1
       -
       \Vert \hat\theta_n - \tilde\theta\Vert_1
       \geq \sqrt{2\Gamma_n(\balpha)}
@@ -920,7 +922,7 @@ By Applying Pinsker's inequality then the triangle inequality, we can show that
 Hence, we would like to find an $N$ such that
 \[
       P\left(
-      \Vert \tilde\theta - \theta_0\Vert_1
+      \Vert \tilde\theta - \btheta_0\Vert_1
       -
       \Vert \hat\theta_n - \tilde\theta\Vert_1
       \geq \sqrt{2\Gamma_n(\balpha)}
@@ -937,7 +939,7 @@ occurs.
 
 The existence of an $N$ that satisfied the conditions of the theorem can be show by choosing any $N$ that satisfies
 \[
-  \Vert \theta_0- \tilde\theta\Vert_{1}
+  \Vert \btheta_0- \tilde\theta\Vert_{1}
     \geq
         \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}
     + \sqrt{2\Gamma_n(\balpha)}.
@@ -947,7 +949,7 @@ Such an $N$ is well defined because the left hand side is a constant and the rig
 
 Combining the previous few steps, we have
 \begin{equation*}
-    P\left(\forall n>0 \leq N: \KL(\hat\theta_n \Vert \theta_0) \geq \Gamma_n(\balpha)\right)
+    P\left(\forall n>0 \leq N: \KL(\hat\theta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)\right)
     \geq 1-\delta,
   \end{equation*}
   completing the proof.
@@ -956,7 +958,7 @@ Combining the previous few steps, we have
   For the $N$ defined by Theorem~\ref{thm:power_lower_bound}, we have
   \begin{equation*}
     N = \Omega\left(
-      \frac{d}{\Vert \theta_0- \tilde\theta\Vert_{1}^2}
+      \frac{d}{\Vert \btheta_0- \tilde\theta\Vert_{1}^2}
 \log\pfrac{1}{\delta}\log\pfrac{1}{\alpha}
     \right).
   \end{equation*}
@@ -975,12 +977,12 @@ The sample complexity will be the solution to
       +
     \frac{2}{n}\log\frac{\Beta(\balpha)}{\alpha}
     \leq
-    \frac{1}{2}\Vert \theta_0- \tilde\theta\Vert_{1}^2
+    \frac{1}{2}\Vert \btheta_0- \tilde\theta\Vert_{1}^2
   \right\},
 \]
   which has the same order as described in the lemma. To check that this $N$ is sufficient, we will argue that this $N$ ensures that
   \begin{equation}\label{eqn:n.bound}
-    \Vert \theta_0- \tilde\theta\Vert_{1}
+    \Vert \btheta_0- \tilde\theta\Vert_{1}
     \geq
     \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)
       \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}
@@ -1012,7 +1014,7 @@ Since convexity of the square root implies  $\sqrt{a}+\sqrt{b}\leq\sqrt{2(a+b)}$
 \end{align*}
 which implies that, under $n \geq N$, we have
 \begin{align*}
-    \Vert \theta_0- \tilde\theta\Vert_{1}
+    \Vert \btheta_0- \tilde\theta\Vert_{1}
   &\geq
     \sqrt{
     \left(1 + \frac{4\rho}{n}\right)
