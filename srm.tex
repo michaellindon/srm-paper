@@ -90,11 +90,12 @@ Consider, for example, a medical researcher who administers a preferred experime
 Without explicitly conditioning on this information in the assignment mechanism, causal estimands such as the average treatment effect may be biased and overestimate the efficacy of the new drug (\cite{berry}).
 Simply randomized experiments attempt to remove the possibility of bias by randomly assigning experimental units independently to treatment groups.
 This design is useful in contexts where units enter the experiment sequentially, as opposed to all being simultaneously available like in completely randomized designs, and are often used in the technology industry to run online controlled experiments (OCEs) (\cite{oce}).
-Formally, let there be $d$ treamtent groups, $\btheta_0 \in \triangle^d$ be a probability vector where element $\theta_{0,i}$ denotes the probability of any unit being assigned to treatment group $i$, and $x_j$ a random variable denoting the assignment outcome of the $j$th experimental unit.
+Formally, let there be $d$ treamtent groups, let $\triangle^d$ denote the $d$-dimensional simplex, let $\btheta_0 \in \triangle^d$ be a probability vector where element $\theta_{0,i}$ denotes the probability of any unit being assigned to treatment group $i$, and $\bx_j$ a random variable denoting the assignment outcome of the $j$th experimental unit.
+We use boldface to emphasize vectors.
 The simply randomized design can then be summarized by the following probabilistic assignment mechanism
 \begin{equation}
   \label{eq:multinomialassignment}
-  x_1,x_2, \dots \sim \text{Multinomial}(1,\btheta_0).
+  \bx_1,\bx_2, \dots \sim \text{Multinomial}(1,\btheta_0).
 \end{equation}
 The statistician may not be personally involved with the data collection process and may simply be told the assignment mechanism after being presented with the data for analysis.
 The observant statistican has a right for concern, therefore, when they are provided with data which does not support the purported assignment mechanism.
@@ -230,7 +231,7 @@ for all $u \in [0,1]$ and for all choices of $\balpha_0$.
 Confidence sequences on individual components of $\theta$ can be found by projecting $I_t$ onto individual components, which is equivalent to solving the optimization problem
 \begin{align*}
   \text{Maximize/Minimize } & \quad \theta_i \\
-  \text{subject to } & \quad ku < \prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}} \text{ and}\\
+  \text{subject to } & \quad ku < \prod_{j=1}^{d} \theta_{j}^{\sum_{i=1}^{t}x_{i,j}} \text{ and}\\
   &\quad \sum_{i=1}^{d}\theta_i = 1,
 \end{align*}
 where
@@ -423,7 +424,7 @@ We are the first, however, to identify the sequential frequentist coverage proba
 The Bayes factor after $t$ observations is analytically tractable, given by
 \begin{equation}
   \label{eq:bayes_factor}
- \frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_j)}{\Gamma(\sum_{j=1}^{d} \alpha_j + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_j + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_j )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}}.
+ \frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_{0,j})}{\Gamma(\sum_{j=1}^{d} \alpha_{0,j} + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}}.
 \end{equation}
 It is helpful to introduce some further notation to explicitly express the sequential nature inherent to the problem.
 
@@ -552,7 +553,7 @@ The value of $\delta_1$ for the Dirichlet prior under model $M_1$, however, is z
 \label{app:finite_sample}
 The false positive guarantees the validity of the sequential SRM test, but they are only half of the equation. This section established good performance on the other side; namely, that the SSRM will find true differences quickly. In particular, we provide high probability bounds on the stopping time for data generated from some true alternative distribution $\theta_1$ in terms of some TBD distance measure of $\theta_1 - \btheta_0$.
 
-For the general multinomial case, we will use bold greek letters $\balpha = (\alpha_1,\ldots, \alpha_d)$ for vectors (in particular, distinguishing from the scalar $\alpha$); we will also use $\balpha^\bbeta = \prod_{i}^d \alpha_i^{\beta_i}$ to denote elementwise exponentiation, and we will use $|\balpha| = \sum_i\alpha_i$ for the sum. For the vector of counts, we will write $\bS_n=(S_1^n,\ldots, S_d^n)\in\Reals^d$, which lets of easily define the empirical probability of outcome $i$ as $\hat \theta_i^n \df \bS_n^i/n$. For any $\balpha,\bbeta\in\Reals^d$, we interpret exponentiation to be elementwise and define 
+For the general multinomial case, we will use bold greek letters $\balpha = (\alpha_1,\ldots, \alpha_d)$ for vectors (in particular, distinguishing from the scalar $\alpha$); we will also use $\balpha^\bbeta = \prod_{i}^d \alpha_i^{\beta_i}$ to denote elementwise exponentiation, and we will use $|\balpha| = \sum_i\alpha_i$ for the sum. For the vector of counts, we will write $\bS_n=(S_1^n,\ldots, S_d^n)\in\Reals^d$, which lets of easily define the empirical probability of outcome $i$ as $\hat \theta_i^n \df S^n_i/n$. For any $\balpha,\bbeta\in\Reals^d$, we interpret exponentiation to be elementwise and define 
 
 For convenience, we will also define $\Beta(\bbeta) \df \prod_i \Gamma(\beta_i) / \Gamma(\sum_i\beta_i)$ for any vector $\bbeta$. The test rejects the null hypothesis corresponding to $\btheta_0$ when the event
 \begin{equation}\label{eq:multinomial.rejection.region}
