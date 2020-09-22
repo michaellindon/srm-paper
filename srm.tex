@@ -149,7 +149,7 @@ We therefore wish to test the null hypothesis $\theta = \btheta_0$ vs.\ $\theta 
 To develop a Bayesian hypothesis test, it is necessary to specify an alternative model for the data, denoted $M_1$.
 Consider the following model studied in \cite{good},
 \begin{align}
-    x_i | \theta, M_1 &\sim \text{Multinomial}(1,\theta), \hspace{1cm} \text{independently for }\, i=1,2,\dots\\
+    \bx_i | \theta, M_1 &\sim \text{Multinomial}(1,\theta), \hspace{1cm} \text{independently for }\, i=1,2,\dots\\
   \theta | M_1 &\sim \text{Dirichlet}(\balpha_0).\notag
 \end{align}
 Prior mass is concentrated around $\btheta_0$ by specifying $\alpha_{0,i} = k \theta_{0,i}$ for concentration parameter $k \in \mathbb{R}^+$, in line with a ``Jeffreys-type'' testing procedure - if the null were not at least somewhat plausible, then a statistical test would not be needed.
@@ -164,7 +164,7 @@ It is helpful to consider the posterior odds as computed sequentially through th
   \label{eq:update_rule}
   O_{t}(\btheta_0) = \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\Gamma(\sum_i \alpha_{t-1,i} +  x_{t,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{1}{\prod_i \theta_{0,i}^{x_{t,i}}}  O_{t-1}(\btheta_0),
 \end{equation}
-where $\alpha_t = \alpha_{t-1}+x_t$ and $O_0(\btheta_0)=p(M_1)/p(M_0)$ (see appendix section \ref{app:posterior_odds}).
+where $\balpha_t = \balpha_{t-1}+\bx_t$ and $O_0(\btheta_0)=p(M_1)/p(M_0)$ (see appendix section \ref{app:posterior_odds}).
 In the rest of this paper, we will always assume that the prior odds are unity, and so the posterior odds are interchangeable with the Bayes factor.
 Recursive definitions require an initial value and for that reason we choose to work with the posterior odds.
 The dependence of $O_t(\btheta_0)$ on the observed data $\bx_{1:t}$ is implicit in this notation, yet the null value $\btheta_0$ being tested is made explicit to aid the discussion of confidence sequences in Theorem~\ref{thm:confidence_sequence}.
@@ -186,7 +186,7 @@ A time-uniform bound, such as the one presented below in Theorem~\ref{thm:type_1
 Time-uniform bounds under the null hypothesis are essential for proving correctness of tests with optional stopping and optional continuation.
 \begin{thm}  
   \label{thm:type_1_error}
-  Let $x_t\sim \mathrm{Multinomial}(1,\theta)$ for all $t in \mathbb{N}$.
+  Let $\bx_t\sim \mathrm{Multinomial}(1,\theta)$ for all $t \in \mathbb{N}$.
 Consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
 \begin{equation}
   \label{eq:type_1_error}
@@ -253,38 +253,38 @@ Control over Type-I error probabilities would be of little value if the test wer
 To prove that this test is not trivial, we prove that the test rejects the null when $\theta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
 We first establish the following result for the consistency of the posterior odds
 
-\begin{thm}(Asymptotic Properties of Posterior Odds)\todo{$\theta_\star$ might indicate it's the solution to an optimization problem, maybe $\theta'$?}
+\begin{thm}(Asymptotic Properties of Posterior Odds)\todo{$\btheta_\star$ might indicate it's the solution to an optimization problem, maybe $\theta'$?}
   
   \label{thm:consistency}
-\noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta_{\star})$ random variables with $\theta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(n_i,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
 \begin{equation}
   \label{eq:consistency}
-  \frac{1}{t} \log O_t(\btheta_0) \rightarrow D_{KL}(p(\cdot|\theta_{\star}) || p(\cdot|\btheta_0)) \hspace{1cm} a.s.
+  \frac{1}{t} \log O_t(\btheta_0) \rightarrow D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0)) \hspace{1cm} a.s.
 \end{equation}
-as $t \rightarrow \infty$, for all choices of $\balpha_0$, where $D_{KL}(p(\cdot|\theta_{\star}) || p(\cdot|\btheta_0))$ is the Kullback Leibler divergence of a multinomial distribution index by parameter $\btheta_0$ from a multinomial distribution indexed by parameter $\theta_{\star}$.
+as $t \rightarrow \infty$, for all choices of $\balpha_0$, where $D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0))$ is the Kullback Leibler divergence of a multinomial distribution index by parameter $\btheta_0$ from a multinomial distribution indexed by parameter $\btheta_{\star}$.
 
 \end{thm}
-\noindent When $\theta_{\star} \neq \btheta_0$, we must have $D_{KL}(p(\cdot|\theta_{\star}) || p(\cdot|\btheta_0)) > 0$, and so Theorem~\ref{thm:consistency} can be restated as $O_t(\btheta_0) \rightarrow \infty$ almost surely as $t \rightarrow \infty$, which consequently rejects the null almost surely for any choice of Type-I error probability $u$.
+\noindent When $\btheta_{\star} \neq \btheta_0$, we must have $D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0)) > 0$, and so Theorem~\ref{thm:consistency} can be restated as $O_t(\btheta_0) \rightarrow \infty$ almost surely as $t \rightarrow \infty$, which consequently rejects the null almost surely for any choice of Type-I error probability $u$.
 The formal proof is given in appendix section \ref{app:asymptotics}, which relies on Theorem~1 of \cite{walker}.
 Conceptually, the proof proceeds by expressing the Bayes factor comparing $M_1$ to $M_0$ in terms of two seperate Bayes factors.
 The first compares $M_{\star}$ to $M_1$, and the second compares $M_{\star}$ to $M_0$ as follows
 \begin{align*}
- \frac{1}{t} \log BF_{10}(\bx_{1:t}) = - \frac{1}{t}\sum_{i=1}^{t}\log \left( \frac{p(x_{i}|M_\star)}{p(x_{i}|x_{1:i-1},M_1)}\right) + \frac{1}{t}\sum_{i=1}^{t} \log  \left( \frac{p(x_{i}|M_\star)}{p(x_{i}|M_0)}\right),\\
+ \frac{1}{t} \log BF_{10}(\bx_{1:t}) = - \frac{1}{t}\sum_{i=1}^{t}\log \left( \frac{p(\bx_{i}|M_\star)}{p(\bx_{i}|x_{1:i-1},M_1)}\right) + \frac{1}{t}\sum_{i=1}^{t} \log  \left( \frac{p(\bx_{i}|M_\star)}{p(\bx_{i}|M_0)}\right),\\
 \end{align*}
-where  $p(x_i|M_\star)$ is the density of a $\text{Multinomial}(n_i,\theta_{\star})$ distribution.
-When the $x_i$ are independently distributed according to $\text{Multinomial}(n_i, \theta_\star)$, i.e.
+where  $p(\bx_i|M_\star)$ is the density of a $\text{Multinomial}(n_i,\btheta_{\star})$ distribution.
+When the $\bx_i$ are independently distributed according to $\text{Multinomial}(n_i, \btheta_\star)$, i.e.
 under model $M_\star$, then the second term converges to the Kullback-Leibler divergence between models $M_\star$ and $M_0$ by the strong law of large numbers.
-To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\theta|\bx_{1:t}, M_1)$ concentrates mass on $\theta_\star$, consequently bringing the posterior predictive $p(x_{t+1}|\bx_{1:t},M_1) =\int p(x_{t+1}|\theta,M_1),p(\theta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(x_{t+1}|M_{\star})$.
+To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\theta|\bx_{1:t}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(x_{t+1}|\bx_{1:t},M_1) =\int p(x_{t+1}|\theta,M_1),p(\theta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(x_{t+1}|M_{\star})$.
 For $t$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
 
 To complement this asymptotic result, we now provide the following finite sample result.
 \begin{thm}
   \label{thm:finite_sample}
-\noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta_{\star})$ random variables with $\theta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$, then
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(n_i,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$, then
 for all $\delta > 0$ and $u > 0$ there exists $N > 0$ such that 
 \begin{equation}
   \label{eq:finite_sample}
-\mathbb{P}_{\theta_{\star}}\left( O_n(\btheta_0) \geq 1/u, \, \forall n \geq N\right) \geq 1-\delta.
+\mathbb{P}_{\btheta_{\star}}\left( O_n(\btheta_0) \geq 1/u, \, \forall n \geq N\right) \geq 1-\delta.
 \end{equation}
 This $N$ is the solution to 
 \[
@@ -299,7 +299,7 @@ This $N$ is the solution to
       +
     \frac{2}{n}\log\frac{\Beta(\balpha_0)}{u}
     \leq
-    \frac{1}{2}\Vert \btheta_0- \theta_{\star}\Vert_{1}^2
+    \frac{1}{2}\Vert \btheta_0- \btheta_{\star}\Vert_{1}^2
   \right\},
 \] for any choice of $\rho > 0$. \todo{Minimize bound with respect to rho?}
 \end{thm}
@@ -311,16 +311,16 @@ The proof is given in appendix section \ref{app:finite_sample}.
 
 \section{Simulation Studies}
 \label{sec:simulation}
-Consider null and true parameter value of $\btheta_0=[\frac{1}{2}\, \frac{1}{4}\, \frac{1}{4}]$ and $\theta_\star=[\frac{1}{2}\, \frac{1}{8}\, \frac{3}{8}]$ respectively.
-The Kullback Leibler divergence of the null from the true multinomial distribution is $D_{KL}(p(\cdot|\theta_\star)||p(\cdot||\btheta_0)) = 0.0654$ (to 4dp).
-A simulation of 1 million data points with $x_i \sim \text{Multinomial}(1, \theta_\star)$ and a Dirichlet prior with $\balpha_0 = 100\btheta_0$ was used.
+Consider null and true parameter value of $\btheta_0=[\frac{1}{2}\, \frac{1}{4}\, \frac{1}{4}]$ and $\btheta_\star=[\frac{1}{2}\, \frac{1}{8}\, \frac{3}{8}]$ respectively.
+The Kullback Leibler divergence of the null from the true multinomial distribution is $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot||\btheta_0)) = 0.0654$ (to 4dp).
+A simulation of 1 million data points with $\bx_i \sim \text{Multinomial}(1, \btheta_\star)$ and a Dirichlet prior with $\balpha_0 = 100\btheta_0$ was used.
 The values of $\log(BF_{10}(\bx_{1:t}))/t$ were computed and are shown in figure \ref{fig:lbf}.
 The figure illustrates the convergence as described in Theorem~\ref{thm:consistency} of $\log(BF_{10}(\bx_{1:t}))/t$ to the Kullback Leibler divergence of the null from the true multinomial distribution.
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.35]{images/consistency.png}
   \caption{Consistency of Bayes factor.
-The blue line shows $\log(BF_{10}(\bx_{1:t}))/t$ and the red dashed line shows $D_{KL}(p(\cdot|\theta_\star)||p(\cdot||\btheta_0)) = 0.0654$.}
+The blue line shows $\log(BF_{10}(\bx_{1:t}))/t$ and the red dashed line shows $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot||\btheta_0)) = 0.0654$.}
     \label{fig:lbf}
   \end{figure}
   In the following simulation we demonstrate the control over false positives provided by the proposed test.
@@ -382,7 +382,7 @@ Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until
 }
     \label{fig:ssrm_reject}
   \end{figure}
-  \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that the rection region at time $t$ converges to $[0,1]\setminus \btheta_0$, yet $\btheta_0 \rightarrow \theta_\star$ $a.s.$ as $t\rightarrow \infty$.
+  \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that the rection region at time $t$ converges to $[0,1]\setminus \btheta_0$, yet $\btheta_0 \rightarrow \btheta_\star$ $a.s.$ as $t\rightarrow \infty$.
 In this specific example, the region of indifference degenerates onto $\lbrace 0.5 \rbrace$, yet $\hat{\rho}(\bx_{1:t})$ converges to 0.6 almost surely as $t \rightarrow \infty$ by the strong law of large numbers, which provides an alternative argument to Theorem~\ref{thm:consistency} for rejecting the null almost surely.
   \section{Discussion}
   \label{sec:discussion}
@@ -432,21 +432,21 @@ The Posterior odds in favour of $M_1$ to $M_0$ after observing $\bx_{1:t}$ is de
   \label{eq:general_posterior_odds}
   \frac{p(M_1|\bx_{1:t})}{p(M_0|\bx_{1:t})}  &= \frac{\int p(\bx_{1:t}|\theta,M_1)p(\theta,M_1)d\theta}{p(\bx_{1:t}|M_0)}\frac{P(M_1)}{P(M_0)},\\
                       &=\frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)}\frac{p(M_1)}{p(M_0)},\\
-                      &=\frac{\prod_{i=1}^{t}p(x_i|x_{1:i-1}|M_1)}{\prod_{i=1}^{t}p(x_i|x_{1:i-1}|M_0)}\frac{p(M_1)}{p(M_0)},\\
-                      &=\frac{p(x_t|\bx_{1:t-1},M_1)}{p(x_t|\bx_{1:t-1},M_0)} \frac{p(M_1|\bx_{1:t-1})}{p(M_0|\bx_{1:t-1})},\\
-    &=\frac{\int p(x_t|\theta,\bx_{1:t-1},M_1)p(\theta|\bx_{1:t-1},M_1)d\theta}{p(x_t|\bx_{1:t-1},M_0)}  \frac{p(M_1|\bx_{1:t-1})}{p(M_0|\bx_{1:t-1})} ,
+                      &=\frac{\prod_{i=1}^{t}p(\bx_i|x_{1:i-1}|M_1)}{\prod_{i=1}^{t}p(\bx_i|x_{1:i-1}|M_0)}\frac{p(M_1)}{p(M_0)},\\
+                      &=\frac{p(\bx_t|\bx_{1:t-1},M_1)}{p(\bx_t|\bx_{1:t-1},M_0)} \frac{p(M_1|\bx_{1:t-1})}{p(M_0|\bx_{1:t-1})},\\
+    &=\frac{\int p(\bx_t|\theta,\bx_{1:t-1},M_1)p(\theta|\bx_{1:t-1},M_1)d\theta}{p(\bx_t|\bx_{1:t-1},M_0)}  \frac{p(M_1|\bx_{1:t-1})}{p(M_0|\bx_{1:t-1})} ,
 \end{align}
 where the last expression stresses the recursive definition of the Posterior odds factor in terms of products of posterior predictive densities.
-The posterior distribution of $\theta| \bx_{1:t}, M_1 \sim \text{Dirichlet}(\alpha_t)$ where $\alpha_t = \alpha_{t-1}+x_t$ with $\balpha_0$ the initial prior parameter choice.
+The posterior distribution of $\theta| \bx_{1:t}, M_1 \sim \text{Dirichlet}(\balpha_t)$ where $\balpha_t = \balpha_{t-1}+\bx_t$ with $\balpha_0$ the initial prior parameter choice.
 The posterior predictive densities are easily computed as
 \begin{equation}
   \label{eq:posterior_predictive_m1}
-   p(x_t|\bx_{1:t-1},M_1) = \frac{ \Gamma(\sum_i x_{t,i}+ 1)}{\prod_i \Gamma(x_{t,i} + 1)} \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\Gamma(\sum_i \alpha_{t-1,i} + x_{t,i})},
+   p(\bx_t|\bx_{1:t-1},M_1) = \frac{ \Gamma(\sum_i x_{t,i}+ 1)}{\prod_i \Gamma(x_{t,i} + 1)} \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\Gamma(\sum_i \alpha_{t-1,i} + x_{t,i})},
 \end{equation}
 and
 \begin{equation}
   \label{eq:posterior_predictive_m2}
-   p(x_t|\bx_{1:t-1},M_0) = \frac{ \Gamma(\sum_i x_{t,i} + 1)}{\prod_i \Gamma(x_{t,i} + 1)} \prod \theta_{0,i}^{x_{t,i}}.
+   p(\bx_t|\bx_{1:t-1},M_0) = \frac{ \Gamma(\sum_i x_{t,i} + 1)}{\prod_i \Gamma(x_{t,i} + 1)} \prod \theta_{0,i}^{x_{t,i}}.
  \end{equation}
  It will be useful later on to introduce the following notation for the posterior odds at time $t$ as $O_t(\btheta_0)$, which explicitly states the value of $\theta$ under the null hypothesis.
 The recursive definition of the posterior odds can then be expressed as
@@ -456,7 +456,7 @@ The recursive definition of the posterior odds can then be expressed as
 with
 \begin{align}
   \label{eq:alpha_update}
-  \alpha_{t}&= \alpha_{t-1}+x_t.
+  \balpha_{t}&= \balpha_{t-1}+\bx_t.
 \end{align}
 and initial value
 \begin{align}
@@ -470,7 +470,7 @@ O_0(\btheta_0) = \frac{p(M_1)}{p(M_0)}.
 To result follows from the application of the following two lemmas.
 \begin{lemma}(Martingale property of posterior odds under the null hypothesis)
   
-  \noindent Let $x_i,$ be a sequence of $\text{Multinomial}(n_i,\theta)$ random variables and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_t(\btheta_0)$ is a nonnegative martingale under $M_0$.
+  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(n_i,\theta)$ random variables and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_t(\btheta_0)$ is a nonnegative martingale under $M_0$.
   \label{lem:posterior_odds_martingale}
     \end{lemma}
   \begin{proof}
@@ -479,7 +479,7 @@ To result follows from the application of the following two lemmas.
     &=  O_{t}(\btheta_0) \int p(x_{t+1}|\bx_{1:t},M_1) dx_{t+1}\\
     &=  O_{t}(\btheta_0),
   \end{align*}
-  where $\mathcal{F}_{t} = \sigma(x_1,x_2,\dots, x_t)$
+  where $\mathcal{F}_{t} = \sigma(x_1,x_2,\dots, \bx_t)$
 \end{proof}
 
 \begin{lemma}(Ville's Maximal Inequality)
@@ -498,34 +498,34 @@ The result of the Theorem is obtained by using lemma \ref{lem:posterior_odds_mar
 \section{Asymptotic Properties of Bayes Factors}
 \label{app:asymptotics}
 We first narrow the focus of a general result found in Theorem~1 of \cite{walker}.
-Let $D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\theta) )$ denote the Kullback-Leibler divergence of a multinomial distribution indexed by a parameter $\theta$ from the true multinomial distribution with true parameter $\theta_{\star}$.
-Moreover let $D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t}, M_j) )$ denote the KL divergence of the posterior predictive distribution under model $j$ at time $t$ from the true multinomial distribution.
-Let $A(q) = \lbrace \theta \in \mathbb{S}^d : D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\theta) ) < q \rbrace$
+Let $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\theta) )$ denote the Kullback-Leibler divergence of a multinomial distribution indexed by a parameter $\theta$ from the true multinomial distribution with true parameter $\btheta_{\star}$.
+Moreover let $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t}, M_j) )$ denote the KL divergence of the posterior predictive distribution under model $j$ at time $t$ from the true multinomial distribution.
+Let $A(q) = \lbrace \theta \in \mathbb{S}^d : D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\theta) ) < q \rbrace$
 \begin{lemma}
   \label{lemma:walker}
-  If $\int_{A(q)} p(\theta|M_j) d\theta > 0$ only for, and for all, $q > \delta_j$, and $\lim \inf_t D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t}, M_j) ) \geq \delta_j$ a.s.
+  If $\int_{A(q)} p(\theta|M_j) d\theta > 0$ only for, and for all, $q > \delta_j$, and $\lim \inf_t D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t}, M_j) ) \geq \delta_j$ a.s.
 then
   \begin{equation}
     \label{eq:bayes_factor_convergence}
     \frac{1}{t} \log B_{10}(\bx_{1:t}) \rightarrow \delta_0 - \delta_1,
   \end{equation}
-  provided that $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(x_t|\bx_{1:t-1},M_j)}{p(x_t|M_\star )}]\right) < \infty$.
+  provided that $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(\bx_t|\bx_{1:t-1},M_j)}{p(\bx_t|M_\star )}]\right) < \infty$.
 \end{lemma}
 \begin{proof}
   For $j=0,1$ consider the following martingale
   \begin{align*}
     \label{eq:walker_martingale}
-    S_{jt} =& \sum_{i=1}^{t} \log \frac{p(x_i|x_{1:i-1},M_j)}{p(x_i|M_\star)} + D_{KL}(p(\cdot|\theta_\star)||p(\cdot|x_{1:i-1}, M_j) ),\\
-    =& -\log \frac{p(x_t|M_\star)}{p(x_t|\bx_{1:t-1},M_j)} + D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t-1}, M_j) ) +\\
+    S_{jt} =& \sum_{i=1}^{t} \log \frac{p(\bx_i|x_{1:i-1},M_j)}{p(\bx_i|M_\star)} + D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|x_{1:i-1}, M_j) ),\\
+    =& -\log \frac{p(\bx_t|M_\star)}{p(\bx_t|\bx_{1:t-1},M_j)} + D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t-1}, M_j) ) +\\
     &S_{jt-1},\\
   \end{align*}
   from which it follows that $\mathbb{E}[S_{jt}|\mathcal{F}_t] = S_{jt-1}$ with $\mathcal{F}_t = \sigma(x_1,\dots,x_{t-1})$.
-From the assumption that  $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(x_t|\bx_{1:t-1},M_j)}{p(x_t|M_\star )}]\right) < \infty$, it follows that $S_{jt}/t \rightarrow 0$ a.s.
+From the assumption that  $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(\bx_t|\bx_{1:t-1},M_j)}{p(\bx_t|M_\star )}]\right) < \infty$, it follows that $S_{jt}/t \rightarrow 0$ a.s.
 and consequentially
   \begin{align*}
-    \frac{1}{t} \log \frac{p(\bx_{1:t}|M_j)}{p(\bx_{1:t}|M_\star)} + \frac{1}{t}\sum_{i=1}^t  D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t-1}, M_j) )\rightarrow 0.
+    \frac{1}{t} \log \frac{p(\bx_{1:t}|M_j)}{p(\bx_{1:t}|M_\star)} + \frac{1}{t}\sum_{i=1}^t  D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t-1}, M_j) )\rightarrow 0.
   \end{align*}
-  From the additional assumption of $\lim \inf_t D_{KL}(p(\cdot|\theta_\star)||p(\cdot|\bx_{1:t}, M_j) ) \geq \delta_j$ a.s.
+  From the additional assumption of $\lim \inf_t D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t}, M_j) ) \geq \delta_j$ a.s.
 , it follows that
   \begin{align*}
     \lim \sup   \frac{1}{t} \log \frac{p(\bx_{1:t}|M_j)}{p(\bx_{1:t}|M_\star)} \leq - \delta_j \hspace{1cm} a.s.
@@ -545,7 +545,7 @@ It follows that
 The application of this lemma to the multinomial Dirichlet model is then straight forward.
 Note that under model $M_0$, the prior on $\theta$ is a point mass at $\btheta_0$.
 Let the KL divergence of the null model from the true model be denoted $\delta_0$, it is clear that $\int_{A(q)} p(\theta|M_0) d\theta = 0$ if $q<\delta_0$ and 1 otherwise.
-Hence KL divergence of the null $\btheta_0$ from the true $\theta_\star$ is the relevant $\delta_0$ for model $M_0$ in lemma \ref{lemma:walker}.
+Hence KL divergence of the null $\btheta_0$ from the true $\btheta_\star$ is the relevant $\delta_0$ for model $M_0$ in lemma \ref{lemma:walker}.
 The value of $\delta_1$ for the Dirichlet prior under model $M_1$, however, is zero.
 
 \section{Finite Sample Properties}
@@ -591,7 +591,7 @@ Define, for every $n>0$ and $\alpha, S_n\in(\Reals^+)^d$, the set
   \label{eq:decision_boundary}
   \mathcal E_n'\df
   \left\{
-    \KL(\hat\theta_n|| \theta)
+    \KL(\hat\btheta_n|| \theta)
     \geq
       \frac{|\balpha|^2}{n^2} + \frac{|\balpha|}{n}
     +\frac{1}{n}\log\frac{\Beta(\balpha)}{\alpha}
@@ -603,7 +603,7 @@ This $\mathcal E_n'$ is much more convenient. For example, if $\alpha_i = 1$ for
 \begin{equation*}
   \mathcal E_n'\df
   \left\{
-    \KL(\hat\theta_n|| \theta)
+    \KL(\hat\btheta_n|| \theta)
     \geq
     \frac{d^2}{n^2}
     +\frac{d}{n}
@@ -713,7 +713,7 @@ Expanding the left hand side of \eqref{eq:multinomial.rejection.region}, and app
     {(|\balpha|+n)^{|\balpha|+n-1}\Beta(\balpha)}\\
   &=
     n^n
-    e^{n \KL(\hat\theta_n|| \theta) }
+    e^{n \KL(\hat\btheta_n|| \theta) }
     \frac{
     \prod_i
     (\alpha_i + S_i^n)^{\alpha_i - 1}
@@ -733,7 +733,7 @@ This lets us construct
   &\supseteq
     \left\{
         n\log(n)
-    +n \KL(\hat\theta_n|| \theta)
+    +n \KL(\hat\btheta_n|| \theta)
     +
     \log\left(\frac{
     \prod_i
@@ -745,7 +745,7 @@ This lets us construct
     \right\}\\
   &=
     \left\{
-    n \KL(\hat\theta_n|| \theta)
+    n \KL(\hat\btheta_n|| \theta)
     +
     \sum_i\log\left(
     (\alpha_i + S_i^n)^{\alpha_i - 1}
@@ -757,7 +757,7 @@ This lets us construct
     \right\}\\
     &\supset
     \left\{
-    n \KL(\hat\theta_n|| \theta)
+    n \KL(\hat\btheta_n|| \theta)
     +
     \sum_i\log\left(
     (\alpha_i + S_i^n)^{\alpha_i - 1}
@@ -799,7 +799,7 @@ We can upper bound the final remaining summation by
 showing that
 \[
       \left\{
-    n \KL(\hat\theta_n|| \theta)
+    n \KL(\hat\btheta_n|| \theta)
     \geq
       \frac{|\balpha|^2}{n} + |\balpha|
       +\log\frac{\Beta(\balpha)}{\alpha}
@@ -815,13 +815,13 @@ which implies that $\mathcal E_n' \subseteq \mathcal E_n$ (the bound on the summ
 \end{proof}
 
 \subsection{Deriving a Confidence Sequence for $S_n$}
-The next step in the argument is to derive a confidence sequence for $S_n$ under some alternative hypothesis. In fact, we only need to derive a lower bound on $\KL (\hat\theta_n||\btheta_0)$ in order to apply the results of the previous section.
+The next step in the argument is to derive a confidence sequence for $S_n$ under some alternative hypothesis. In fact, we only need to derive a lower bound on $\KL (\hat\btheta_n||\btheta_0)$ in order to apply the results of the previous section.
 
 In particular, we will prove a confidence sequence on the total variation norm directly. This confidence sequence is novel and may be of independent interest.
 \begin{lemma}\label{lem:CS}
-  Fix some $\theta$ in the $d$-simplex and assume that $X_t\sim\mathrm{Multinomial}(\theta)$ for $t>0$. Let $\hat\theta_n$ be the empirical frequencies after $n$ samples. For any $\delta>0$,  we have
+  Fix some $\theta$ in the $d$-simplex and assume that $X_t\sim\mathrm{Multinomial}(\theta)$ for $t>0$. Let $\hat\btheta_n$ be the empirical frequencies after $n$ samples. For any $\delta>0$,  we have
 \begin{equation}\label{eqn:multinomial.CS}
-  P\left( \exists n > 0: \Vert \hat\theta_n - \theta\Vert_1
+  P\left( \exists n > 0: \Vert \hat\btheta_n - \theta\Vert_1
     \geq
   \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}} 
   \right)
@@ -838,20 +838,20 @@ In particular, we will prove a confidence sequence on the total variation norm d
 \]
 and so we may use a union bound to arrive at
 \begin{align*}
-  P(\exists n > 0:\; \Vert \hat\theta_n - \theta\Vert_1 \geq \epsilon)
+  P(\exists n > 0:\; \Vert \hat\btheta_n - \theta\Vert_1 \geq \epsilon)
   \leq
   \sum_{A \subset \{1,\ldots, d\}}
-  P\left(\exists n > 0:\; \hat\theta_n(A) - \theta(A) \geq \frac{\epsilon}{2}\right).
+  P\left(\exists n > 0:\; \hat\btheta_n(A) - \theta(A) \geq \frac{\epsilon}{2}\right).
 \end{align*}
 
 Hence, for any $A \subset \{1,\ldots, d\}$, we want to upper bound
 \[
- P\left(\exists n > 0:\; \hat\theta_n(A) - \theta(A) \geq \frac{\epsilon}{2}\right).
+ P\left(\exists n > 0:\; \hat\btheta_n(A) - \theta(A) \geq \frac{\epsilon}{2}\right).
 \]
 
-Fortunately, $n \hat\theta_n(A)$ is the sum of independent Bernoulli random variables $\mathds{1}\{ \Delta S_n \in A\}$ with mean $\theta(A)$ (where $\mathds{1}\{\cdot\}$ is the indicator function). This implies that $n \hat\theta_n(A)$ is the sum of sub-Gaussian random variables with $\sigma^2 = 1/4$, and we may apply any sub-Gaussian mixture boundary. In particular, \cite[Equation~14]{howard2018uniform} implies that
+Fortunately, $n \hat\btheta_n(A)$ is the sum of independent Bernoulli random variables $\mathds{1}\{ \Delta S_n \in A\}$ with mean $\theta(A)$ (where $\mathds{1}\{\cdot\}$ is the indicator function). This implies that $n \hat\btheta_n(A)$ is the sum of sub-Gaussian random variables with $\sigma^2 = 1/4$, and we may apply any sub-Gaussian mixture boundary. In particular, \cite[Equation~14]{howard2018uniform} implies that
 \[
-  P\left(\exists n > 0: \hat\theta_n(A) - \theta(A) \geq
+  P\left(\exists n > 0: \hat\btheta_n(A) - \theta(A) \geq
     \frac{1}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{(\delta')^2 \rho}}
   \right)
   \leq
@@ -861,13 +861,13 @@ where $\rho$ is mixture variance.
 Hence, choosing $\delta' = 2^{-d} \delta$, we have
 \begin{align*}
   \lefteqn{
-  P\left(\exists n > 0:\; \Vert \hat\theta_n - \theta\Vert_1 \geq
+  P\left(\exists n > 0:\; \Vert \hat\btheta_n - \theta\Vert_1 \geq
   \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}} 
 \right)
   }\\
   &\leq
   \sum_{A \subset \{1,\ldots, d\}}
-  P\left(\exists n > 0:\; \hat\theta_n(A) - \theta(A)
+  P\left(\exists n > 0:\; \hat\btheta_n(A) - \theta(A)
   \geq
     \frac{1}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}  
   \right)\\
@@ -890,9 +890,9 @@ We can now combine the two lemmas of this section into a finite-sample power gua
   \frac{1}{n}\log\frac{\Beta(\balpha)}{\alpha}.
 \]
 \begin{thm}\label{thm:power_lower_bound}
-  Assume that $S_n$ has a multinomial $\tilde\theta$ distribution. For every $\balpha$, $\delta$, $\alpha$, $\tilde\theta$, and $\btheta_0$, there exists an $N$ such that
+  Assume that $S_n$ has a multinomial $\btheta_\star$ distribution. For every $\balpha$, $\delta$, $\alpha$, $\btheta_\star$, and $\btheta_0$, there exists an $N$ such that
   \begin{equation*}
-    P\left(\forall n \geq N: \KL(\hat\theta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)\right)
+    P\left(\forall n \geq N: \KL(\hat\btheta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)\right)
     \geq 1-\delta.
   \end{equation*}
 \end{thm}
@@ -902,36 +902,36 @@ We can now combine the two lemmas of this section into a finite-sample power gua
     \mathcal R_n
     \df
     \left\{
-    \KL(\hat\theta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)
+    \KL(\hat\btheta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)
   \right\}.
 \]
 By Applying Pinsker's inequality then the triangle inequality, we can show that
 \[
   \mathcal R_n \supseteq
   \left\{
-    \Vert \hat\theta_n - \btheta_0\Vert_1 \geq \sqrt{2\Gamma_n(\balpha)}
+    \Vert \hat\btheta_n - \btheta_0\Vert_1 \geq \sqrt{2\Gamma_n(\balpha)}
   \right\}
   \supseteq
     \left\{
-      \Vert \tilde\theta - \btheta_0\Vert_1
+      \Vert \btheta_\star - \btheta_0\Vert_1
       -
-      \Vert \hat\theta_n - \tilde\theta\Vert_1
+      \Vert \hat\btheta_n - \btheta_\star\Vert_1
       \geq \sqrt{2\Gamma_n(\balpha)}
   \right\}.
 \]
 Hence, we would like to find an $N$ such that
 \[
       P\left(
-      \Vert \tilde\theta - \btheta_0\Vert_1
+      \Vert \btheta_\star - \btheta_0\Vert_1
       -
-      \Vert \hat\theta_n - \tilde\theta\Vert_1
+      \Vert \hat\btheta_n - \btheta_\star\Vert_1
       \geq \sqrt{2\Gamma_n(\balpha)}
   \right)\geq 1-\delta
 \]
 for all $n\geq N$. By Lemma~\ref{lem:CS}, with probability at least $1-\delta$, the event
 \begin{align*}
   \left\{ \forall n > 0:
-  \Vert\hat\theta_n- \tilde\theta\Vert_1
+  \Vert\hat\btheta_n- \btheta_\star\Vert_1
   \leq
     \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}\right\}
 \end{align*}
@@ -939,7 +939,7 @@ occurs.
 
 The existence of an $N$ that satisfied the conditions of the theorem can be show by choosing any $N$ that satisfies
 \[
-  \Vert \btheta_0- \tilde\theta\Vert_{1}
+  \Vert \btheta_0- \btheta_\star\Vert_{1}
     \geq
         \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}
     + \sqrt{2\Gamma_n(\balpha)}.
@@ -949,7 +949,7 @@ Such an $N$ is well defined because the left hand side is a constant and the rig
 
 Combining the previous few steps, we have
 \begin{equation*}
-    P\left(\forall n>0 \leq N: \KL(\hat\theta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)\right)
+    P\left(\forall n>0 \leq N: \KL(\hat\btheta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)\right)
     \geq 1-\delta,
   \end{equation*}
   completing the proof.
@@ -958,7 +958,7 @@ Combining the previous few steps, we have
   For the $N$ defined by Theorem~\ref{thm:power_lower_bound}, we have
   \begin{equation*}
     N = \Omega\left(
-      \frac{d}{\Vert \btheta_0- \tilde\theta\Vert_{1}^2}
+      \frac{d}{\Vert \btheta_0- \btheta_\star\Vert_{1}^2}
 \log\pfrac{1}{\delta}\log\pfrac{1}{\alpha}
     \right).
   \end{equation*}
@@ -977,12 +977,12 @@ The sample complexity will be the solution to
       +
     \frac{2}{n}\log\frac{\Beta(\balpha)}{\alpha}
     \leq
-    \frac{1}{2}\Vert \btheta_0- \tilde\theta\Vert_{1}^2
+    \frac{1}{2}\Vert \btheta_0- \btheta_\star\Vert_{1}^2
   \right\},
 \]
   which has the same order as described in the lemma. To check that this $N$ is sufficient, we will argue that this $N$ ensures that
   \begin{equation}\label{eqn:n.bound}
-    \Vert \btheta_0- \tilde\theta\Vert_{1}
+    \Vert \btheta_0- \btheta_\star\Vert_{1}
     \geq
     \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)
       \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}
@@ -1014,7 +1014,7 @@ Since convexity of the square root implies  $\sqrt{a}+\sqrt{b}\leq\sqrt{2(a+b)}$
 \end{align*}
 which implies that, under $n \geq N$, we have
 \begin{align*}
-    \Vert \btheta_0- \tilde\theta\Vert_{1}
+    \Vert \btheta_0- \btheta_\star\Vert_{1}
   &\geq
     \sqrt{
     \left(1 + \frac{4\rho}{n}\right)
