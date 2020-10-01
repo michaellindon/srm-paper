@@ -42,6 +42,7 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 \newcommand{\KL}{\mathrm{D}_{KL}}
 \newtheorem{thm}{Theorem}[section]
 \newtheorem{lemma}{Lemma}[section]
+\newtheorem{cor}{Corollary}[section]
 \newcommand{\df}{\vcentcolon=}
 \newcommand{\ex}{{\mathbb E}}
 \newcommand{\pfrac}[2]{\left(\frac{#1}{#2}\right)}
@@ -51,6 +52,8 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 \DeclareBoldMathCommand{\btheta}{\theta}
 \DeclareBoldMathCommand{\bS}{S}
 \DeclareBoldMathCommand{\bx}{x}
+\DeclareBoldMathCommand{\bw}{w}
+\DeclareBoldMathCommand{\bv}{v}
 %
 
 %%My Definitions
@@ -160,10 +163,21 @@ The Bayes factor comparing models $M_1$ to $M_0$ is analytically tractable and i
  BF_{10}(\bx_{1:t}) = \frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_{0,j})}{\Gamma(\sum_{j=1}^{d} \alpha_{0,j} + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}},
 \end{equation}
 which, when combined with the prior odds, yields the posterior odds of model $M_1$ to $M_0$.
+To assist with the exposition we introduce the following notation. 
+Let $S_i^t=\sum_{j=1}^{t}x_{j,i}$ and $\bS_t=(S_1^t,\ldots, S_d^t)\in\Reals^d$, 
+which lets the MLE easily be defined as $\hat \btheta_t \df \bS_t/t$.
+In addition, we will use $|\bv| = \sum_{i} v_i$ to denote the elementwise sum of a vector $\bv$, 
+$\bv^{\bw} = \prod_{i} v_{i}^{w_i}$ to denote elementwise exponentiation of two vectors $\bv$ and $\bw$,
+and the multivariate Beta function $\Beta(\bv) \df (\prod_{i}\Gamma(v_i))/\Gamma(\sum_i v_i)$. 
+Equation \eqref{eq:bayes_factor} can then be succinctly expressed as 
+\begin{equation}
+  \label{eq:simplified_bayes_factor}
+ BF_{10}(\bx_{1:t}) = \frac{\Beta(\balpha_0 + \bS_t)}{\Beta(\balpha_0)}\frac{1}{\btheta_0^{\bS_t}}.
+\end{equation}
 It is helpful to consider the posterior odds as computed sequentially through the following recursive definition,
 \begin{equation}
   \label{eq:update_rule}
-  O_{t}(\btheta_0) = \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\Gamma(\sum_i \alpha_{t-1,i} +  x_{t,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{1}{\prod_i \theta_{0,i}^{x_{t,i}}}  O_{t-1}(\btheta_0),
+  O_{t}(\btheta_0) = \frac{\Beta(\balpha_{t-1} + \bx_t)}{\Beta(\balpha_{t-1})}\frac{1}{\btheta_0^{\bx_t}} O_{t-1}(\btheta_0),
 \end{equation}
 where $\balpha_t = \balpha_{t-1}+\bx_t$ and $O_0(\btheta_0)=p(M_1)/p(M_0)$ (see appendix section \ref{app:posterior_odds}).
 In the rest of this paper, we will always assume that the prior odds are unity, and so the posterior odds are interchangeable with the Bayes factor.
@@ -217,38 +231,33 @@ which satisfies the following sequential analogue of a conservative p-value
 Further connections between sequential p-value processes and Bayes factors are discussed in \cite{shafer}.
 The following Theorem exploits the duality between p-values and confidence intervals to derive sequential confidence sequences \todo{this is redundant, though we need to define a confidence sequence somewhere}.
 \begin{thm}(Confidence Sequences)
-  
   \label{thm:confidence_sequence}
-  \noindent Under the assumptions of Theorem~\ref{thm:type_1_error} let $I_t(u) = \lbrace \btheta \in \triangle^d : O_t(\btheta) < 1/u  \rbrace$, then
+  \noindent Let $\bx_t\sim \mathrm{Multinomial}(1,\btheta)$ for all $t \in \mathbb{N}$.
+Consider the sequence of posterior odds $O_t(\btheta)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta)=1$ and
+ let $I_t(u) = \lbrace \btheta \in \triangle^d : O_t(\btheta) < 1/u  \rbrace$, then
 \begin{equation}
   \label{eq:confidence_sequence}
   \mathbb{P}_{\btheta}\left( \btheta \in \bigcap_{t=1}^{\infty} I_t(u) \right) \geq 1- u
 \end{equation}
 for all $u \in [0,1]$ and for all choices of $\balpha_0$.
-
 \end{thm}
 \noindent Each $I_t(u)$ is a convex subset of $\triangle^d$.
-Confidence sequences on individual components of $\theta$ can be found by projecting $I_t$ onto individual components, which is equivalent to solving the optimization problem
+In practise, however, one may find it easier to work with confidence sequences on the individual components of $\btheta$.
+These can be obtained by minimizing and maximizing individual components over the (convex) feasible set $I_t(u)$
+\begin{cor}(Elementwise Confidence Sequences)
+  \label{thm:elementwise_confidence_sequence}
+Let $j^{u}_{t,i}(u)$ and $j^{l}_{t,i}(u)$ be the solution to the respective convex optimization problems 
 \begin{align*}
-  \text{Maximize/Minimize } & \quad \theta_i \\
-  \text{subject to } & \quad ku < \prod_{j=1}^{d} \theta_{j}^{\sum_{i=1}^{t}x_{i,j}} \text{ and}\\
-  &\quad \sum_{i=1}^{d}\theta_i = 1,
+  \text{Maximize/Minimize } & \quad \theta_i, \\
+  \text{subject to } & \btheta \in I_t(u),\\
 \end{align*}
-where
-\[
-  k = \frac{\Gamma(\sum_{j=1}^{d} \alpha_j)}
-  {\Gamma(\sum_{j=1}^{d} \alpha_j + \sum_{i=1}^{t}x_{i,j})}
-  \frac{\prod_{j=1}^{d}\Gamma(\alpha_j + \sum_{i=1}^{t}x_{i,j} )}
-  {\prod_{j=1}^{d}\Gamma(\alpha_j )}.
-  \]
-The objective is linear, while the constraints defining the feasible set $I_t(u)$ are convex and linear respectively, resulting in a convex optimization problem.
-Let $j^{u}_{t,i}(u)$ and $j^{l}_{t,i}(u)$ be the solution to the maximization and minimization of $\theta_i$ over $I_t(u)$ and let $J_{t,i}(u)=[j^{l}_{t,i}(u), j^{u}_{t,i}(u)]$, then
+for each component $i=1,2,\dots,d$. Forming intervals $J_{t,i}(u)=[j^{l}_{t,i}(u), j^{u}_{t,i}(u)]$
 \begin{equation}
   \label{eq:marginal_confidence_sequence}
-  \mathbb{P}_{\btheta}\left( \theta_i \in \bigcap_{t=1}^{\infty} J_{t,i}(u),\, \text{for}\, i = 1,2, \dots, d \right) \geq 1- u.
-\end{equation}
-These provide intervals which posess a nominal frequentist coverage probability for all time $t$ over all components simultaneously.
-\todo{maybe make this a corollary}
+  \mathbb{P}_{\btheta}\left( \theta_i \in \bigcap_{t=1}^{\infty} J_{t,i}(u),\, \text{for }\, i = 1,2, \dots, d \right) \geq 1- u.
+\end{equation} 
+\end{cor}
+\noindent These provide intervals which posess a nominal frequentist coverage probability for all time $t$ over all components simultaneously.
 
 Control over Type-I error probabilities would be of little value if the test were to have little ability to reject the null when $\btheta \neq \btheta_0$.
 To prove that this test is not trivial, we prove that the test rejects the null when $\btheta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
@@ -277,6 +286,25 @@ When the $\bx_i$ are independently distributed according to $\text{Multinomial}(
 under model $M_\star$, then the second term converges to the Kullback-Leibler divergence between models $M_\star$ and $M_0$ by the strong law of large numbers.
 To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\btheta|\bx_{1:t}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(\bx_{t+1}|\bx_{1:t},M_1) =\int p(\bx_{t+1}|\btheta,M_1),p(\btheta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(\bx_{t+1}|M_{\star})$.
 For $t$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
+
+To facilitate the discussion of power, we define the rejection region at time $n$ for a given $u>0$ as $\mathcal{R}_n = \{ \bx_{1:t} : O_t(\theta_0) \geq u \}$,
+and the complementary indifference region as $\mathcal{I}_n = \{ \bx_{1:t} : O_t(\theta_0) < u \}$. 
+The region region in this form is a little cumbersome to work with,
+and so our first result is to provide an $\mathcal R_n'\subseteq \mathcal R_n$ which more amenable to computation.
+
+\begin{thm}\label{thm:calEprime}
+  Define, for every $n>0$, $u>0$, and $\balpha$ the set
+  \begin{equation}
+    \label{eq:decision_boundary}
+    \mathcal R_n'\df
+    \left\{
+      \KL(\hat\btheta_n|| \btheta)
+      \geq
+        \frac{|\balpha|^2}{n^2} + \frac{|\balpha|}{n}
+      +\frac{1}{n}\log\frac{\Beta(\balpha)}{u}
+    \right\}.
+  \end{equation}
+\end{thm}
 
 To complement this asymptotic result, we now provide the following finite sample result.
 \begin{thm}
