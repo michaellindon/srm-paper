@@ -191,7 +191,7 @@ If $\balpha_0$ is integer valued, and noting that all but one of the $x_{t,j}$ i
 \end{align}
 where the last line follows from the mean of the Dirichlet posterior predictive distribution.
 This multiplicative update has some intuitive appeal - it is the expected probability, based on our current Bayesian belief, divided by the null probability of the event that occured.
-A pure Bayesian analysis could proceed by rejecting the null when $O_t(\btheta_0) > c$ and reporting a posterior error probability of less than $1/(1+c)$ \citep[Chapter 5]{bernardo}.
+A pure Bayesian analysis could proceed by rejecting the null when $O_t(\btheta_0) \geq c$ and reporting a posterior error probability of less than $1/(1+c)$ \citep[Chapter 5]{bernardo}.
 Many find the pure Bayesian approach unsettling, unable to formulate a prior belief on $\theta$ under the alternative model.
 We instead develop a test based on $O_t(\btheta_0)$ which controls the frequentist Type-I error under optional stopping and continuation, regardless of the choice of $\balpha_0$.
 
@@ -266,7 +266,7 @@ We first establish the following result for the consistency of the posterior odd
 \begin{thm}(Asymptotic Properties of Posterior Odds)\todo{$\btheta_\star$ might indicate it's the solution to an optimization problem, maybe $\theta'$?}
   
   \label{thm:consistency}
-\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(n_i,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
 \begin{equation}
   \label{eq:consistency}
   \frac{1}{t} \log O_t(\btheta_0) \rightarrow D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0)) \hspace{1cm} a.s.
@@ -281,13 +281,13 @@ The first compares $M_{\star}$ to $M_1$, and the second compares $M_{\star}$ to 
 \begin{align*}
  \frac{1}{t} \log BF_{10}(\bx_{1:t}) = - \frac{1}{t}\sum_{i=1}^{t}\log \left( \frac{p(\bx_{i}|M_\star)}{p(\bx_{i}|\bx_{1:i-1},M_1)}\right) + \frac{1}{t}\sum_{i=1}^{t} \log  \left( \frac{p(\bx_{i}|M_\star)}{p(\bx_{i}|M_0)}\right),\\
 \end{align*}
-where  $p(\bx_i|M_\star)$ is the density of a $\text{Multinomial}(n_i,\btheta_{\star})$ distribution.
-When the $\bx_i$ are independently distributed according to $\text{Multinomial}(n_i, \btheta_\star)$, i.e.
+where  $p(\bx_i|M_\star)$ is the density of a $\text{Multinomial}(1,\btheta_{\star})$ distribution.
+When the $\bx_i$ are independently distributed according to $\text{Multinomial}(1, \btheta_\star)$, i.e.
 under model $M_\star$, then the second term converges to the Kullback-Leibler divergence between models $M_\star$ and $M_0$ by the strong law of large numbers.
 To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\btheta|\bx_{1:t}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(\bx_{t+1}|\bx_{1:t},M_1) =\int p(\bx_{t+1}|\btheta,M_1),p(\btheta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(\bx_{t+1}|M_{\star})$.
 For $t$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
 
-To facilitate the discussion of power, we define the rejection region at time $n$ for a given $u>0$ as $\mathcal{R}_n = \{ \bx_{1:t} : O_t(\theta_0) \geq u \}$,
+To facilitate the discussion of how quickly the null is rejected, we define the rejection region at time $n$ for a given $u>0$ as $\mathcal{R}_n = \{ \bx_{1:t} : O_t(\theta_0) \geq u \}$,
 and the complementary indifference region as $\mathcal{I}_n = \{ \bx_{1:t} : O_t(\theta_0) < u \}$. 
 The rejection region in this form is a little cumbersome to work with,
 and so our first result is to provide an $\mathcal R_n'\subseteq \mathcal R_n$ which more amenable to computation.
@@ -298,31 +298,33 @@ and so our first result is to provide an $\mathcal R_n'\subseteq \mathcal R_n$ w
     \mathcal R_n'\df 
     \left\{
       \bx_{1:n} :
-      \KL(\hat\btheta_n|| \btheta)
-      \geq
-        \frac{|\balpha_0|^2}{n^2} + \frac{|\balpha_0|}{n}
-      +\frac{1}{n}\log\frac{\Beta(\balpha_0)}{u}
-    \right\} \subseteq \mathcal R_n.
+      \KL(\hat\btheta_n(\bx_{1:n})|| \btheta_0)
+      \geq \underline{D}_n(u,\alpha) 
+    \right\} 
   \end{equation}
+  where
+  \begin{equation*}
+    \underline{D}_n(u,\alpha) = \frac{1}{n}\left( \log \frac{\Beta(\balpha)}{u} +(|\balpha|+n-1/2)\log(|\balpha|+n)-n\log n + \frac{1}{12(|\balpha|+n)} - \frac{d-1}{2}\log 2\pi\right),
+  \end{equation*}
+  and $\hat{\btheta}(\bx_{1:n})$ is the maximum likelihood estimate.
+Then $\mathcal{R}_n'  \subseteq \mathcal R_n$.
 \end{lemma}
-The proof of this lemma is found in appendix section \ref{app:rejection_region}.
+The proof of this lemma is found in appendix section \ref{sec:rejection_region}.
 This lemma is then used to establish the following result.
 
 
 \begin{thm}
   \label{thm:finite_sample}
-\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(n_i,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$.
-Let $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$ be the random stopping time at which the null is rejected, then
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$.
+Let $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$ be the random stopping time at which the null is rejected and define $N = \min \{n \in \mathbb{N} : \|\btheta_\star - \btheta_0\|_1 \geq (1/2)\underline{D}_n(u,\balpha)\}$, then for all $n\geq N$
 \begin{equation}
   \label{eq:finite_sample}
-\mathbb{P}_{\btheta_{\star}}\left( \tau \leq  n \right) \geq 1-e^{-\frac{n}{4}\left(\|\btheta_{\star}-\btheta_0\|_1 -  \frac{|\balpha_0|^2}{n^2} - \frac{|\balpha_0|}{n}
--\frac{1}{n}\log\frac{\Beta(\balpha_0)}{u} \right)}.
+\mathbb{P}_{\btheta_{\star}}\left( \tau \leq  n \right) \geq
+ 1 -2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\frac{1}{2}\underline{D}_n(u,\balpha)\right)^2}.
 \end{equation}
 \end{thm}
 \noindent This theorem provides a lower bound on the probability of rejecting the null by time $n$ as a function of $\|\btheta_\star - \btheta_0\|_1$, $u$ and $\balpha_0$.
-The proof is given in appendix section \ref{app:finite_sample}. If a specific power $1-\delta$ is desired, then a sample size at least as large as
-$4 (|\balpha_0|^2/2 +|\balpha_0| +\log \Beta(\alpha_0) - \log(u\delta))/\|\btheta_\star - \btheta_0\|_1$ is sufficient.
-
+The proof is given in appendix section \ref{app:finite_sample}. 
 
 \section{Simulation Studies}
 \label{sec:simulation}
@@ -485,7 +487,7 @@ O_0(\btheta_0) = \frac{p(M_1)}{p(M_0)}.
 To result follows from the application of the following two lemmas.
 \begin{lemma}(Martingale property of posterior odds under the null hypothesis)
   
-  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(n_i,\btheta)$ random variables and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_t(\btheta_0)$ is a nonnegative martingale under $M_0$.
+  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta)$ random variables and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_t(\btheta_0)$ is a nonnegative martingale under $M_0$.
   \label{lem:posterior_odds_martingale}
     \end{lemma}
   \begin{proof}
@@ -565,6 +567,7 @@ The value of $\delta_1$ for the Dirichlet prior under model $M_1$, however, is z
 
 
 \section{Manipulating the Rejection Region}
+\label{sec:rejection_region}
 Our goal is to find some event $\mathcal R_n'\subseteq \mathcal R_n$ that is more amenable to computation; this allows us to obtain a bound on the power since
 $\mathbb{P}(\mathcal R_n) \geq \mathbb{P}(\mathcal R_n')$.
 The proof is by explicit construction, and we begin by deriving a lower bound on 
@@ -616,19 +619,19 @@ establish a lower bound on the odds using lemma \ref{lem:beta.lower.bound}.
   (2\pi)^{\frac{d-1}{2}}
     \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1/2}}
     {(|\balpha|+n)^{|\balpha| + n - 1/2}}
-    e^{n \KL(\hat\btheta_n|| \btheta)}
+    e^{n \KL(\hat\btheta_n|| \btheta_0)}
     \frac{n^{n}}{\prod_i (S^n_i)^{S^{n}_{i}}}
     \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)}\\
   &=
   (2\pi)^{\frac{d-1}{2}}
     \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1/2}}
     {\prod_i (S^n_i)^{S^{n}_{i}}}
-    e^{n \KL(\hat\btheta_n|| \btheta)}
+    e^{n \KL(\hat\btheta_n|| \btheta_0)}
     \frac{n^{n}}{(|\balpha|+n)^{|\balpha| + n - 1/2}}
     \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)}\\
   &>
   (2\pi)^{\frac{d-1}{2}}
-    e^{n \KL(\hat\btheta_n|| \btheta)}
+    e^{n \KL(\hat\btheta_n|| \btheta_0)}
     \frac{n^{n}}{(|\balpha|+n)^{|\balpha| + n - 1/2}}
     \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)}\\
 \end{align*}
@@ -643,22 +646,22 @@ so the bound is expected to be increasingly good for large $n$.
 Now consider the simpler rejection region
 \begin{align*}
   \mathcal{R}_n' &= \left\{ \bx_{1:n} : 
-  \KL(\hat\btheta_n|| \btheta) > \frac{1}{n}\left( \log \frac{\Beta(\balpha)}{u} +(|\balpha|+n-1/2)\log(|\balpha|+n)-n\log n + \frac{1}{12(|\balpha|+n)} - \frac{d-1}{2}\log 2\pi\right)\right\}\\
+  \KL(\hat\btheta_n|| \btheta_0) \geq \frac{1}{n}\left( \log \frac{\Beta(\balpha)}{u} +(|\balpha|+n-1/2)\log(|\balpha|+n)-n\log n + \frac{1}{12(|\balpha|+n)} - \frac{d-1}{2}\log 2\pi\right)\right\}\\
   &= \left\{ \bx_{1:n} : 
   (2\pi)^{\frac{d-1}{2}}
-    e^{n \KL(\hat\btheta_n|| \btheta)}
+    e^{n \KL(\hat\btheta_n|| \btheta_0)}
     \frac{n^{n}}{(|\balpha|+n)^{|\balpha| + n - 1/2}}
-    \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)} > \frac{1}{u} \right\}\\
+    \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)} \geq \frac{1}{u} \right\}\\
    &\subset \left\{ \bx_{1:n} : 
     \frac{\Beta(\balpha + \bS_n)}
-  {\Beta(\balpha)} \theta_0^{-\bS_n} > \frac{1}{u}
+  {\Beta(\balpha)} \theta_0^{-\bS_n} \geq \frac{1}{u}
 \right\}\\
     &= \mathcal{R}_n\\
 \end{align*}
 It is reassuring to observe that $|\balpha|$ always appears in combination with $n$. Recall if we choose $\alpha=k\theta_0$, then $|\balpha|=k$ is interpreted as the prior sample size in a Multinomial-Dirichlet model.
 The sum $|\balpha|+n$ can be interpreted as the total samples, from the data and the prior.
 
-Let us write $\mathcal{R}_n' = \left\{ \bx_{1:n} : \KL(\hat\btheta_n|| \btheta) > \underline{D}_n(u,\balpha) \right\}$, then $\underline{D}_n(u,\balpha) \sim \mathcal{O}((1/n)\log n)$.
+Let us write $\mathcal{R}_n' = \left\{ \bx_{1:n} : \KL(\hat\btheta_n|| \btheta_0) \geq \underline{D}_n(u,\balpha) \right\}$, then $\underline{D}_n(u,\balpha) \sim \mathcal{O}((1/n)\log n)$.
 To see this note that 
 \begin{align*}
   (|\balpha|+n-1/2)\log(|\balpha|+n)-n\log n < (|\balpha|-1/2)\log(|\balpha|+n) + |\alpha|/n,
@@ -668,26 +671,27 @@ which can be upper bounded by $\log(n) + |\balpha|/n$, which can be interpreted 
 \end{proof}
 
 \section{Lower Bounding the Stopping Time CDF}
+\label{app:finite_sample}
 In order to assess how quickly the proposed test is able to reject the null, we would like to obtain, or at least lower bound, the probability
-or rejecting the null hypothesis by a time $n$. Denote the random stopping time of rejecting the null hypothesis as $\tau = \inf \{n : O_n(\btheta_0) > 1/u\} =\inf \{n : x_{1:n} \in \mathcal{R}'_n\}$. 
+or rejecting the null hypothesis by a time $n$. Denote the random stopping time of rejecting the null hypothesis as $\tau = \inf \{n : O_n(\btheta_0) \geq 1/u\} =\inf \{n : x_{1:n} \in \mathcal{R}'_n\}$. 
 A simple lower bound can be obtained as follows
 \begin{align*}
-  \mathbb{P}_\btheta[\tau \leq n] &\geq \mathbb{P}_\btheta[\exists i \leq n : \bx_{1:i} \in \mathcal{R}_i]\\ 
-&\geq \mathbb{P}_\btheta[\bx_{1:n} \in \mathcal{R}_n]\\ 
-&\geq \mathbb{P}_\btheta[\bx_{1:n} \in \mathcal{R}'_n].\\ 
+  \mathbb{P}_{\btheta_\star}[\tau \leq n] &\geq \mathbb{P}_{\btheta_\star}[\exists i \leq n : \bx_{1:i} \in \mathcal{R}_i]\\ 
+&\geq \mathbb{P}_{\btheta_\star}[\bx_{1:n} \in \mathcal{R}_n]\\ 
+&\geq \mathbb{P}_{\btheta_\star}[\bx_{1:n} \in \mathcal{R}'_n].\\ 
 \end{align*}
 The second inequality is simply stating that the probability of rejecting the null hypothesis is higher if
 we apply the test after every data point up to and including time $n$, than simply applying the test at time $n$.
 This makes sense, as there are simply more opportunities for the null to be rejected. 
 The last inequality follows from lemma \ref{thm:calRprime}.
 Note that the rejection region $\mathcal{R}_n'$ depends on $\bx_{1:n}$ only through the MLE $\hat{\btheta}(\bx_{1:n})$.
-In what follows it is helpful to consider $\hat{\btheta}(x_{1:n})$ as a test statistic at time $n$,
+In what follows it is helpful to consider $\hat{\btheta}(\bx_{1:n})$ as a test statistic at time $n$,
 and define a corresponding rejection region as a subset of $\triangle^d$ at time $n$.
-Let this rejection region in $\triangle^d$ be denoted $T_n = \{\btheta \in \triangle^d : \KL(\btheta||\btheta_0) > \underline{D}_n(u,\balpha)\}$, then $\hat{\btheta}(x_{1:n})\in T_n$ implies
+Let this rejection region in $\triangle^d$ be denoted $T_n = \{\btheta \in \triangle^d : \KL(\btheta||\btheta_0) \geq \underline{D}_n(u,\balpha)\}$, then $\hat{\btheta}(\bx_{1:n})\in T_n$ implies
 $\bx_{1:n} \in \mathcal{R}'_n$.
 We now combine this with the concentration inequality of \cite{weissman2003inequalities} for the MLE of a multinomial model
 \begin{align*}
-  \mathbb{P}_\btheta[\hat{\btheta}_n \in C_n^\delta] \geq 1 - \delta,
+  \mathbb{P}_{\btheta_\star}[\hat{\btheta}_n \in C_n^\delta] \geq 1 - \delta,
 \end{align*}
 where $C_n^\delta = \{ \btheta \in \triangle^d : \|\btheta-\btheta_\star\|_1 \leq \sqrt{\frac{4\log \frac{2}{\delta}}{n}}\}$.
 At any time we now have two sets in $\triangle^d$. 
@@ -698,7 +702,7 @@ This is only possible for large enough $n$ so that $\btheta_\star \in T_n$, afte
 
 
 Because the rejection set $T_n$ is defined in terms of the KL divergence, while the concentration set $C_n^\delta$ is defined in terms of the L1-norm, we define
-$T_n' = \{\btheta \in \triangle^d : \|\btheta-\btheta_0\|_1 > (1/2)\underline{D}_n(u,\balpha)\}$.
+$T_n' = \{\btheta \in \triangle^d : \|\btheta-\btheta_0\|_1 \geq (1/2)\underline{D}_n(u,\balpha)\}$.
 It follows from Pinsker's inequality $2\|\bx-\btheta\|_1\leq \KL(\bx||\btheta)$ that $T_n' \subset T_n$.
 Let $N = \min \{n \in \mathbb{N} : \btheta_\star \in T_n'\}$, this ensures that the the true parameter is in the rejection region $T_n'$ for all subsequent $n$, around which a $C_n^\delta$ can be placed for suitably small $\delta$.
 Let
