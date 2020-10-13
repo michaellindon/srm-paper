@@ -42,6 +42,7 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 \newcommand{\KL}{\mathrm{D}_{KL}}
 \newtheorem{thm}{Theorem}[section]
 \newtheorem{lemma}{Lemma}[section]
+\newtheorem{cor}{Corollary}[section]
 \newcommand{\df}{\vcentcolon=}
 \newcommand{\ex}{{\mathbb E}}
 \newcommand{\pfrac}[2]{\left(\frac{#1}{#2}\right)}
@@ -51,6 +52,8 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 \DeclareBoldMathCommand{\btheta}{\theta}
 \DeclareBoldMathCommand{\bS}{S}
 \DeclareBoldMathCommand{\bx}{x}
+\DeclareBoldMathCommand{\bw}{w}
+\DeclareBoldMathCommand{\bv}{v}
 %
 
 %%My Definitions
@@ -64,7 +67,7 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 \begin{document}
 \vspace{-1in}
 \title{A Sequential Hypothesis Test for Implementation Errors and Missing Data in Simply Randomized Experiments with Applications to A/B Testing}
-\author{\Large Michael Lindon \\ Optimizely \and \Large Alan Malek \\ Optimizely}
+\author{\Large Michael Lindon \\ Optimizely \and \Large Alan Malek \\ DeepMind}
 \maketitle 
 %\centerline{{\color{RoyalBlue2}{Due: someday.}}}\bigskip
 %\thispagestyle{empty}
@@ -160,10 +163,21 @@ The Bayes factor comparing models $M_1$ to $M_0$ is analytically tractable and i
  BF_{10}(\bx_{1:t}) = \frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_{0,j})}{\Gamma(\sum_{j=1}^{d} \alpha_{0,j} + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}},
 \end{equation}
 which, when combined with the prior odds, yields the posterior odds of model $M_1$ to $M_0$.
+To assist with the exposition we introduce the following notation. 
+Let $S_i^t=\sum_{j=1}^{t}x_{j,i}$ and $\bS_t=(S_1^t,\ldots, S_d^t)\in\Reals^d$, 
+which lets the MLE easily be defined as $\hat \btheta_t \df \bS_t/t$.
+In addition, we will use $|\bv| = \sum_{i} v_i$ to denote the elementwise sum of a vector $\bv$, 
+$\bv^{\bw} = \prod_{i} v_{i}^{w_i}$ to denote elementwise exponentiation of two vectors $\bv$ and $\bw$,
+and the multivariate Beta function $\Beta(\bv) \df (\prod_{i}\Gamma(v_i))/\Gamma(\sum_i v_i)$. 
+Equation \eqref{eq:bayes_factor} can then be succinctly expressed as 
+\begin{equation}
+  \label{eq:simplified_bayes_factor}
+ BF_{10}(\bx_{1:t}) = \frac{\Beta(\balpha_0 + \bS_t)}{\Beta(\balpha_0)}\frac{1}{\btheta_0^{\bS_t}}.
+\end{equation}
 It is helpful to consider the posterior odds as computed sequentially through the following recursive definition,
 \begin{equation}
   \label{eq:update_rule}
-  O_{t}(\btheta_0) = \frac{\Gamma(\sum_i \alpha_{t-1,i})}{\Gamma(\sum_i \alpha_{t-1,i} +  x_{t,i})} \frac{\prod_i \Gamma(\alpha_{t-1,i} + x_{t,i})}{\prod_i \Gamma(\alpha_{t-1,i})} \frac{1}{\prod_i \theta_{0,i}^{x_{t,i}}}  O_{t-1}(\btheta_0),
+  O_{t}(\btheta_0) = \frac{\Beta(\balpha_{t-1} + \bx_t)}{\Beta(\balpha_{t-1})}\frac{1}{\btheta_0^{\bx_t}} O_{t-1}(\btheta_0),
 \end{equation}
 where $\balpha_t = \balpha_{t-1}+\bx_t$ and $O_0(\btheta_0)=p(M_1)/p(M_0)$ (see appendix section \ref{app:posterior_odds}).
 In the rest of this paper, we will always assume that the prior odds are unity, and so the posterior odds are interchangeable with the Bayes factor.
@@ -177,7 +191,7 @@ If $\balpha_0$ is integer valued, and noting that all but one of the $x_{t,j}$ i
 \end{align}
 where the last line follows from the mean of the Dirichlet posterior predictive distribution.
 This multiplicative update has some intuitive appeal - it is the expected probability, based on our current Bayesian belief, divided by the null probability of the event that occured.
-A pure Bayesian analysis could proceed by rejecting the null when $O_t(\btheta_0) > c$ and reporting a posterior error probability of less than $1/(1+c)$ \citep[Chapter 5]{bernardo}.
+A pure Bayesian analysis could proceed by rejecting the null when $O_t(\btheta_0) \geq c$ and reporting a posterior error probability of less than $1/(1+c)$ \citep[Chapter 5]{bernardo}.
 Many find the pure Bayesian approach unsettling, unable to formulate a prior belief on $\theta$ under the alternative model.
 We instead develop a test based on $O_t(\btheta_0)$ which controls the frequentist Type-I error under optional stopping and continuation, regardless of the choice of $\balpha_0$.
 
@@ -217,38 +231,33 @@ which satisfies the following sequential analogue of a conservative p-value
 Further connections between sequential p-value processes and Bayes factors are discussed in \cite{shafer}.
 The following Theorem exploits the duality between p-values and confidence intervals to derive sequential confidence sequences \todo{this is redundant, though we need to define a confidence sequence somewhere}.
 \begin{thm}(Confidence Sequences)
-  
   \label{thm:confidence_sequence}
-  \noindent Under the assumptions of Theorem~\ref{thm:type_1_error} let $I_t(u) = \lbrace \btheta \in \triangle^d : O_t(\btheta) < 1/u  \rbrace$, then
+  \noindent Let $\bx_t\sim \mathrm{Multinomial}(1,\btheta)$ for all $t \in \mathbb{N}$.
+Consider the sequence of posterior odds $O_t(\btheta)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta)=1$ and
+ let $I_t(u) = \lbrace \btheta \in \triangle^d : O_t(\btheta) < 1/u  \rbrace$, then
 \begin{equation}
   \label{eq:confidence_sequence}
   \mathbb{P}_{\btheta}\left( \btheta \in \bigcap_{t=1}^{\infty} I_t(u) \right) \geq 1- u
 \end{equation}
 for all $u \in [0,1]$ and for all choices of $\balpha_0$.
-
 \end{thm}
 \noindent Each $I_t(u)$ is a convex subset of $\triangle^d$.
-Confidence sequences on individual components of $\theta$ can be found by projecting $I_t$ onto individual components, which is equivalent to solving the optimization problem
+In practise, however, one may find it easier to work with confidence sequences on the individual components of $\btheta$.
+These can be obtained by minimizing and maximizing individual components over the (convex) feasible set $I_t(u)$
+\begin{cor}(Elementwise Confidence Sequences)
+  \label{thm:elementwise_confidence_sequence}
+Let $j^{u}_{t,i}(u)$ and $j^{l}_{t,i}(u)$ be the solution to the respective convex optimization problems 
 \begin{align*}
-  \text{Maximize/Minimize } & \quad \theta_i \\
-  \text{subject to } & \quad ku < \prod_{j=1}^{d} \theta_{j}^{\sum_{i=1}^{t}x_{i,j}} \text{ and}\\
-  &\quad \sum_{i=1}^{d}\theta_i = 1,
+  \text{Maximize/Minimize } & \quad \theta_i, \\
+  \text{subject to } & \btheta \in I_t(u),\\
 \end{align*}
-where
-\[
-  k = \frac{\Gamma(\sum_{j=1}^{d} \alpha_j)}
-  {\Gamma(\sum_{j=1}^{d} \alpha_j + \sum_{i=1}^{t}x_{i,j})}
-  \frac{\prod_{j=1}^{d}\Gamma(\alpha_j + \sum_{i=1}^{t}x_{i,j} )}
-  {\prod_{j=1}^{d}\Gamma(\alpha_j )}.
-  \]
-The objective is linear, while the constraints defining the feasible set $I_t(u)$ are convex and linear respectively, resulting in a convex optimization problem.
-Let $j^{u}_{t,i}(u)$ and $j^{l}_{t,i}(u)$ be the solution to the maximization and minimization of $\theta_i$ over $I_t(u)$ and let $J_{t,i}(u)=[j^{l}_{t,i}(u), j^{u}_{t,i}(u)]$, then
+for each component $i=1,2,\dots,d$. Forming intervals $J_{t,i}(u)=[j^{l}_{t,i}(u), j^{u}_{t,i}(u)]$
 \begin{equation}
   \label{eq:marginal_confidence_sequence}
-  \mathbb{P}_{\btheta}\left( \theta_i \in \bigcap_{t=1}^{\infty} J_{t,i}(u),\, \text{for}\, i = 1,2, \dots, d \right) \geq 1- u.
-\end{equation}
-These provide intervals which posess a nominal frequentist coverage probability for all time $t$ over all components simultaneously.
-\todo{maybe make this a corollary}
+  \mathbb{P}_{\btheta}\left( \theta_i \in \bigcap_{t=1}^{\infty} J_{t,i}(u),\, \text{for }\, i = 1,2, \dots, d \right) \geq 1- u.
+\end{equation} 
+\end{cor}
+\noindent These provide intervals which posess a nominal frequentist coverage probability for all time $t$ over all components simultaneously.
 
 Control over Type-I error probabilities would be of little value if the test were to have little ability to reject the null when $\btheta \neq \btheta_0$.
 To prove that this test is not trivial, we prove that the test rejects the null when $\btheta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
@@ -278,37 +287,45 @@ under model $M_\star$, then the second term converges to the Kullback-Leibler di
 To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\btheta|\bx_{1:t}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(\bx_{t+1}|\bx_{1:t},M_1) =\int p(\bx_{t+1}|\btheta,M_1),p(\btheta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(\bx_{t+1}|M_{\star})$.
 For $t$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
 
-To complement this asymptotic result, we now provide the following finite sample result.
+To facilitate the discussion of how quickly the null is rejected, we define the rejection region at time $n$ for a given $u>0$ as $\mathcal{R}_n = \{ \bx_{1:t} : O_t(\theta_0) \geq u \}$,
+and the complementary indifference region as $\mathcal{I}_n = \{ \bx_{1:t} : O_t(\theta_0) < u \}$. 
+The rejection region in this form is a little cumbersome to work with,
+and so our first result is to provide an $\mathcal R_n'\subseteq \mathcal R_n$ which more amenable to computation.
+\begin{lemma}\label{thm:calRprime}
+  For every $n>0$, $u>0$, and $\balpha_0$ the set
+  \begin{equation}
+    \label{eq:decision_boundary}
+    \mathcal R_n'\df 
+    \left\{
+      \bx_{1:n} :
+      \KL(\hat\btheta_n(\bx_{1:n})|| \btheta_0)
+      \geq \underline{D}_n(u,\alpha) 
+    \right\} 
+  \end{equation}
+  where
+  \begin{equation*}
+    \underline{D}_n(u,\alpha) = \frac{1}{n}\left( \log \frac{\Beta(\balpha)}{u} +(|\balpha|+n-1/2)\log(|\balpha|+n)-n\log n + \frac{1}{12(|\balpha|+n)} - \frac{d-1}{2}\log 2\pi\right),
+  \end{equation*}
+  and $\hat{\btheta}(\bx_{1:n})$ is the maximum likelihood estimate.
+Then $\mathcal{R}_n'  \subseteq \mathcal R_n$.
+\end{lemma}
+The proof of this lemma is found in appendix section \ref{sec:rejection_region}.
+This lemma is then used to establish the following result.
+
+
 \begin{thm}
   \label{thm:finite_sample}
-\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$, then
-for all $\delta > 0$ and $u > 0$ there exists $N > 0$ such that 
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$.
+Let $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$ be the random stopping time at which the null is rejected and define $N = \min \{n \in \mathbb{N} : \|\btheta_\star - \btheta_0\|_1 \geq (1/2)\underline{D}_n(u,\balpha)\}$, then for all $n\geq N$
+
 \begin{equation}
   \label{eq:finite_sample}
-\mathbb{P}_{\btheta_{\star}}\left( O_n(\btheta_0) \geq 1/u, \, \forall n \geq N\right) \geq 1-\delta.
+\mathbb{P}_{\btheta_{\star}}\left( \tau \leq  n \right) \geq
+ 1 -2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\frac{1}{2}\underline{D}_n(u,\balpha)\right)^2}.
 \end{equation}
-This $N$ is the solution to 
-\[
-  N \df
-  \min
-  \left\{
-    n:\;
-      \left(1 + \frac{4\rho}{n}\right)
-      \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}
-    +
-      \frac{2|\balpha_0|^2}{n^2} + \frac{2|\balpha_0|}{n}
-      +
-    \frac{2}{n}\log\frac{\Beta(\balpha_0)}{u}
-    \leq
-    \frac{1}{2}\Vert \btheta_0- \btheta_{\star}\Vert_{1}^2
-  \right\},
-\] for any choice of $\rho > 0$. \todo{Minimize bound with respect to rho?}
 \end{thm}
-
-While Theorem~\ref{thm:consistency} shows that the posterior odds converge to infinity under the alternative, Theorem~\ref{thm:finite_sample} gives an $N$
-for which the posterior odds will subsequently remain above a desired threshold $1/u$ with an arbitrarily large probability $1-\delta$.
-The proof is given in appendix section \ref{app:finite_sample}.
-
+\noindent This theorem provides a lower bound on the probability of rejecting the null by time $n$ as a function of $\|\btheta_\star - \btheta_0\|_1$, $u$ and $\balpha_0$.
+The proof is given in appendix section \ref{app:finite_sample}. 
 
 \section{Simulation Studies}
 \label{sec:simulation}
@@ -549,516 +566,163 @@ Let the KL divergence of the null model from the true model be denoted $\delta_0
 Hence KL divergence of the null $\btheta_0$ from the true $\btheta_\star$ is the relevant $\delta_0$ for model $M_0$ in lemma \ref{lemma:walker}.
 The value of $\delta_1$ for the Dirichlet prior under model $M_1$, however, is zero.
 
-\section{Finite Sample Properties}
-\label{app:finite_sample}
-The false positive guarantees the validity of the sequential SRM test, but they are only half of the equation.
-This section established good performance on the other side; namely, that the SSRM will find true differences quickly.
-In particular, we provide high probability bounds on the stopping time for data generated from some true alternative distribution $\theta_1$ in terms of some TBD distance measure of $\theta_1 - \btheta_0$.
 
-For the general multinomial case, we will use bold greek letters $\balpha = (\alpha_1,\ldots, \alpha_d)$ for vectors (in particular, distinguishing from the scalar $\alpha$); we will also use $\balpha^\bbeta = \prod_{i}^d \alpha_i^{\beta_i}$ to denote elementwise exponentiation, and we will use $|\balpha| = \sum_i\alpha_i$ for the sum.
-For the vector of counts, we will write $\bS_n=(S_1^n,\ldots, S_d^n)\in\Reals^d$, which lets of easily define the empirical probability of outcome $i$ as $\hat \theta_i^n \df S^n_i/n$.
-For any $\balpha,\bbeta\in\Reals^d$, we interpret exponentiation to be elementwise and define 
-
-For convenience, we will also define $\Beta(\bbeta) \df \prod_i \Gamma(\beta_i) / \Gamma(\sum_i\beta_i)$ for any vector $\bbeta$.
-The test rejects the null hypothesis corresponding to $\btheta_0$ when the event
-\begin{equation}\label{eq:multinomial.rejection.region}
-  \mathcal E_n \df \left\{\frac{\Beta(\balpha + \bS_n)}
-  {\Beta(\balpha)}
-  \btheta_0 ^{-\bS_n} \geq \frac{1}{\alpha}\right\}
-\end{equation}
-occurs.
-
-Our goal is to provide a guarantee of the form: if $S^n\sim\mathrm{multinomial}(\theta_1,n)$, then with probability $\delta>0$, there exists an $N$ such that 
-\begin{equation*}
-  P \left(\forall n \geq N,\;
-      \frac{\Beta(\balpha + \bS_n)}
-  {\Beta(\balpha)}
-  \btheta_0 ^{-\bS_n} \geq \frac{1}{\alpha}
-  \right) \geq 1-\delta.
-\end{equation*}
-We would also like to upper bound this $N$ as a function of $\theta_1$ and $\btheta_0$.
-
-We will accomplish this goal in two parts.
-First, we will lower bound 
-$
-  P \left(
-      \frac{\Beta(\balpha + \bS_n)}
-  {\Beta(\balpha)}
-  \btheta_0 ^{-\bS_n} \geq \frac{1}{\alpha}
-  \right) 
-$
-as a function of $\bS_n$.
-Then, we will construct a confidence sequence on $\bS_n$ (in terms of $n$ and $\theta_1$) and combine the two.
-
-\subsection{Manipulating the rejection probability}
-Our goal is to find some event $\mathcal E_n'\subseteq \mathcal E_n$ that is more amenable to computation; this allows us to obtain a bound on the power since
-$P(\forall n \geq N,\; \mathcal E_n) \geq P(\forall n \geq N,\; \mathcal E_n')$.
- Specifically, we will prove the following theorem.
-\begin{thm}\label{thm:calEprime}
-Define, for every $n>0$ and $\alpha, \bS_n\in(\Reals^+)^d$, the set
-\begin{equation}
-  \label{eq:decision_boundary}
-  \mathcal E_n'\df
-  \left\{
-    \KL(\hat\btheta_n|| \btheta)
-    \geq
-      \frac{|\balpha|^2}{n^2} + \frac{|\balpha|}{n}
-    +\frac{1}{n}\log\frac{\Beta(\balpha)}{\alpha}
-  \right\}.
-\end{equation}
-Then $\mathcal E_n' \subseteq \mathcal E_n$ for all $n>0$.
-
-\end{thm}
-This $\mathcal E_n'$ is much more convenient.
-For example, if $\alpha_i = 1$ for all $i$, then 
-\begin{equation*}
-  \mathcal E_n'\df
-  \left\{
-    \KL(\hat\btheta_n|| \btheta)
-    \geq
-    \frac{d^2}{n^2}
-    +\frac{d}{n}
-    +\frac{1}{n}\log\frac{1}{\alpha}
-  \right\}.
-\end{equation*}
-
+\section{Manipulating the Rejection Region}
+\label{sec:rejection_region}
+Our goal is to find some event $\mathcal R_n'\subseteq \mathcal R_n$ that is more amenable to computation; this allows us to obtain a bound on the power since
+$\mathbb{P}(\mathcal R_n) \geq \mathbb{P}(\mathcal R_n')$.
 The proof is by explicit construction, and we begin by deriving a lower bound on 
 $
  \frac{\Beta(\balpha + \bS_n)} {\Beta(\balpha)} \btheta_0 ^{-\bS_n}
 $.
-There are many ways to bound the Beta function; for the two dimensional case, it suffices to use
-\begin{equation}\label{eq:Beta.lower.bound}
-  \Beta(x,y) \geq \frac{x^{x-1}y^{y-1}}
-  {(x+y)^{x+y-1}}\quad\forall x,y>0,
-\end{equation}
-borrowed from \cite{grenie2015inequalities}.
-We will need the following multinomial generalization.
 \begin{lemma}\label{lem:beta.lower.bound}
   For all $\balpha$ in the positive orthant,
   \begin{equation*}
-    \Beta(\balpha) \geq
-    \frac{ \prod_i \alpha_i^{\alpha_i-1}}
-    {(\sum_i \alpha_i)^{\sum_i \alpha_i-1}}.
+    (2\pi)^{\frac{d-1}{2}}
+    \frac{\prod_{i=1}^d \alpha_i^{\alpha_i - 1/2}}{|\balpha|^{|\balpha|-1/2}e^{\frac{1}{12|\balpha|}}} \leq  \Beta(\balpha) \leq 
+(2\pi)^{\frac{d-1}{2}}
+    \frac{\prod_{i=1}^d \alpha_i^{\alpha_i - 1/2}e^{\frac{1}{12\alpha_i}}}{|\balpha|^{|\balpha|-1/2}} 
   \end{equation*}
 \end{lemma}
 \begin{proof}
-  We mostly follow the derivation of equation (4) in \cite{grenie2015inequalities}.
-For any completely monotone function $f:(0,\inf)\rightarrow(0,1]$, a result from \cite{kimberling1974probabilistic} yields that
-\[
-  \frac{f(x+y)}{f(x)f(y)} \geq 1 \; \forall x,y>0,
-\]
-Applying this identity repeatedly, we see that
-\[
-  f(|\balpha|)
-  \geq
-  f(\alpha_1)f\left(\textstyle \sum_{i>1} \alpha_i\right)
-  \geq \ldots\geq
-  \prod_i f(\alpha_i).
-\]
-We will apply this identity to the completely monotone function $\exp(-H(x))$, where
-\[
-  H(x) = x - x\log(x) + \log\Gamma(x+1);
-\]
-see \cite{grenie2015inequalities} for a justification.
-This produces
-\begin{align*}
-  \frac{1}{\Gamma(|\balpha|+1)}e^{-|\balpha|+|\balpha|\log(|\balpha|)}
-  &=
-  e^{-H\left(|\balpha|\right)}\\
-  &\geq
-    e^{-\sum_i H\left(\alpha_i\right)}\\
-  &=
-     e^{\sum_i\left(- \alpha_i + \alpha_i \log(\alpha_i)\right)}\prod_i\frac{1}{\Gamma(\alpha_i+1)}.
-\end{align*}
-Rearranging yields
-\[
-  \frac{\prod_i\Gamma(\alpha_i+1)}{\Gamma(|\balpha|+1)}
-  \geq
-  \frac{\prod_i \alpha_i^{\alpha_i}e^{-\alpha_i}}
-  {|\balpha|^{|\balpha|}e^{-|\balpha|}},
-\]
-which implies the bound
-\begin{align*}
-  \Beta(\balpha)
-  =
-  \frac{\prod_i\Gamma(\alpha_i)}{\Gamma(|\balpha|)}
-  &=
-  \frac{(|\balpha|+1)\prod_i}
-  {\prod_i (\alpha_i+1)}
-   \frac{\Gamma(\alpha_i+1)}{\Gamma(|\balpha|+1)}\\
-  &\geq
-  \frac{\prod_i \alpha_i^{\alpha_i}}
-  {|\balpha|^{|\balpha|}}
-  \frac{(|\balpha|+1)}{\prod_i (\alpha_i+1)}\\
-  &\geq
-  \frac{\prod_i \alpha_i^{\alpha_i-1}}
-  {|\balpha|^{|\balpha|-1}}.
-\end{align*}
+  We first recall a Stirling-type set of lower and upper bounds on the gamma function
+\begin{equation}
+(2\pi)^{\frac{1}{2}}x^{x-\frac{1}{2}}e^{-x}
+  \leq \Gamma(x) \leq (2\pi)^{\frac{1}{2}}x^{x-\frac{1}{2}}e^{-x}e^{\frac{1}{12x}},
+\end{equation}
+which can be verified in \cite{specialfunctions}.
+Together these bounds provide a bound on the error of the lower bound.
+In particular $|\log \Gamma(x) - \frac{1}{2}\log (2\pi) - (x-\frac{1}{2})\log x + x| \leq \frac{1}{12x}$, which shows
+that the lower bound error will become vanishingly small as $x\rightarrow \infty$, which is the case for our application. 
+These ideas follow through to lower bounding the Beta function. The lower bound on the Beta function follows by applying the lower bound to the Gamma funcitons
+in the numerator and the upper bound to the Gamma function in the denominator. The upper bound follows similarly.
 \end{proof}
-We can now finish the proof of Theorem~\ref{thm:calEprime}.
+\noindent We can now finish the proof of Theorem~\ref{thm:calRprime}.
 \begin{proof}
-Expanding the left hand side of \eqref{eq:multinomial.rejection.region}, and applying Lemma~\ref{lem:beta.lower.bound}, we see
+If a lower bound on the odds is greater than $1/u$, then the odds itself is greater than $1/u$. Let's first
+establish a lower bound on the odds using lemma \ref{lem:beta.lower.bound}.
 \begin{align*}
     \frac{\Beta(\balpha + \bS_n)}
-  {\Beta(\balpha)} \theta_i^{-\bS_n}
+  {\Beta(\balpha)} \theta_0^{-\bS_n}
   &\geq
-    \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1}}
-    {(|\balpha|+n)^{|\balpha| + n - 1}}
-    \frac{ \theta_i^{-\bS_n}}{\Beta(\balpha)}\\
+  (2\pi)^{\frac{d-1}{2}}
+    \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1/2}}
+    {(|\balpha|+n)^{|\balpha| + n - 1/2}}
+    \frac{ \theta_0^{-\bS_n}}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)}\\
   &=
-    n^n
-    \prod_i
-    \left(
-    \frac{\frac{\alpha_i}{n} + \hat \theta_i^n}{\theta_i}\right)^{S_i^n}
-    \frac{
-    \prod_i
-    (\alpha_i + S_i^n)^{\alpha_i - 1}
-    }
-    {(|\balpha|+n)^{|\balpha|+n-1}\Beta(\balpha)}\\
-  &\geq
-    n^n
-    \prod_i
-    \left(
-    \frac{\hat \theta_i^n}{\theta_i}\right)^{S_i^n}
-    \frac{
-    \prod_i
-    (\alpha_i + S_i^n)^{\alpha_i - 1}
-    }
-    {(|\balpha|+n)^{|\balpha|+n-1}\Beta(\balpha)}\\
+  (2\pi)^{\frac{d-1}{2}}
+    \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1/2}}
+    {(|\balpha|+n)^{|\balpha| + n - 1/2}}
+    \prod_i \left( \frac{\hat{\theta}^n_i}{\theta_{0,i}} \right)^{S^n_i}
+    \frac{1}{\prod_i (\hat{\theta}^n_i)^{S^{n}_{i}}}
+    \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)}\\
   &=
-    n^n
-    e^{n \KL(\hat\btheta_n|| \btheta) }
-    \frac{
-    \prod_i
-    (\alpha_i + S_i^n)^{\alpha_i - 1}
-    }
-    {(|\balpha|+n)^{|\balpha|+n-1}\Beta(\balpha)}.
+  (2\pi)^{\frac{d-1}{2}}
+    \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1/2}}
+    {(|\balpha|+n)^{|\balpha| + n - 1/2}}
+    e^{n \KL(\hat\btheta_n|| \btheta_0)}
+    \frac{n^{n}}{\prod_i (S^n_i)^{S^{n}_{i}}}
+    \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)}\\
+  &=
+  (2\pi)^{\frac{d-1}{2}}
+    \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1/2}}
+    {\prod_i (S^n_i)^{S^{n}_{i}}}
+    e^{n \KL(\hat\btheta_n|| \btheta_0)}
+    \frac{n^{n}}{(|\balpha|+n)^{|\balpha| + n - 1/2}}
+    \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)}\\
+  &>
+  (2\pi)^{\frac{d-1}{2}}
+    e^{n \KL(\hat\btheta_n|| \btheta_0)}
+    \frac{n^{n}}{(|\balpha|+n)^{|\balpha| + n - 1/2}}
+    \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)}\\
 \end{align*}
-This lets us construct
+The first inequality follows from the lower bound derived in lemma \ref{lem:beta.lower.bound}.
+The second inequality follows from
 \begin{align*}
-  \mathcal E_n
-  &=
-  \left\{
-    \log \left(
-    \Beta(\balpha+\bS_n) \theta_i^{-\bS_n}
-  \right)
-  \geq \log\frac{\Beta(\balpha)}{\alpha}
-    \right\}\\
-  &\supseteq
-    \left\{
-        n\log(n)
-    +n \KL(\hat\btheta_n|| \btheta)
-    +
-    \log\left(\frac{
-    \prod_i
-    (\alpha_i + S_i^n)^{\alpha_i - 1}
-    }
-    {(|\balpha|+n)^{|\balpha|+n-1}}\right)
-    \geq
-    \log\frac{\Beta(\balpha)}{\alpha}
-    \right\}\\
-  &=
-    \left\{
-    n \KL(\hat\btheta_n|| \btheta)
-    +
-    \sum_i\log\left(
-    (\alpha_i + S_i^n)^{\alpha_i - 1}
-    \right)
-    \geq
-    (|\balpha|+n-1)\log(|\balpha|+n)
-    -n\log(n)
-    +\log\frac{\Beta(\balpha)}{\alpha}
-    \right\}\\
-    &\supset
-    \left\{
-    n \KL(\hat\btheta_n|| \btheta)
-    +
-    \sum_i\log\left(
-    (\alpha_i + S_i^n)^{\alpha_i - 1}
-    \right)
-    \geq
-      \frac{|\balpha|^2}{n} + |\balpha|
-    +\log\frac{\Beta(\balpha)}{\alpha}
-    \right\},
+  \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1/2}}
+  {\prod_i (S^n_i)^{S^{n}_{i}}} \geq 1,
 \end{align*}
-where the last line followed because, under the assumption that $|\balpha| \geq 1$
+so long as $\alpha_i \geq 1/2$ for each $i$. We also note that this term converges to unity as $n\rightarrow \infty$, and
+so the bound is expected to be increasingly good for large $n$.
+Now consider the simpler rejection region
 \begin{align*}
-    (|\balpha|+n-1)\log(|\balpha|+n)
-  -n\log(n)
-  &\geq
-    (|\balpha|+n-1)\log(|\balpha|+n)
-    -(|\balpha|+n-1)\log(n)\\
-  &\geq
-  (|\balpha|+n-1)
-    \log\left(1+\frac{|\balpha|}{n}\right)\\
-  &\geq
-    (|\balpha|+n-1)\frac{|\balpha|}{n}
-    \geq
-    \frac{|\balpha|^2}{n} + |\balpha|.
+  \mathcal{R}_n' &= \left\{ \bx_{1:n} : 
+  \KL(\hat\btheta_n|| \btheta_0) \geq \frac{1}{n}\left( \log \frac{\Beta(\balpha)}{u} +(|\balpha|+n-1/2)\log(|\balpha|+n)-n\log n + \frac{1}{12(|\balpha|+n)} - \frac{d-1}{2}\log 2\pi\right)\right\}\\
+  &= \left\{ \bx_{1:n} : 
+  (2\pi)^{\frac{d-1}{2}}
+    e^{n \KL(\hat\btheta_n|| \btheta_0)}
+    \frac{n^{n}}{(|\balpha|+n)^{|\balpha| + n - 1/2}}
+    \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)} \geq \frac{1}{u} \right\}\\
+   &\subset \left\{ \bx_{1:n} : 
+    \frac{\Beta(\balpha + \bS_n)}
+  {\Beta(\balpha)} \theta_0^{-\bS_n} \geq \frac{1}{u}
+\right\}\\
+    &= \mathcal{R}_n\\
 \end{align*}
+It is reassuring to observe that $|\balpha|$ always appears in combination with $n$. Recall if we choose $\alpha=k\theta_0$, then $|\balpha|=k$ is interpreted as the prior sample size in a Multinomial-Dirichlet model.
+The sum $|\balpha|+n$ can be interpreted as the total samples, from the data and the prior.
 
-The last step is to upper-bound
-We can upper bound the final remaining summation by
+Let us write $\mathcal{R}_n' = \left\{ \bx_{1:n} : \KL(\hat\btheta_n|| \btheta_0) \geq \underline{D}_n(u,\balpha) \right\}$, then $\underline{D}_n(u,\balpha) \sim \mathcal{O}((1/n)\log n)$.
+To see this note that 
 \begin{align*}
-  \sum_i(\alpha_i-1)\log
-  \left(
-  \alpha_i + S_i^n
-  \right)
-  &\leq
-    (|\balpha|-d)\log
-    \left(
-    |\balpha|+n
-    \right),
+  (|\balpha|+n-1/2)\log(|\balpha|+n)-n\log n < (|\balpha|-1/2)\log(|\balpha|+n) + |\alpha|/n,
 \end{align*}
-showing that
-\[
-      \left\{
-    n \KL(\hat\btheta_n|| \btheta)
-    \geq
-      \frac{|\balpha|^2}{n} + |\balpha|
-      +\log\frac{\Beta(\balpha)}{\alpha}
-      -
-          (|\balpha|-d)\log
-    \left(
-    |\balpha|+n
-    \right)
-  \right\}
-  \subseteq \mathcal E_n,
-\]
-which implies that $\mathcal E_n' \subseteq \mathcal E_n$ (the bound on the summation is only included for completeness).
+where we have used the mean value theorem to write $\log(|\balpha|+n) = \log(n) +  |\balpha|/c$ for some $c\in (n, n+|\balpha|)$, 
+which can be upper bounded by $\log(n) + |\balpha|/n$, which can be interpreted as the logarithmic function being bounded from above by the tangent at $n$.
 \end{proof}
 
-\subsection{Deriving a Confidence Sequence for $\bS_n$}
-The next step in the argument is to derive a confidence sequence for $\bS_n$ under some alternative hypothesis.
-In fact, we only need to derive a lower bound on $\KL (\hat\btheta_n||\btheta_0)$ in order to apply the results of the previous section.
-
-In particular, we will prove a confidence sequence on the total variation norm directly.
-This confidence sequence is novel and may be of independent interest.
-\begin{lemma}\label{lem:CS}
-  Fix some $\theta$ in the $d$-simplex and assume that $X_t\sim\mathrm{Multinomial}(\btheta)$ for $t>0$.
-Let $\hat\btheta_n$ be the empirical frequencies after $n$ samples.
-For any $\delta>0$,  we have
-\begin{equation}\label{eqn:multinomial.CS}
-  P\left( \exists n > 0: \Vert \hat\btheta_n - \theta\Vert_1
-    \geq
-  \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}} 
-  \right)
-  \leq \delta.
-\end{equation}  
-\end{lemma}
-\begin{proof}
-  We will follow the construction of \cite{weissman2003inequalities}.
-  Using the shorthand $\theta'(A) \df P(Z\in  A)$ where $Z\sim\mathrm{Multinomial}(\theta')$, the total variation and $L_1$ norms are related by
-\[
-  \Vert \hat\theta_t - \theta\Vert_1
-  =
-  2 \max_{A \subseteq \{1,\ldots, d\}} \hat\theta_t(A) - \theta(A),
-\]
-and so we may use a union bound to arrive at
+\section{Lower Bounding the Stopping Time CDF}
+\label{app:finite_sample}
+In order to assess how quickly the proposed test is able to reject the null, we would like to obtain, or at least lower bound, the probability
+or rejecting the null hypothesis by a time $n$. Denote the random stopping time of rejecting the null hypothesis as $\tau = \inf \{n : O_n(\btheta_0) \geq 1/u\} =\inf \{n : x_{1:n} \in \mathcal{R}'_n\}$. 
+A simple lower bound can be obtained as follows
 \begin{align*}
-  P(\exists n > 0:\; \Vert \hat\btheta_n - \theta\Vert_1 \geq \epsilon)
-  \leq
-  \sum_{A \subset \{1,\ldots, d\}}
-  P\left(\exists n > 0:\; \hat\btheta_n(A) - \theta(A) \geq \frac{\epsilon}{2}\right).
+  \mathbb{P}_{\btheta_\star}[\tau \leq n] &\geq \mathbb{P}_{\btheta_\star}[\exists i \leq n : \bx_{1:i} \in \mathcal{R}_i]\\ 
+&\geq \mathbb{P}_{\btheta_\star}[\bx_{1:n} \in \mathcal{R}_n]\\ 
+&\geq \mathbb{P}_{\btheta_\star}[\bx_{1:n} \in \mathcal{R}'_n].\\ 
 \end{align*}
-
-Hence, for any $A \subset \{1,\ldots, d\}$, we want to upper bound
-\[
- P\left(\exists n > 0:\; \hat\btheta_n(A) - \theta(A) \geq \frac{\epsilon}{2}\right).
-\]
-
-Fortunately, $n \hat\btheta_n(A)$ is the sum of independent Bernoulli random variables $\mathds{1}\{ \Delta \bS_n \in A\}$ with mean $\theta(A)$ (where $\mathds{1}\{\cdot\}$ is the indicator function).
-This implies that $n \hat\btheta_n(A)$ is the sum of sub-Gaussian random variables with $\sigma^2 = 1/4$, and we may apply any sub-Gaussian mixture boundary.
-In particular, \cite[Equation~14]{howard2018uniform} implies that
-\[
-  P\left(\exists n > 0: \hat\btheta_n(A) - \theta(A) \geq
-    \frac{1}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{(\delta')^2 \rho}}
-  \right)
-  \leq
-  \delta',
-\]
-where $\rho$ is mixture variance.
-Hence, choosing $\delta' = 2^{-d} \delta$, we have
+The second inequality is simply stating that the probability of rejecting the null hypothesis is higher if
+we apply the test after every data point up to and including time $n$, than simply applying the test at time $n$.
+This makes sense, as there are simply more opportunities for the null to be rejected. 
+The last inequality follows from lemma \ref{thm:calRprime}.
+Note that the rejection region $\mathcal{R}_n'$ depends on $\bx_{1:n}$ only through the MLE $\hat{\btheta}(\bx_{1:n})$.
+In what follows it is helpful to consider $\hat{\btheta}(\bx_{1:n})$ as a test statistic at time $n$,
+and define a corresponding rejection region as a subset of $\triangle^d$ at time $n$.
+Let this rejection region in $\triangle^d$ be denoted $T_n = \{\btheta \in \triangle^d : \KL(\btheta||\btheta_0) \geq \underline{D}_n(u,\balpha)\}$, then $\hat{\btheta}(\bx_{1:n})\in T_n$ implies
+$\bx_{1:n} \in \mathcal{R}'_n$.
+We now combine this with the concentration inequality of \cite{weissman2003inequalities} for the MLE of a multinomial model
 \begin{align*}
-  \lefteqn{
-  P\left(\exists n > 0:\; \Vert \hat\btheta_n - \theta\Vert_1 \geq
-  \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}} 
-\right)
-  }\\
-  &\leq
-  \sum_{A \subset \{1,\ldots, d\}}
-  P\left(\exists n > 0:\; \hat\btheta_n(A) - \theta(A)
-  \geq
-    \frac{1}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}  
-  \right)\\
-  &\leq
-    \sum_{A \subset \{1,\ldots, d\}}
-    \delta 2^{-d}\\
-  &\leq
-  \delta.
+  \mathbb{P}_{\btheta_\star}[\hat{\btheta}_n \in C_n^\delta] \geq 1 - \delta,
 \end{align*}
+where $C_n^\delta = \{ \btheta \in \triangle^d : \|\btheta-\btheta_\star\|_1 \leq \sqrt{\frac{4\log \frac{2}{\delta}}{n}}\}$.
+At any time we now have two sets in $\triangle^d$. 
+The first is a rejection set which converges to  $\triangle^d \setminus \btheta_0$ as $n \rightarrow \infty$,
+the second a set which concentrates around the true parameter $\btheta_\star$ as $n \rightarrow \infty$.
+If the MLE is in the latter with high probability, and this set is totally contained inside the rejection set, then the test statistic is in the rejection set with high probability. 
+This is only possible for large enough $n$ so that $\btheta_\star \in T_n$, after which one chooses the smallest $\delta$ satisfying $C_n^\delta \subset T_n$, yielding $1-\delta$ lower bound on the probability of rejection.
 
 
-
-\end{proof}
-
-We can now combine the two lemmas of this section into a finite-sample power guarantee.
-We will denote the decision boundary from \eqref{eq:decision_boundary} by
-\[\Gamma_n(\balpha)
-  \df
-  \frac{|\balpha|^2}{n^2} + \frac{|\balpha|}{n}
-  +
-  \frac{1}{n}\log\frac{\Beta(\balpha)}{\alpha}.
-\]
-\begin{thm}\label{thm:power_lower_bound}
-  Assume that $\bS_n$ has a multinomial $\btheta_\star$ distribution.
-For every $\balpha$, $\delta$, $\alpha$, $\btheta_\star$, and $\btheta_0$, there exists an $N$ such that
-  \begin{equation*}
-    P\left(\forall n \geq N: \KL(\hat\btheta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)\right)
-    \geq 1-\delta.
-  \end{equation*}
-\end{thm}
-\begin{proof}
-  Define the event
-  \[
-    \mathcal R_n
-    \df
-    \left\{
-    \KL(\hat\btheta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)
-  \right\}.
-\]
-By Applying Pinsker's inequality then the triangle inequality, we can show that
-\[
-  \mathcal R_n \supseteq
-  \left\{
-    \Vert \hat\btheta_n - \btheta_0\Vert_1 \geq \sqrt{2\Gamma_n(\balpha)}
-  \right\}
-  \supseteq
-    \left\{
-      \Vert \btheta_\star - \btheta_0\Vert_1
-      -
-      \Vert \hat\btheta_n - \btheta_\star\Vert_1
-      \geq \sqrt{2\Gamma_n(\balpha)}
-  \right\}.
-\]
-Hence, we would like to find an $N$ such that
-\[
-      P\left(
-      \Vert \btheta_\star - \btheta_0\Vert_1
-      -
-      \Vert \hat\btheta_n - \btheta_\star\Vert_1
-      \geq \sqrt{2\Gamma_n(\balpha)}
-  \right)\geq 1-\delta
-\]
-for all $n\geq N$.
-By Lemma~\ref{lem:CS}, with probability at least $1-\delta$, the event
-\begin{align*}
-  \left\{ \forall n > 0:
-  \Vert\hat\btheta_n- \btheta_\star\Vert_1
-  \leq
-    \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}\right\}
-\end{align*}
-occurs.
-
-The existence of an $N$ that satisfied the conditions of the theorem can be show by choosing any $N$ that satisfies
-\[
-  \Vert \btheta_0- \btheta_\star\Vert_{1}
-    \geq
-        \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)\log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}
-    + \sqrt{2\Gamma_n(\balpha)}.
-  \]
-Such an $N$ is well defined because the left hand side is a constant and the right hand side is a decreasing fuction of $N$.
-In particular, we may simply take $\gamma = 1$; the right most term decays like $1/\sqrt{n}$, so optimizing $\gamma$ will not yield a faster rate.
-
-
-
-Combining the previous few steps, we have
+Because the rejection set $T_n$ is defined in terms of the KL divergence, while the concentration set $C_n^\delta$ is defined in terms of the L1-norm, we define
+$T_n' = \{\btheta \in \triangle^d : \|\btheta-\btheta_0\|_1 \geq (1/2)\underline{D}_n(u,\balpha)\}$.
+It follows from Pinsker's inequality $2\|\bx-\btheta\|_1\leq \KL(\bx||\btheta)$ that $T_n' \subset T_n$.
+Let $N = \min \{n \in \mathbb{N} : \btheta_\star \in T_n'\}$, this ensures that the the true parameter is in the rejection region $T_n'$ for all subsequent $n$, around which a $C_n^\delta$ can be placed for suitably small $\delta$.
+Let
 \begin{equation*}
-    P\left(\forall n>0 \leq N: \KL(\hat\btheta_n \Vert \btheta_0) \geq \Gamma_n(\balpha)\right)
-    \geq 1-\delta,
-  \end{equation*}
-  completing the proof.
-\end{proof}
-\begin{lemma}
-  For the $N$ defined by Theorem~\ref{thm:power_lower_bound}, we have
-  \begin{equation*}
-    N = \Omega\left(
-      \frac{d}{\Vert \btheta_0- \btheta_\star\Vert_{1}^2}
-\log\pfrac{1}{\delta}\log\pfrac{1}{\alpha}
-    \right).
-  \end{equation*}
-\end{lemma}
-\begin{proof}
-The sample complexity will be the solution to
-\[
-  N \df
-  \min
-  \left\{
-    n:\;
-      \left(1 + \frac{4\rho}{n}\right)
-      \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}
-    +
-      \frac{2|\balpha|^2}{n^2} + \frac{2|\balpha|}{n}
-      +
-    \frac{2}{n}\log\frac{\Beta(\balpha)}{\alpha}
-    \leq
-    \frac{1}{2}\Vert \btheta_0- \btheta_\star\Vert_{1}^2
-  \right\},
-\]
-  which has the same order as described in the lemma.
-To check that this $N$ is sufficient, we will argue that this $N$ ensures that
-  \begin{equation}\label{eqn:n.bound}
-    \Vert \btheta_0- \btheta_\star\Vert_{1}
-    \geq
-    \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)
-      \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}
-    + \sqrt{2}\sqrt{
-      \frac{|\balpha|^2}{n^2} + \frac{|\balpha|}{n}
-      +
-      \frac{1}{n}\log\frac{\Beta(\balpha)}{\alpha}
-    }.
-\end{equation}  
-
-Since convexity of the square root implies  $\sqrt{a}+\sqrt{b}\leq\sqrt{2(a+b)}$, we can show that
+  \delta = 2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\frac{1}{2}\underline{D}_n(u,\balpha)\right)^2}
+\end{equation*}
+It follows for $\btheta \in C_n^\delta$, 
 \begin{align*}
-    \lefteqn{\frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)
-      \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}
-    + \sqrt{2}\sqrt{
-      \frac{|\balpha|^2}{n^2} + \frac{|\balpha|}{n}
-      +
-      \frac{1}{n}\log\frac{\Beta(\balpha)}{\alpha}
-  }}\\
-  &\leq
-    \sqrt{2}
-      \sqrt{\frac{1}{n}\left(1 + \frac{4\rho}{n}\right)
-      \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}
-    +
-      \frac{2|\balpha|^2}{n^2} + \frac{2|\balpha|}{n}
-      +
-    \frac{2}{n}\log\frac{\Beta(\balpha)}{\alpha}
-    },
+  \|\btheta-\btheta_0\|_1 &\geq  \|\btheta_\star - \btheta_0\|_1 - \|\btheta - \btheta_\star \|_1 \hspace{1cm}\text{(Reverse Triangle Inequality)},\\
+  &\geq \sqrt{\frac{4\log \frac{2}{\delta}}{n}} - \|\btheta - \btheta_\star \|_1 \hspace{1cm} (\btheta \in C_n^\delta),\\
+  &\geq \frac{1}{2}\underline{D}_n(u,\balpha),
 \end{align*}
-which implies that, under $n \geq N$, we have
+and therefore that $\btheta \in T_n'$. Hence for all $n \geq N$
 \begin{align*}
-    \Vert \btheta_0- \btheta_\star\Vert_{1}
-  &\geq
-    \sqrt{
-    \left(1 + \frac{4\rho}{n}\right)
-      \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}
-    +
-      \frac{2|\balpha|^2}{n^2} + \frac{2|\balpha|}{n}
-      +
-    \frac{2}{n}\log\frac{\Beta(\balpha)}{\alpha}
-    }\\
-    &\geq
-      \frac{2}{n}\sqrt{\left(\frac{n}{4} + \rho\right)
-      \log\pfrac{n/4+\rho}{2^{-2d}\delta^2 \rho}}
-    + \sqrt{2}\sqrt{
-      \frac{|\balpha|^2}{n^2} + \frac{|\balpha|}{n}
-      +
-      \frac{1}{n}\log\frac{\Beta(\balpha)}{\alpha}
-      }.
+  \mathbb{P}_{\btheta_\star}[\tau \leq n] &\geq \mathbb{P}_{\btheta_\star}[\exists i \leq n : \bx_{1:i} \in \mathcal{R}_i]\\ 
+&\geq \mathbb{P}_{\btheta_\star}[\bx_{1:n} \in \mathcal{R}_n]\\ 
+&\geq \mathbb{P}_{\btheta_\star}[\bx_{1:n} \in \mathcal{R}'_n]\\ 
+&= \mathbb{P}_{\btheta_\star}[\hat{\btheta}(\bx_{1:n}) \in T_n]\\ 
+&\geq \mathbb{P}_{\btheta_\star}[\hat{\btheta}(\bx_{1:n}) \in T_n']\\
+&\geq 1 -2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\frac{1}{2}\underline{D}_n(u,\balpha)\right)^2} \\
 \end{align*}
-\end{proof}
-
 \end{document}
