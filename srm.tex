@@ -317,6 +317,7 @@ This lemma is then used to establish the following result.
   \label{thm:finite_sample}
 \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$.
 Let $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$ be the random stopping time at which the null is rejected and define $N = \min \{n \in \mathbb{N} : \|\btheta_\star - \btheta_0\|_1 \geq (1/2)\underline{D}_n(u,\balpha)\}$, then for all $n\geq N$
+
 \begin{equation}
   \label{eq:finite_sample}
 \mathbb{P}_{\btheta_{\star}}\left( \tau \leq  n \right) \geq
@@ -422,7 +423,7 @@ The challenge in conditional frequentist testing is to find an appropriate condi
 We note that the confidence sequences described in Theorem~\ref{thm:confidence_sequence} share a connection with other Bayesian intervals discussed in the literature.
 To see this it is necessary to express the Bayes factor in terms of the Savage-Dickey density ratio (\cite{dickey}) as
 \begin{equation}
-    B(\bx_{1:t}|\btheta_0) = \frac{p(\btheta_0| M_1)}{p(\btheta_0|\bx_{1:t},M_1)}.
+    BF(\bx_{1:t}|\btheta_0) = \frac{p(\btheta_0| M_1)}{p(\btheta_0|\bx_{1:t},M_1)}.
 \end{equation}
 This, with $O_0(\btheta_0)=1$, implies that $I_t(u) = \lbrace \btheta \in \triangle^d : O_t(\btheta) \leq 1/u \rbrace = \lbrace \btheta  \in \triangle^d : p(\btheta| M_1)\leq p(\btheta|\bx_{1:t}, M_1)/u \rbrace $, which is identified as the Bayesian \textit{support interval} proposed by \cite{support_interval}.
 The authors proposed this as an alternative to the more commonly reported Bayesian credible intervals, argueing that the support interval is based on evidence in the data (how the data changes belief), whereas credible intervals are based on posterior belief directly.
@@ -496,7 +497,7 @@ To result follows from the application of the following two lemmas.
     &=  O_{t}(\btheta_0) \int p(\bx_{t+1}|\bx_{1:t},M_1) d\bx_{t+1}\\
     &=  O_{t}(\btheta_0),
   \end{align*}
-  where $\mathcal{F}_{t} = \sigma(x_1,x_2,\dots, \bx_t)$
+  where $\mathcal{F}_{t} = \sigma(\bx_1,\bx_2,\dots, \bx_t)$
 \end{proof}
 
 \begin{lemma}(Ville's Maximal Inequality)
@@ -536,7 +537,7 @@ then
     =& -\log \frac{p(\bx_t|M_\star)}{p(\bx_t|\bx_{1:t-1},M_j)} + D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t-1}, M_j) ) +\\
     &S_{jt-1},\\
   \end{align*}
-  from which it follows that $\mathbb{E}[S_{jt}|\mathcal{F}_t] = S_{jt-1}$ with $\mathcal{F}_t = \sigma(x_1,\dots,x_{t-1})$.
+  from which it follows that $\mathbb{E}[S_{jt}|\mathcal{F}_t] = S_{jt-1}$ with $\mathcal{F}_t = \sigma(\bx_1,\dots,\bx_{t-1})$.
 From the assumption that  $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(\bx_t|\bx_{1:t-1},M_j)}{p(\bx_t|M_\star )}]\right) < \infty$, it follows that $S_{jt}/t \rightarrow 0$ a.s.
 and consequentially
   \begin{align*}
