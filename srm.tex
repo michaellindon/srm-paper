@@ -321,7 +321,7 @@ Let $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$ be t
 \begin{equation}
   \label{eq:finite_sample}
 \mathbb{P}_{\btheta_{\star}}\left( \tau \leq  n \right) \geq
- 1 -2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\frac{1}{2}\underline{D}_n(u,\balpha)\right)^2}.
+ 1 -2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\sqrt{2\underline{D}_n(u,\balpha)}\right)^2}.
 \end{equation}
 \end{thm}
 \noindent This theorem provides a lower bound on the probability of rejecting the null by time $n$ as a function of $\|\btheta_\star - \btheta_0\|_1$, $u$ and $\balpha_0$.
@@ -642,8 +642,7 @@ The second inequality follows from
   \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1/2}}
   {\prod_i (S^n_i)^{S^{n}_{i}}} \geq 1,
 \end{align*}
-so long as $\alpha_i \geq 1/2$ for each $i$. We also note that this term converges to unity as $n\rightarrow \infty$, and
-so the bound is expected to be increasingly good for large $n$.
+so long as $\alpha_i \geq 1/2$ for each $i$.
 Now consider the simpler rejection region
 \begin{align*}
   \mathcal{R}_n' &= \left\{ \bx_{1:n} : 
@@ -703,18 +702,20 @@ This is only possible for large enough $n$ so that $\btheta_\star \in T_n$, afte
 
 
 Because the rejection set $T_n$ is defined in terms of the KL divergence, while the concentration set $C_n^\delta$ is defined in terms of the L1-norm, we define
-$T_n' = \{\btheta \in \triangle^d : \|\btheta-\btheta_0\|_1 \geq (1/2)\underline{D}_n(u,\balpha)\}$.
-It follows from Pinsker's inequality $2\|\bx-\btheta\|_1\leq \KL(\bx||\btheta)$ that $T_n' \subset T_n$.
+$T_n' = \{\btheta \in \triangle^d : \|\btheta-\btheta_0\|_1 \geq \sqrt{2\underline{D}_n(u,\balpha)}\} \subseteq T_n$. 
+That $T_n' \subseteq T_n$ follows from a combination two observations.
+Firstly, by Pinsker's inequality $\delta(\bx, \btheta)\leq \sqrt{(1/2)\KL(\bx||\btheta)}$, where $\delta(\bx, \btheta)$ denotes the total variation norm of two Multinomial distributions with parameters $\bx$ and $\btheta$.
+Secondly, the fact that $\delta(\bx,\btheta)=(1/2)\|\bx - \btheta\|_1 $ for two multinomial distributiones with parameters $\bx$ and $\btheta$.
 Let $N = \min \{n \in \mathbb{N} : \btheta_\star \in T_n'\}$, this ensures that the the true parameter is in the rejection region $T_n'$ for all subsequent $n$, around which a $C_n^\delta$ can be placed for suitably small $\delta$.
 Let
 \begin{equation*}
-  \delta = 2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\frac{1}{2}\underline{D}_n(u,\balpha)\right)^2}
+  \delta = 2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\sqrt{2\underline{D}_n(u,\balpha)}\right)^2}
 \end{equation*}
 It follows for $\btheta \in C_n^\delta$, 
 \begin{align*}
   \|\btheta-\btheta_0\|_1 &\geq  \|\btheta_\star - \btheta_0\|_1 - \|\btheta - \btheta_\star \|_1 \hspace{1cm}\text{(Reverse Triangle Inequality)},\\
   &\geq \sqrt{\frac{4\log \frac{2}{\delta}}{n}} - \|\btheta - \btheta_\star \|_1 \hspace{1cm} (\btheta \in C_n^\delta),\\
-  &\geq \frac{1}{2}\underline{D}_n(u,\balpha),
+  &\geq \sqrt{2\underline{D}_n(u,\balpha)},
 \end{align*}
 and therefore that $\btheta \in T_n'$. Hence for all $n \geq N$
 \begin{align*}
@@ -723,6 +724,6 @@ and therefore that $\btheta \in T_n'$. Hence for all $n \geq N$
 &\geq \mathbb{P}_{\btheta_\star}[\bx_{1:n} \in \mathcal{R}'_n]\\ 
 &= \mathbb{P}_{\btheta_\star}[\hat{\btheta}(\bx_{1:n}) \in T_n]\\ 
 &\geq \mathbb{P}_{\btheta_\star}[\hat{\btheta}(\bx_{1:n}) \in T_n']\\
-&\geq 1 -2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\frac{1}{2}\underline{D}_n(u,\balpha)\right)^2} \\
+&\geq 1 -2e^{-\frac{n}{4}\left(\|\btheta_\star - \btheta_0\|_1-\sqrt{2\underline{D}_n(u,\balpha)}\right)^2}
 \end{align*}
 \end{document}
