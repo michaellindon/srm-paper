@@ -98,13 +98,13 @@ We use boldface to emphasize vectors.
 The simply randomized design can then be summarized by the following probabilistic assignment mechanism
 \begin{equation}
   \label{eq:multinomialassignment}
-  \bx_1,\bx_2, \dots \sim \text{Multinomial}(1,\btheta_0).
+  \bx_1,\bx_2, \dots \stackrel{\text{i.i.d.}}{\sim} \text{Multinomial}(1,\btheta_0).
 \end{equation}
-The statistician may not be personally involved with the data collection process and may simply be told the assignment mechanism after being presented with the data for analysis.
-The observant statistican has a right for concern, therefore, when they are provided with data which does not support the purported assignment mechanism.
+The statistician may not be personally involved with the data collection process and may simply be told the assignment mechanism after being presented with the data for analysis and 
+has a right for concern when they are provided with data which does not support the purported assignment mechanism.
 For simply randomized experiments, the total unit counts assigned to each treatment group can provide evidence that the model \eqref{eq:multinomialassignment} is not true.
 Indeed, this is a strong indicator that the experiment has not been conducted as expected; for example, the assignment mechanism could be biased, there could be systematic data loss, or generally when the data can be considered ``missing not at random'' (MNAR) \citep{missing-data}.
-Such observations occurs frequently in OCEs and are colloquially referred to in the technology industry as \textit{sample ratio mismatches} (SRMs).
+Such observations occurs frequently in OCEs and are colloquially referred to  as \textit{sample ratio mismatches} (SRMs).
 
 OCEs automate the assignment mechanism, data collection and data cleaning through code, which often introduces bugs and logical errors.
 It is unsurprising, therefore, that \cite{fabijan} report that 6\% of all experiments performed in a at Microsoft contained bugs which were revealed by SRMs.
@@ -115,7 +115,7 @@ Unfortunately the classification between human and non-human visitors is perform
 This is not an issue with the assignment mechanism, but in the data collection.
 It is an example of a \textit{censoring} missing data mechanism, a special case of MNAR.
 
-\cite{zhao} describe an example in which the user identifer becomes lost, preventing users from receiving a consistent experience over time, with some users initially assigned to the treatment becoming exposed to and recorded in the control - an example of noncompliance (\cite{imbens}).
+Noncompliance (\cite{imbens}) can also be revealed through SRMs. For example, \cite{zhao} describe an example in which the user identifer becomes lost, preventing users from receiving a consistent experience over time, with some users initially assigned to the treatment becoming exposed to and recorded in the control.
 
 
 Many other practical abnormalities can be revealed by considering the total counts in each treatment group after collection.
@@ -125,6 +125,7 @@ First, one only learns about a problem in the data after data collection has com
 It is assumed that there is an implicit cost of including a unit in an experiment, and so ideally one would like to learn about such problems as soon as possible to prevent further units from entering an improperly executed-experiment.
 Second, the desire to find SRMs early encourages practitioners to incorrectly \textit{continuously monitor} their experiments through the repeated application of significance tests without any multiplicity correction (\cite{armitage}).
 
+A sequential hypothesis test \citep{todo}, on the other hand, makes a sequence of decisions to reject the null hypothesis multiple times, potentially after every data point. They are carefully designed to maintain the false positive guarantee that the null hypothesis is never incorrectly rejected for the entire collection of decisions.
 In this paper, we propose a sequential test to identify SRMs that allows for optional stopping and optional continuation \todo{define optional stopping and continuation}.
 Our method is inspired by Bayesian methods satisfying the \textit{stopping rule principle}, which requires that that statistical conclusions provided by a hypothesis test should be independent of the reason for stopping the experiment, which follows from the likelihood principle \citep{likelihood}.
 
@@ -163,9 +164,9 @@ The Bayes factor comparing models $M_1$ to $M_0$ is analytically tractable and i
  BF_{10}(\bx_{1:t}) = \frac{p(\bx_{1:t}|M_1)}{p(\bx_{1:t}|M_0)} = \frac{\Gamma(\sum_{j=1}^{d} \alpha_{0,j})}{\Gamma(\sum_{j=1}^{d} \alpha_{0,j} + \sum_{i=1}^{t}x_{i,j})}\frac{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} + \sum_{i=1}^{t}x_{i,j} )}{\prod_{j=1}^{d}\Gamma(\alpha_{0,j} )}\frac{1}{\prod_{j=1}^{d} \theta_{0,j}^{\sum_{i=1}^{t}x_{i,j}}},
 \end{equation}
 which, when combined with the prior odds, yields the posterior odds of model $M_1$ to $M_0$.
-To assist with the exposition we introduce the following notation. 
-Let $S_i^t=\sum_{j=1}^{t}x_{j,i}$ and $\bS_t=(S_1^t,\ldots, S_d^t)\in\Reals^d$, 
-which lets the MLE easily be defined as $\hat \btheta_t \df \bS_t/t$.
+To assist with the exposition, we introduce the following notation. 
+Let $S_i^t=\sum_{j=1}^{t}x_{j,i}$ and $\bS_t=(S_1^t,\ldots, S_d^t)\in\Reals^d$
+so that the MLE can be easily be defined as $\hat \btheta_t \df \bS_t/t$.
 In addition, we will use $|\bv| = \sum_{i} v_i$ to denote the elementwise sum of a vector $\bv$, 
 $\bv^{\bw} = \prod_{i} v_{i}^{w_i}$ to denote elementwise exponentiation of two vectors $\bv$ and $\bw$,
 and the multivariate Beta function $\Beta(\bv) \df (\prod_{i}\Gamma(v_i))/\Gamma(\sum_i v_i)$. 
@@ -181,7 +182,7 @@ It is helpful to consider the posterior odds as computed sequentially through th
 \end{equation}
 where $\balpha_t = \balpha_{t-1}+\bx_t$ and $O_0(\btheta_0)=p(M_1)/p(M_0)$ (see appendix section \ref{app:posterior_odds}).
 In the rest of this paper, we will always assume that the prior odds are unity, and so the posterior odds are interchangeable with the Bayes factor.
-Recursive definitions require an initial value and for that reason we choose to work with the posterior odds.
+Recursive definitions require an initial value and for that reason we choose to work with the posterior odds.\todo{This sentence is not clear to me.}
 The dependence of $O_t(\btheta_0)$ on the observed data $\bx_{1:t}$ is implicit in this notation, yet the null value $\btheta_0$ being tested is made explicit to aid the discussion of confidence sequences in Theorem~\ref{thm:confidence_sequence}.
 If $\balpha_0$ is integer valued, and noting that all but one of the $x_{t,j}$ is 1 with the others 0, then the recursive definition simplifies substantially to
 \begin{align}
@@ -192,38 +193,38 @@ If $\balpha_0$ is integer valued, and noting that all but one of the $x_{t,j}$ i
 where the last line follows from the mean of the Dirichlet posterior predictive distribution.
 This multiplicative update has some intuitive appeal - it is the expected probability, based on our current Bayesian belief, divided by the null probability of the event that occured.
 A pure Bayesian analysis could proceed by rejecting the null when $O_t(\btheta_0) \geq c$ and reporting a posterior error probability of less than $1/(1+c)$ \citep[Chapter 5]{bernardo}.
-Many find the pure Bayesian approach unsettling, unable to formulate a prior belief on $\theta$ under the alternative model.
+Many find the pure Bayesian approach unsettling as it is difficult to form a sensible prior belief on $\theta$ under the alternative model.
 We instead develop a test based on $O_t(\btheta_0)$ which controls the frequentist Type-I error under optional stopping and continuation, regardless of the choice of $\balpha_0$.
 
 \section{Theoretical Results}
 \label{sec:theory}
 A time-uniform bound, such as the one presented below in Theorem~\ref{thm:type_1_error}, controls the deviations of a stochastic process for all $t$ simultaneously.
-Time-uniform bounds under the null hypothesis are essential for proving correctness of tests with optional stopping and optional continuation.
+Time-uniform bounds under the null hypothesis are essential for proving correctness of sequential tests and verifying the optional stopping and optional continuation properties.
 \begin{thm}  
   \label{thm:type_1_error}
   Let $\bx_t\sim \mathrm{Multinomial}(1,\btheta)$ for all $t \in \mathbb{N}$.
-Consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
+Consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$. Then
 \begin{equation}
   \label{eq:type_1_error}
-  \mathbb{P}_{\btheta = \btheta_0}\left( \exists t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \right) \leq u,
+  \mathbb{P}_{\btheta = \btheta_0}\left( \exists t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \right) \leq u
 \end{equation}
 for all $u \in [0,1]$ and for all choices of $\balpha_0$.
 \end{thm}
 
-The uniform condition in equation \ref{eq:type_1_error} suggests to reject the null at time $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$.
+The uniform condition in Equation~\ref{eq:type_1_error} suggests that a valid decision rule is to reject the null at time $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$.
 Simply stated, a practitioner who rejects the null hypothesis as soon as the posterior odds become larger than $1/u$ incurs a frequentist type-I error probability of at most $u$.
 The proof, based on Martingale maximal inequalities, can be found in appendix section \ref{app:type_1_error}.
 Results of this form can be found in the literature as early as \cite{ville}.
 An alternative and succinct proof, with applications to the special case of Binomial-Uniform families, can be found in section 1 of \cite{robbins}.
 Furthermore, the posterior odds are equal to the Bayes factor under prior odds of unity, and so Theorem~\ref{thm:type_1_error} can also be established as a corrolary of mixture sequential probability ratio test (mSPRT) of \cite{wald}.
-The test statistic in the mSPRT is formed by integrating the alternative likelihood divided by the null likelihood w.r.t.\ a \textit{weight} function over the unknown parameter, and the hypothesis is rejected as soon as this test statistic exceeds $1/u$ in order to obtain a Type-I error of at most $u$.
+The test statistic in the mSPRT is formed by integrating the alternative likelihood divided by the null likelihood w.r.t.\ a \textit{weight} function over the unknown parameter, and the hypothesis is rejected as soon as this test statistic exceeds $1/u$.
 When the weight function is equal to the prior distribution, the mSPRT test statistic is simply the Bayes factor, and results of this form can be established for other Bayesian simple null vs.\ composite alternative hypothesis tests.
 In the language of \cite{johari} one can define a conservative sequential p-value process by
 \begin{align*}
-  p_t &= \min(p_{t-1}, 1/O_t(\btheta_0)),\\
-  p_0 &=1,
+  p_0 &=1 \text{ and}\\
+  p_t &= \min(p_{t-1}, 1/O_t(\btheta_0)),
 \end{align*}
-which satisfies the following sequential analogue of a conservative p-value
+which satisfies the following sequential analogue of a conservative p-value,
 \begin{equation}
   \label{eq:conservative_p_value}
   \mathbb{P}_{\btheta = \btheta_0}\left( \exists t \in \mathbb{N}: p_t \leq u \right) \leq u.
@@ -233,7 +234,7 @@ The following Theorem exploits the duality between p-values and confidence inter
 \begin{thm}(Confidence Sequences)
   \label{thm:confidence_sequence}
   \noindent Let $\bx_t\sim \mathrm{Multinomial}(1,\btheta)$ for all $t \in \mathbb{N}$.
-Consider the sequence of posterior odds $O_t(\btheta)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta)=1$ and
+Consider the sequence of posterior odds $O_t(\btheta)$ defined as in Equation \eqref{eq:update_rule} with $O_0(\btheta)=1$ and
  let $I_t(u) = \lbrace \btheta \in \triangle^d : O_t(\btheta) < 1/u  \rbrace$, then
 \begin{equation}
   \label{eq:confidence_sequence}
@@ -241,41 +242,38 @@ Consider the sequence of posterior odds $O_t(\btheta)$ defined as in equation \e
 \end{equation}
 for all $u \in [0,1]$ and for all choices of $\balpha_0$.
 \end{thm}
-\noindent Each $I_t(u)$ is a convex subset of $\triangle^d$.
-In practise, however, one may find it easier to work with confidence sequences on the individual components of $\btheta$.
-These can be obtained by minimizing and maximizing individual components over the (convex) feasible set $I_t(u)$
-\begin{cor}(Elementwise Confidence Sequences)
-  \label{thm:elementwise_confidence_sequence}
-Let $j^{u}_{t,i}(u)$ and $j^{l}_{t,i}(u)$ be the solution to the respective convex optimization problems 
+\noindent Each $I_t(u)$ is a convex subset of $\triangle^d$. \todo{justify this claim}
+In practise, however, one may find it easier to work with confidence sequences on the individual components of $\btheta$, which can be found by projecting $I_t(u)$ onto the coordinate axis; that is, if we define $j_{t,i}^+(u)$ to be the value of
 \begin{align*}
-  \text{Maximize/Minimize } & \quad \theta_i, \\
-  \text{subject to } & \btheta \in I_t(u),\\
+  \max & \quad \theta_i, \\
+  \text{s.t.} &\quad  \btheta \in I_t(u),\\
 \end{align*}
-for each component $i=1,2,\dots,d$. Forming intervals $J_{t,i}(u)=[j^{l}_{t,i}(u), j^{u}_{t,i}(u)]$
+and 
+$j_{t,i}^-(u)$ to be the value of the same optimization but with $\min\theta_i$ as the objective, then 
 \begin{equation}
   \label{eq:marginal_confidence_sequence}
-  \mathbb{P}_{\btheta}\left( \theta_i \in \bigcap_{t=1}^{\infty} J_{t,i}(u),\, \text{for }\, i = 1,2, \dots, d \right) \geq 1- u.
+  \mathbb{P}_{\btheta}\left(
+    \forall i: \theta_i \in \bigcap_{t=1}^{\infty} [j_{t,i}^-(u),j_{t,i}^+(u)]
+  \right) \geq 1- u.
 \end{equation} 
-\end{cor}
 \noindent These provide intervals which posess a nominal frequentist coverage probability for all time $t$ over all components simultaneously.
+\todo[inline]{I would argue that this shouldn't be a corollary unless you provide a closed form solution of $j_{t,i}^l(i)$; otherwise, I think it should be a remark}
 
-Control over Type-I error probabilities would be of little value if the test were to have little ability to reject the null when $\btheta \neq \btheta_0$.
-To prove that this test is not trivial, we prove that the test rejects the null when $\btheta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
-We first establish the following result for the consistency of the posterior odds
-
+Control over Type-I error probabilities would be of little value if the test were not able to reject the null when $\btheta \neq \btheta_0$; that is, we want a test with high power. We prove that the test rejects the null when $\btheta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
+We first establish the following result for the consistency of the posterior odds.
 \begin{thm}(Asymptotic Properties of Posterior Odds)\todo{$\btheta_\star$ might indicate it's the solution to an optimization problem, maybe $\theta'$?}
   
   \label{thm:consistency}
-\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in Equation~\ref{eq:update_rule} with $O_0(\btheta_0)=1$, then
 \begin{equation}
   \label{eq:consistency}
   \frac{1}{t} \log O_t(\btheta_0) \rightarrow D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0)) \hspace{1cm} a.s.
 \end{equation}
 as $t \rightarrow \infty$, for all choices of $\balpha_0$, where $D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0))$ is the Kullback Leibler divergence of a multinomial distribution index by parameter $\btheta_0$ from a multinomial distribution indexed by parameter $\btheta_{\star}$.
-
 \end{thm}
 \noindent When $\btheta_{\star} \neq \btheta_0$, we must have $D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0)) > 0$, and so Theorem~\ref{thm:consistency} can be restated as $O_t(\btheta_0) \rightarrow \infty$ almost surely as $t \rightarrow \infty$, which consequently rejects the null almost surely for any choice of Type-I error probability $u$.
 The formal proof is given in appendix section \ref{app:asymptotics}, which relies on Theorem~1 of \cite{walker}.
+
 Conceptually, the proof proceeds by expressing the Bayes factor comparing $M_1$ to $M_0$ in terms of two seperate Bayes factors.
 The first compares $M_{\star}$ to $M_1$, and the second compares $M_{\star}$ to $M_0$ as follows
 \begin{align*}
@@ -287,12 +285,20 @@ under model $M_\star$, then the second term converges to the Kullback-Leibler di
 To adress the first term, note that as $t$ becomes large the Dirichlet posterior $p(\btheta|\bx_{1:t}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(\bx_{t+1}|\bx_{1:t},M_1) =\int p(\bx_{t+1}|\btheta,M_1),p(\btheta|\bx_{1:t},M_1) d\theta$ closer to the ``true'' density $p(\bx_{t+1}|M_{\star})$.
 For $t$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
 
+
+Taken with the stopping rule of $O_t(\theta_0)>u^{-1}$, this means that, in general, we will need
+\[
+  t=O\left(\frac{1}{D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0))} \log\left(\frac{1}{u}\right)\right)
+\]
+samples to stop if we want a false positive error of $u$. We will make this intuition precise by providing finite-sample bounds on the rejection probability.
+
+
 To facilitate the discussion of how quickly the null is rejected, we define the rejection region at time $n$ for a given $u>0$ as $\mathcal{R}_n = \{ \bx_{1:t} : O_t(\theta_0) \geq u \}$,
 and the complementary indifference region as $\mathcal{I}_n = \{ \bx_{1:t} : O_t(\theta_0) < u \}$. 
 The rejection region in this form is a little cumbersome to work with,
 and so our first result is to provide an $\mathcal R_n'\subseteq \mathcal R_n$ which more amenable to computation.
 \begin{lemma}\label{thm:calRprime}
-  For every $n>0$, $u>0$, and $\balpha_0$ the set
+  For every $n>0$, $u>0$, and $\balpha_0$ define the set
   \begin{equation}
     \label{eq:decision_boundary}
     \mathcal R_n'\df 
@@ -300,7 +306,7 @@ and so our first result is to provide an $\mathcal R_n'\subseteq \mathcal R_n$ w
       \bx_{1:n} :
       \KL(\hat\btheta_n(\bx_{1:n})|| \btheta_0)
       \geq \underline{D}_n(u,\alpha) 
-    \right\} 
+    \right\},
   \end{equation}
   where
   \begin{equation*}
@@ -315,7 +321,7 @@ This lemma is then used to establish the following result.
 
 \begin{thm}
   \label{thm:finite_sample}
-\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$.
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in Equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$.
 Let $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$ be the random stopping time at which the null is rejected and define $N = \min \{n \in \mathbb{N} : \|\btheta_\star - \btheta_0\|_1 \geq (1/2)\underline{D}_n(u,\balpha)\}$, then for all $n\geq N$
 
 \begin{equation}
@@ -488,7 +494,7 @@ O_0(\btheta_0) = \frac{p(M_1)}{p(M_0)}.
 To result follows from the application of the following two lemmas.
 \begin{lemma}(Martingale property of posterior odds under the null hypothesis)
   
-  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta)$ random variables and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_t(\btheta_0)$ is a nonnegative martingale under $M_0$.
+  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta)$ random variables and consider the sequence of posterior odds $O_t(\btheta_0)$ defined as in Equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_t(\btheta_0)$ is a nonnegative martingale under $M_0$.
   \label{lem:posterior_odds_martingale}
     \end{lemma}
   \begin{proof}
@@ -705,7 +711,7 @@ Because the rejection set $T_n$ is defined in terms of the KL divergence, while 
 $T_n' = \{\btheta \in \triangle^d : \|\btheta-\btheta_0\|_1 \geq \sqrt{2\underline{D}_n(u,\balpha)}\} \subseteq T_n$. 
 That $T_n' \subseteq T_n$ follows from a combination two observations.
 Firstly, by Pinsker's inequality $\delta(\bx, \btheta)\leq \sqrt{(1/2)\KL(\bx||\btheta)}$, where $\delta(\bx, \btheta)$ denotes the total variation norm of two Multinomial distributions with parameters $\bx$ and $\btheta$.
-Secondly, the fact that $\delta(\bx,\btheta)=(1/2)\|\bx - \btheta\|_1 $ for two multinomial distributiones with parameters $\bx$ and $\btheta$.
+Secondly, the fact that $\delta(\bx,\btheta)=(1/2)\|\bx - \btheta\|_1 $ for two multinomial distributions with parameters $\bx$ and $\btheta$.
 Let $N = \min \{n \in \mathbb{N} : \btheta_\star \in T_n'\}$, this ensures that the the true parameter is in the rejection region $T_n'$ for all subsequent $n$, around which a $C_n^\delta$ can be placed for suitably small $\delta$.
 Let
 \begin{equation*}
