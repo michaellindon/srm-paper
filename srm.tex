@@ -515,7 +515,7 @@ To result follows from the application of the following two lemmas.
 The result of the Theorem is obtained by using lemma \ref{lem:posterior_odds_martingale} to establish that the posterior odds $O_t(\btheta_0)$ are a nonnnegative supermartingale under the null hypothesis, and using this obseravtion in lemma \ref{lem:durrett} together with  $O_0(\btheta_0) = 1$  to obtain the main inequality of the Theorem.
 \section{Asymptotic Properties of Bayes Factors}
 \label{app:asymptotics}
-We first narrow the focus of a general result found in Theorem~1 of \cite{walker}.
+We recall Theorem~1 of \cite{walker} for completeness in the following lemma, narrowing the scope for multinomial models.
 Let $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\btheta) )$ denote the Kullback-Leibler divergence of a multinomial distribution indexed by a parameter $\theta$ from the true multinomial distribution with true parameter $\btheta_{\star}$.
 Moreover let $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t}, M_j) )$ denote the KL divergence of the posterior predictive distribution under model $j$ at time $t$ from the true multinomial distribution.
 Let $A(q) = \lbrace \btheta \in \triangle^d : D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\btheta) ) < q \rbrace$
@@ -538,7 +538,7 @@ then
     &S_{jt-1},\\
   \end{align*}
   from which it follows that $\mathbb{E}[S_{jt}|\mathcal{F}_t] = S_{jt-1}$ with $\mathcal{F}_t = \sigma(\bx_1,\dots,\bx_{t-1})$.
-From the assumption that  $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(\bx_t|\bx_{1:t-1},M_j)}{p(\bx_t|M_\star )}]\right) < \infty$, it follows that $S_{jt}/t \rightarrow 0$ a.s.
+From the assumption that  $\sum_t \frac{1}{t^2} \left( \mathbb{V}[\log \frac{p(\bx_t|\bx_{1:t-1},M_j)}{p(\bx_t|M_\star )}]\right) < \infty$, it follows that $S_{jt}/t \rightarrow 0$ a.s. (see \cite {loeve})
 and consequentially
   \begin{align*}
     \frac{1}{t} \log \frac{p(\bx_{1:t}|M_j)}{p(\bx_{1:t}|M_\star)} + \frac{1}{t}\sum_{i=1}^t  D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:t-1}, M_j) )\rightarrow 0.
