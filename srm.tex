@@ -119,7 +119,7 @@ Noncompliance (\cite{imbens}) can also be revealed through SRMs. For example, \c
 
 
 Many other practical abnormalities can be revealed by considering the total counts in each treatment group after collection.
-For this reason, industry practitioners now consider performing a post-experiment Chi-squared test against the null in equation \eqref{eq:multinomialassignment} best practice \citep{linkedin}; such a test will identify a SRM.
+For this reason, industry practitioners now consider performing a post-experiment $\chi^2$ test against the null in equation \eqref{eq:multinomialassignment} best practice \citep{linkedin}; such a test will identify a SRM.
 However, we note two deficiencies of this practice.
 First, one only learns about a problem in the data after data collection has completed.
 It is assumed that there is an implicit cost of including a unit in an experiment, and so ideally one would like to learn about such problems as soon as possible to prevent further units from entering an improperly executed-experiment.
@@ -137,7 +137,7 @@ Section \ref{sec:theory} establishes the Martingale properties of the posterior 
 This safely permits the online testing of hypothesis \eqref{eq:multinomialassignment} after every single observation, without inflating frequentist Type-I error, with the obvious advantage of being able to safely reject the null and discover a practical implementation error early in the beginning of an experiment - preventing experimental units being wasted on a faulty experiment.
 Instance-specific upper-bounds on time-to-rejection are provided in terms of the KL divergence  between $\btheta_0$ and the actual generating distribution of the samples.
 This sequential test is then inverted to define confidence sequences which possess nominal frequentist coverage probabilities.
-Section \ref{sec:simulation} presents a number of simulation studies illustrating how false positive probabilities are dramatically inflated through the repeated significance testing using a Chi-squared test compared to the guarantees afforded by the proposed test.
+Section \ref{sec:simulation} presents a number of simulation studies illustrating how false positive probabilities are dramatically inflated through the repeated significance testing using a $\chi^2$ test compared to the guarantees afforded by the proposed test.
 We also study the number of samples needed to reject the null when the null is invalid.
 The final section \ref{sec:discussion} connects these contributions with existing literature.
 In particuar, the confidence sequence defined in Theorem~\ref{thm:confidence_sequence} is identified as the Bayesian support interval of \cite{support_interval} through an application of the Savage-Dickey density ratio.
@@ -351,7 +351,7 @@ The blue line shows $\log(BF_{10}(\bx_{1:t}))/t$ and the red dashed line shows $
   \end{figure}
   \subsection{False Positive Control Compared to $\chi^2$ Test}
   In the following simulation we demonstrate the control over false positives provided by the proposed test.
-  In addition, we demonstrate how continuously monitoring experiments can result in an incredibly large number of false positives when misusing a Chi-squared test.
+  In addition, we demonstrate how continuously monitoring experiments can result in an incredibly large number of false positives when misusing a $\chi^2$ test.
 
   Although the proposed method is completely general and holds for any number of treatments, we demonstrate the following for the special case of a single treatment i.e. an A/B test.
   This is easiest to visualize and helps to develop an intuitive understanding of the differences between our test and the $\chi^2$ test.
@@ -365,28 +365,28 @@ To see this, note that note that the Bayes factor can be expressed as
  BF_{10}(\bx_{1:t})  = \frac{\Gamma(\alpha_{0,0}+\alpha_{0,1})}{\Gamma(\alpha_{0,0}+\alpha_{0,1}+t)}\frac{\Gamma(\alpha_{0,0} + t-t\hat{\rho}(\bx_{1:t} ))\Gamma(\alpha_{0,1} + t\hat{\rho}(\bx_{1:t} )) }{\Gamma(\alpha_{0,0} )+\Gamma(\alpha_{0,1} )}\frac{1}{\theta_{0,0}^{t-t\hat{\rho}(\bx_{1:t})}\theta_{0,1}^{t\hat{\rho}(\bx_{1:t})}}.
 \end{equation}
   Rejection of the null when the posterior odds $O_t(\btheta_0)$ exceeds $1/u$, is equivalent to rejecting the null whenever the test statistic $\hat{\rho}(\bx_{1:t})$ falls outside a certain interval covering $\rho_0$.
-This interval for $\btheta_0 = [\frac{1}{2}\, \frac{1}{2}]$, $\balpha_0 = 100\btheta_0 $, and $u=0.05$ is shown along with the interval for the Chi-squared test is shown in figure \ref{fig:critical}.
+This interval for $\btheta_0 = [\frac{1}{2}\, \frac{1}{2}]$, $\balpha_0 = 100\btheta_0 $, and $u=0.05$ is shown along with the interval for the $\chi^2$ test is shown in figure \ref{fig:critical}.
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.35]{images/critical_regions.png}
-  \caption{Rejection boundaries for the proposed test ($\balpha_0 = 100\btheta_0$) in magenta and the Chi-squared test in orange for testing the null hypothesis $\btheta_0 = [\frac{1}{2} \, \frac{1}{2}]$ at a $u=0.05$ level.
+  \caption{Rejection boundaries for the proposed test ($\balpha_0 = 100\btheta_0$) in magenta and the $\chi^2$ test in orange for testing the null hypothesis $\btheta_0 = [\frac{1}{2} \, \frac{1}{2}]$ at a $u=0.05$ level.
 }
     \label{fig:critical}
   \end{figure}
-  An important observation is that the rejection region at any time $t$ for the proposed test is a subset of that of the Chi-squared test.
-In other words, the Chi-squared test would declare a result ``significant'' at the $u=0.05$ level ``sooner'' than the proposed test.
-This has to be the case, for if the proposed test were significant as often as the Chi-squared test, then the proposed test would have just as many false positives under continuous monitoring.
+  An important observation is that the rejection region at any time $t$ for the proposed test is a subset of that of the $\chi^2$ test.
+In other words, the $\chi^2$ test would declare a result ``significant'' at the $u=0.05$ level ``sooner'' than the proposed test.
+This has to be the case, for if the proposed test were significant as often as the $\chi^2$ test, then the proposed test would have just as many false positives under continuous monitoring.
   
   To illustrate this point further, 100 datasets were simulated under the null hypothesis up to $t=1000$.
-The Chi-squared ($u=0.05$) test was applied after every observation and by $t=1000$ 44 out of the 100 datasets resulted in the erroneous rejection of the null hypothesis.
+The $\chi^2$ ($u=0.05$) test was applied after every observation and by $t=1000$ 44 out of the 100 datasets resulted in the erroneous rejection of the null hypothesis.
 If left to run for longer, the total number of false positives would surely increase beyond 44.
 This is shown in figure \ref{fig:chi_fp}.
   \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.35]{images/chi_fp.png}
-  \caption{Simulation Study of False Positives produced by continuously monitoring with a Chi-squared test.
+  \caption{Simulation Study of False Positives produced by continuously monitoring with a $\chi^2$ test.
 The orange and magenta curves are the same as in figure \ref{fig:critical}.
-Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner.
+Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the $\chi^2$ test,visualized with a red dot, whichever comes sooner.
 }
     \label{fig:chi_fp}
   \end{figure}
@@ -399,7 +399,7 @@ of false positives, whereas the proposed sequential test controls the false posi
   \includegraphics[scale=0.35]{images/ssrm_fp.png}
   \caption{Simulation Study of False Positives produced by continuously monitoring with the proposed test.
 The orange and magenta curves are the same as in figure \ref{fig:critical}.
-Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner.
+Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the $\chi^2$ test,visualized with a red dot, whichever comes sooner.
 }
     \label{fig:ssrm_fp}
   \end{figure}
@@ -415,7 +415,7 @@ While the $\chi^2$ test can only safely be used at the end of the experiment,
   \includegraphics[scale=0.35]{images/ssrm_reject.png}
   \caption{Simulation Study of time to reject the null under the proposed test.
 The magenta curve is the same as in figure \ref{fig:critical}.
-Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the Chi-squared test,visualized with a red dot, whichever comes sooner.
+Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until $t=1000$ or the first $t$ for which it crosses the rejection boundary of the $\chi^2$ test,visualized with a red dot, whichever comes sooner.
 }
     \label{fig:ssrm_reject}
   \end{figure}
