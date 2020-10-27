@@ -66,7 +66,7 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 %%
 \begin{document}
 \vspace{-1in}
-\title{A Sequential Hypothesis Test for Implementation Errors and Missing Data in Simply Randomized Experiments with Applications to A/B Testing}
+\title{Sequential Testing of Multinomial Hypotheses with Applications to Detecting Implementation Errors and Missing Data in Randomized Experiments}
 \author{\Large Michael Lindon \\ Optimizely \and \Large Alan Malek \\ DeepMind}
 \maketitle 
 %\centerline{{\color{RoyalBlue2}{Due: someday.}}}\bigskip
@@ -333,11 +333,13 @@ Let $\tau = \inf \lbrace t \in \mathbb{N}: O_t(\btheta_0) \geq 1/u \rbrace$ be t
 \noindent This theorem provides a lower bound on the probability of rejecting the null by time $n$ as a function of $\|\btheta_\star - \btheta_0\|_1$, $u$ and $\balpha_0$.
 The proof is given in appendix section \ref{app:finite_sample}. 
 
-\section{Simulation Studies}
+\section{Examples}
 \label{sec:simulation}
+\subsection{Asymptotic Properties of Posterior Odds}
+In this small section we illustrate the conclusion of theorem \ref{thm:consistency} with a simulation study.
 Consider null and true parameter value of $\btheta_0=[\frac{1}{2}\, \frac{1}{4}\, \frac{1}{4}]$ and $\btheta_\star=[\frac{1}{2}\, \frac{1}{8}\, \frac{3}{8}]$ respectively.
 The Kullback Leibler divergence of the null from the true multinomial distribution is $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot||\btheta_0)) = 0.0654$ (to 4dp).
-A simulation of 1 million data points with $\bx_i \sim \text{Multinomial}(1, \btheta_\star)$ and a Dirichlet prior with $\balpha_0 = 100\btheta_0$ was used.
+A simulation of $10^5$ data points with $\bx_i \sim \text{Multinomial}(1, \btheta_\star)$ and a Dirichlet prior with $\balpha_0 = 100\btheta_0$ was used.
 The values of $\log(BF_{10}(\bx_{1:t}))/t$ were computed and are shown in figure \ref{fig:lbf}.
 The figure illustrates the convergence as described in Theorem~\ref{thm:consistency} of $\log(BF_{10}(\bx_{1:t}))/t$ to the Kullback Leibler divergence of the null from the true multinomial distribution.
 \begin{figure}[H]
@@ -347,16 +349,22 @@ The figure illustrates the convergence as described in Theorem~\ref{thm:consiste
 The blue line shows $\log(BF_{10}(\bx_{1:t}))/t$ and the red dashed line shows $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot||\btheta_0)) = 0.0654$.}
     \label{fig:lbf}
   \end{figure}
+  \subsection{False Positive Control Compared to $\chi^2$ Test}
   In the following simulation we demonstrate the control over false positives provided by the proposed test.
-In addition, we demonstrate how continuously monitoring experiments can result in an incredibly large number of false positives when misusing a Chi-squared test.
-This is easiest to visualize in an example with one treatment group with assignment probability denoted $\rho$.
+  In addition, we demonstrate how continuously monitoring experiments can result in an incredibly large number of false positives when misusing a Chi-squared test.
+
+  Although the proposed method is completely general and holds for any number of treatments, we demonstrate the following for the special case of a single treatment i.e. an A/B test.
+  This is easiest to visualize and helps to develop an intuitive understanding of the differences between our test and the $\chi^2$ test.
+  Let the probability of assignment to the treatment group be denoted $\rho$.
 The assignment is therefore a $\text{Bernoulli}(\rho)$ random variable, but sticking with the general framework developed earlier, the assignment outcome is $\text{Multinomial}(1,\btheta)$ random variable with $\btheta = [(1-\rho)\, \rho]$.
-The Bayes factor in this case is then just a function of the sufficient statistic $\sum_{i=1}^t x_{i,1}$, or equivalently, $\hat{\rho}(\bx_{1:t}) = 1/t \sum_{i=1}^{t} x_{i,1}$, given by
+It is common and natural to consider the difference between the empirical estimate $\hat{\rho}(\bx_{1:t}) = 1/t \sum_{i=1}^{t} x_{i,1}$ and the $\rho_0$ of the null hypothesis.
+Both the $\chi^2$ test and the proposed test define an interval at each time $t$ around $\rho_0$, outside of which to reject the null hypothesis for the test statistic $\hat{\rho}(\bx_{1:t})$.
+To see this, note that note that the Bayes factor can be expressed as
 \begin{equation}
   \label{eq:bayes_factor}
  BF_{10}(\bx_{1:t})  = \frac{\Gamma(\alpha_{0,0}+\alpha_{0,1})}{\Gamma(\alpha_{0,0}+\alpha_{0,1}+t)}\frac{\Gamma(\alpha_{0,0} + t-t\hat{\rho}(\bx_{1:t} ))\Gamma(\alpha_{0,1} + t\hat{\rho}(\bx_{1:t} )) }{\Gamma(\alpha_{0,0} )+\Gamma(\alpha_{0,1} )}\frac{1}{\theta_{0,0}^{t-t\hat{\rho}(\bx_{1:t})}\theta_{0,1}^{t\hat{\rho}(\bx_{1:t})}}.
 \end{equation}
-  Rejection of the null when the posterior odds $O_t(\btheta_0)$ exceeds $1/u$, is equivalent to rejecting the null whenever the test statistic $\hat{\rho}(\bx_{1:t})$ falls outside a certain interval.
+  Rejection of the null when the posterior odds $O_t(\btheta_0)$ exceeds $1/u$, is equivalent to rejecting the null whenever the test statistic $\hat{\rho}(\bx_{1:t})$ falls outside a certain interval covering $\rho_0$.
 This interval for $\btheta_0 = [\frac{1}{2}\, \frac{1}{2}]$, $\balpha_0 = 100\btheta_0 $, and $u=0.05$ is shown along with the interval for the Chi-squared test is shown in figure \ref{fig:critical}.
 \begin{figure}[H]
   \centering
@@ -384,6 +392,8 @@ Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until
   \end{figure}
   The simulation can be repeated, using the same random number seed, to demonstrate the control over false positives of the proposed test.
 Under identical conditions, the proposed test resulted in 2 out of 100 false positives, illustrated in figure \ref{fig:ssrm_fp}.
+Together, these examples clearly illustrate that repeated significance testing with a $\chi^2$ test, without multiplicity adjustments, dramatically increases the chances
+of false positives, whereas the proposed sequential test controls the false positive probability under the desired value. 
     \begin{figure}[H]
   \centering
   \includegraphics[scale=0.35]{images/ssrm_fp.png}
@@ -393,10 +403,13 @@ Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until
 }
     \label{fig:ssrm_fp}
   \end{figure}
+  \subsection{Statistical Power}
   We now turn our attention to visualizing the main value add of the proposed test, namely, to reject the null hypothesis quickly.
 Suppose an experiment has been designed and a sample size calculation has determined that $1000$ datapoints must be collected.
 The intended treatment assignment probability is 0.5, yet due to a bug in the code introducing bias in the assignment mechanism, or a missing data mechanism for the control group, the probability of recording an observation from the treatment is in fact 0.6.
-  Figure \ref{fig:ssrm_reject} demonstrates that the proposed test rapidly rejects the null way before the end of the experiment, saving further units from entering an incorrectly executed experiment.
+Ideally, one would like to be alerted to this issue as soon as possible so as to remedy the problem before new units enter the experiment.
+While the $\chi^2$ test can only safely be used at the end of the experiment,
+  figure \ref{fig:ssrm_reject} demonstrates that the proposed test rapidly rejects the null considerably sooner than the end of the experiment, saving further units from entering an incorrectly executed experiment.
       \begin{figure}[H]
   \centering
   \includegraphics[scale=0.35]{images/ssrm_reject.png}
@@ -406,8 +419,9 @@ Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:t})$ up until
 }
     \label{fig:ssrm_reject}
   \end{figure}
-  \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that the rection region at time $t$ converges to $[0,1]\setminus \btheta_0$, yet $\btheta_0 \rightarrow \btheta_\star$ $a.s.$ as $t\rightarrow \infty$.
-In this specific example, the region of indifference degenerates onto $\lbrace 0.5 \rbrace$, yet $\hat{\rho}(\bx_{1:t})$ converges to 0.6 almost surely as $t \rightarrow \infty$ by the strong law of large numbers, which provides an alternative argument to Theorem~\ref{thm:consistency} for rejecting the null almost surely.
+  \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that while the rection region at time $t$ converges to $[0,1]\setminus \rho_0$, the MLE $\hat{\rho}(\bx_{1:t}) \rightarrow \rho_\star \neq \rho_0$ $a.s.$ as $t\rightarrow \infty$ by the strong law of large numbers, and is hence guaranteed to cross the rejection boundary.
+  This provides an alternative proof strategy to theorem \ref{thm:consistency}.
+In this specific example, the region of indifference degenerates onto $\lbrace 0.5 \rbrace$, yet the sample paths of $\hat{\rho}(\bx_{1:t})$ are converging toward 0.6 and ultimately encounter the rejection boundary.
   \section{Discussion}
   \label{sec:discussion}
 The main purpose of this paper was to provide a tool that can be used sequentially to detect practical implementation errors in an experiment, such as identifying biased assignment mechanisms or surfacing missing data mechanisms which are frequently observed in online controlled experiments.
