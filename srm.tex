@@ -123,14 +123,30 @@ For this reason, industry practitioners now consider performing a post-experimen
 However, we note two deficiencies of this practice.
 First, one only learns about a problem in the data after data collection has completed.
 It is assumed that there is an implicit cost of including a unit in an experiment, and so ideally one would like to learn about such problems as soon as possible to prevent further units from entering an improperly executed-experiment.
-Second, the desire to find SRMs early encourages practitioners to incorrectly \textit{continuously monitor} their experiments through the repeated application of significance tests without any multiplicity correction (\cite{armitage}).
+Second, the desire to find SRMs early encourages practitioners to incorrectly \textit{continuously monitor} their experiments - repeated tests of significance, unplanned or ad-hoc, without any multiplicity correction, known to dramatically increase Type-I error probabilities (\cite{armitage}).
+A problem arises in the following sense.
+While the testing plan might call for a $\chi^2$ at the end of data collection, 
+a practitioner might sense that the behaviour of the experiment is not as expected,
+leading them to peak at the interim data and execute an unplanned significance test,
+potentially stopping the experiment based on the test outcome.
+We will refer to this behaviour as \textit{optional stopping}.
+At extemes, some practitioners even seek to use such tests at the beginning of an experiment to validate the underlying engineering of the implementation.
+While an initial validation test might be planned, the results may not be convincing, and subsequent unplanned tests may be executed.
+We will refer to this behaviour as \textit{optional continuation}.
+It is well known that such testing procedures allow sampling to a foregone conclusion, almost surely rejecting the null when it is true (\cite{anscombe}).
+Classical frequentist tests such as the $\chi^2$ test and the likelihood ratio test, both commonly used throughout industry, do not preserve Type-I error guarantees
+under either optional stopping or continuation.
+In section \ref{sec:simulation} we will demonstrate that Type-I error probabilities of these tests configured at Type-I error levels of 0.05 can rise in excess of 0.44
+in a short experiment through continuous monitoring.
+See \cite{psychological} for a further discussion of these practical problems caused by the classical null hypothesis significance testing (NHST) paradigm.
 
-A sequential hypothesis test \citep{todo}, on the other hand, makes a sequence of decisions to reject the null hypothesis multiple times, potentially after every data point. They are carefully designed to maintain the false positive guarantee that the null hypothesis is never incorrectly rejected for the entire collection of decisions.
-In this paper, we propose a sequential test to identify SRMs that allows for optional stopping and optional continuation \todo{define optional stopping and continuation}.
-Our method is inspired by Bayesian methods satisfying the \textit{stopping rule principle}, which requires that that statistical conclusions provided by a hypothesis test should be independent of the reason for stopping the experiment, which follows from the likelihood principle \citep{likelihood}.
+A \textit{sequential} hypothesis test, in contrast, preserves Type-I error guarantees under both optional stopping and continuation, allowing experiments to be continuously monitored for significance - even after every datapoint.
+The advantages are at least twofold. Firstly, it prevents the pitfalls mentioned in the preceding paragraph, providing maximum flexibility for performing significance tests.
+Secondly, significance tests can be executed after every datapoint, allowing SRMs in the current application to be detected as soon as possible.
+In this paper, we propose such a sequential test inspired by Bayesian methods.
+Bayesian methods are a natural choice for sequential procedures as most satisfy the \textit{stopping rule principle}, that that statistical conclusions provided by a hypothesis test should be independent of the reason for stopping the experiment, which is a direct consequence of the likelihood principle \citep{likelihood}.
 
 The contributions of this paper focus, however, on obtaining frequentist properties of such a sequential test.
-\todo{We should define what a sequential test is}
 The paper is outlined as follows.
 Section \ref{sec:srm_testing} defines a common Bayesian test through conjugate multinomial-Dirichlet models.
 Section \ref{sec:theory} establishes the Martingale properties of the posterior odds under the null hypothesis, enabling a modified test to be developed which allows control of the frequentist Type-I error probabilities under both optional stopping and continuation.
@@ -182,7 +198,7 @@ It is helpful to consider the posterior odds as computed sequentially through th
 \end{equation}
 where $\balpha_n = \balpha_{n-1}+\bx_n$ and $O_0(\btheta_0)=p(M_1)/p(M_0)$ (see appendix section \ref{app:posterior_odds}).
 In the rest of this paper, we will always assume that the prior odds are unity, and so the posterior odds are interchangeable with the Bayes factor.
-Recursive definitions require an initial value and for that reason we choose to work with the posterior odds.\todo{This sentence is not clear to me.}
+Recursive definitions require an initial value and for that reason we choose to work with the posterior odds.
 The dependence of $O_n(\btheta_0)$ on the observed data $\bx_{1:n}$ is implicit in this notation, yet the null value $\btheta_0$ being tested is made explicit to aid the discussion of confidence sequences in Theorem~\ref{thm:confidence_sequence}.
 If $\balpha_0$ is integer valued, and noting that all but one of the $x_{n,j}$ is 1 with the others 0, then the recursive definition simplifies substantially to
 \begin{align}
@@ -230,7 +246,7 @@ which satisfies the following sequential analogue of a conservative p-value,
   \mathbb{P}_{\btheta = \btheta_0}\left( \exists n \in \mathbb{N}: p_n \leq u \right) \leq u.
 \end{equation}
 Further connections between sequential p-value processes and Bayes factors are discussed in \cite{shafer}.
-The following Theorem exploits the duality between p-values and confidence intervals to derive sequential confidence sequences \todo{this is redundant, though we need to define a confidence sequence somewhere}.
+The following Theorem exploits the duality between p-values and confidence intervals to derive sequential confidence sequences. 
 \begin{thm}(Confidence Sequences)
   \label{thm:confidence_sequence}
   \noindent Let $\bx_n\sim \mathrm{Multinomial}(1,\btheta)$ for all $n \in \mathbb{N}$.
@@ -242,7 +258,7 @@ Consider the sequence of posterior odds $O_n(\btheta)$ defined as in Equation \e
 \end{equation}
 for all $u \in [0,1]$ and for all choices of $\balpha_0$.
 \end{thm}
-\noindent Each $I_n(u)$ is a convex subset of $\triangle^d$ (convexity following from concavity of the multinomial log-likelihood). \todo{justify this claim}
+\noindent Each $I_n(u)$ is a convex subset of $\triangle^d$ (convexity following from concavity of the multinomial log-likelihood). 
 In practise, however, one may find it easier to work with confidence sequences on the individual components of $\btheta$, which can be found by projecting $I_n(u)$ onto the coordinate axis; that is, if we define $j_{n,i}^+(u)$ to be the value of
 \begin{align*}
   \max & \quad \theta_i, \\
@@ -261,7 +277,7 @@ $j_{n,i}^-(u)$ to be the value of the same optimization but with $\min\theta_i$ 
 
 Control over Type-I error probabilities would be of little value if the test were not able to reject the null when $\btheta \neq \btheta_0$; that is, we want a test with high power. We prove that the test rejects the null when $\btheta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
 We first establish the following result for the consistency of the posterior odds.
-\begin{thm}(Asymptotic Properties of Posterior Odds)\todo{$\btheta_\star$ might indicate it's the solution to an optimization problem, maybe $\theta'$?}
+\begin{thm}(Asymptotic Properties of Posterior Odds)
   
   \label{thm:consistency}
 \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation~\ref{eq:update_rule} with $O_0(\btheta_0)=1$, then
@@ -686,7 +702,7 @@ The sum $|\balpha|+n$ can be interpreted as the total samples, from the data and
 Let us write $\mathcal{R}_n' = \left\{ \bx_{1:n} : \KL(\hat\btheta_n|| \btheta_0) \geq \underline{D}_n(u,\balpha) \right\}$, then $\underline{D}_n(u,\balpha) \sim \mathcal{O}((1/n)\log n)$.
 To see this note that 
 \begin{align*}
-  (|\balpha|+n-1/2)\log(|\balpha|+n)-n\log n < (|\balpha|-1/2)\log(|\balpha|+n) + |\alpha|/n,
+  (|\balpha|+n-1/2)\log(|\balpha|+n)-n\log n < (|\balpha|-1/2)\log(|\balpha|+n) + |\alpha|,
 \end{align*}
 where we have used the mean value theorem to write $\log(|\balpha|+n) = \log(n) +  |\balpha|/c$ for some $c\in (n, n+|\balpha|)$, 
 which can be upper bounded by $\log(n) + |\balpha|/n$, which can be interpreted as the logarithmic function being bounded from above by the tangent at $n$.
