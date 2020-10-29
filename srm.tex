@@ -277,7 +277,7 @@ then
 \end{remark}
 \noindent These intervals can easily be obtained through convex programming and possess the desired frequentist coverage probability for all time $n$ over all components simultaneously.
 
-Control over Type-I error probabilities would be of little value if the test were not able to reject the null when $\btheta \neq \btheta_0$; that is, we want a test with high power. We prove that the test rejects the null when $\btheta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
+Control over Type-I error probabilities would be of little value if the test were not able to reject the null when $\btheta \neq \btheta_0$. We prove that the test rejects the null when $\btheta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
 We first establish the following result for the consistency of the posterior odds.
 \begin{thm}(Asymptotic Properties of Posterior Odds)
   
@@ -302,14 +302,6 @@ When the $\bx_i$ are independently distributed according to $\text{Multinomial}(
 under model $M_\star$, then the second term converges to the Kullback-Leibler divergence between models $M_\star$ and $M_0$ by the strong law of large numbers.
 To adress the first term, note that as $n$ becomes large the Dirichlet posterior $p(\btheta|\bx_{1:n}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(\bx_{n+1}|\bx_{1:n},M_1) =\int p(\bx_{n+1}|\btheta,M_1),p(\btheta|\bx_{1:n},M_1) d\theta$ closer to the ``true'' density $p(\bx_{n+1}|M_{\star})$.
 For $n$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earler non-zero terms in the sum.
-
-
-Taken with the stopping rule of $O_n(\theta_0)>u^{-1}$, this means that, in general, we will need
-\[
-  t=O\left(\frac{1}{D_{KL}(p(\cdot|\btheta_{\star}) || p(\cdot|\btheta_0))} \log\left(\frac{1}{u}\right)\right)
-\]
-samples to stop if we want a false positive error of $u$. We will make this intuition precise by providing finite-sample bounds on the rejection probability.
-
 
 To facilitate the discussion of how quickly the null is rejected, we define the rejection region at time $n$ for a given $u>0$ as $\mathcal{R}_n = \{ \bx_{1:n} : O_n(\theta_0) \geq u \}$,
 and the complementary indifference region as $\mathcal{I}_n = \{ \bx_{1:n} : O_n(\theta_0) < u \}$. 
@@ -353,20 +345,6 @@ The proof is given in appendix section \ref{app:finite_sample}.
 
 \section{Examples}
 \label{sec:simulation}
-\subsection{Asymptotic Properties of Posterior Odds}
-In this small section we illustrate the conclusion of theorem \ref{thm:consistency} with a simulation study.
-Consider null and true parameter value of $\btheta_0=[\frac{1}{2}\, \frac{1}{4}\, \frac{1}{4}]$ and $\btheta_\star=[\frac{1}{2}\, \frac{1}{8}\, \frac{3}{8}]$ respectively.
-The Kullback Leibler divergence of the null from the true multinomial distribution is $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot||\btheta_0)) = 0.0654$ (to 4dp).
-A simulation of $10^5$ data points with $\bx_i \sim \text{Multinomial}(1, \btheta_\star)$ and a Dirichlet prior with $\balpha_0 = 100\btheta_0$ was used.
-The values of $\log(BF_{10}(\bx_{1:n}))/n$ were computed and are shown in figure \ref{fig:lbf}.
-The figure illustrates the convergence as described in Theorem~\ref{thm:consistency} of $\log(BF_{10}(\bx_{1:n}))/n$ to the Kullback Leibler divergence of the null from the true multinomial distribution.
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.35]{images/consistency.png}
-  \caption{Consistency of Bayes factor.
-The blue line shows $\log(BF_{10}(\bx_{1:n}))/n$ and the red dashed line shows $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot||\btheta_0)) = 0.0654$.}
-    \label{fig:lbf}
-  \end{figure}
   \subsection{False Positive Control Compared to $\chi^2$ Test}
   In the following simulation we demonstrate the control over false positives provided by the proposed test.
   In addition, we demonstrate how continuously monitoring experiments can result in an incredibly large number of false positives when misusing a $\chi^2$ test.
@@ -421,7 +399,7 @@ Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until
 }
     \label{fig:ssrm_fp}
   \end{figure}
-  \subsection{Statistical Power}
+  \subsection{Stopping Time}
   We now turn our attention to visualizing the main value add of the proposed test, namely, to reject the null hypothesis quickly.
 Suppose an experiment has been designed and a sample size calculation has determined that $1000$ datapoints must be collected.
 The intended treatment assignment probability is 0.5, yet due to a bug in the code introducing bias in the assignment mechanism, or a missing data mechanism for the control group, the probability of recording an observation from the treatment is in fact 0.6.
@@ -440,12 +418,26 @@ Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until
   \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that while the rection region at time $n$ converges to $[0,1]\setminus \rho_0$, the MLE $\hat{\rho}(\bx_{1:n}) \rightarrow \rho_\star \neq \rho_0$ $a.s.$ as $n\rightarrow \infty$ by the strong law of large numbers, and is hence guaranteed to cross the rejection boundary.
   This provides an alternative proof strategy to theorem \ref{thm:consistency}.
 In this specific example, the region of indifference degenerates onto $\lbrace 0.5 \rbrace$, yet the sample paths of $\hat{\rho}(\bx_{1:n})$ are converging toward 0.6 and ultimately encounter the rejection boundary.
+\subsection{Asymptotic Properties of Posterior Odds}
+In this small section we illustrate the conclusion of theorem \ref{thm:consistency} with a simulation study.
+Consider null and true parameter value of $\btheta_0=[\frac{1}{2}\, \frac{1}{4}\, \frac{1}{4}]$ and $\btheta_\star=[\frac{1}{2}\, \frac{1}{8}\, \frac{3}{8}]$ respectively.
+The Kullback Leibler divergence of the null from the true multinomial distribution is $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot||\btheta_0)) = 0.0654$ (to 4dp).
+A simulation of $10^5$ data points with $\bx_i \sim \text{Multinomial}(1, \btheta_\star)$ and a Dirichlet prior with $\balpha_0 = 100\btheta_0$ was used.
+The values of $\log(BF_{10}(\bx_{1:n}))/n$ were computed and are shown in figure \ref{fig:lbf}.
+The figure illustrates the convergence as described in Theorem~\ref{thm:consistency} of $\log(BF_{10}(\bx_{1:n}))/n$ to the Kullback Leibler divergence of the null from the true multinomial distribution.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.35]{images/consistency.png}
+  \caption{Consistency of Bayes factor.
+The blue line shows $\log(BF_{10}(\bx_{1:n}))/n$ and the red dashed line shows $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot||\btheta_0)) = 0.0654$.}
+    \label{fig:lbf}
+  \end{figure}
   \section{Discussion}
   \label{sec:discussion}
 The main purpose of this paper was to provide a tool that can be used sequentially to detect practical implementation errors in an experiment, such as identifying biased assignment mechanisms or surfacing missing data mechanisms which are frequently observed in online controlled experiments.
 The proposed test permits optional stopping and continuation, allowing experiments to be continuously monitored.
 The hypothesis can be tested, therefore, after every single data point so as to detect errors as quickly as possible.
-While Bayesian in construction, we provided sequential guarantees of the frequentist Type-I error probability and also studied the power of this test through a combination of theoretical results and simulation studies.
+While Bayesian in construction, we provided sequential guarantees of the frequentist Type-I error probability, proved that it rejects the null almost surely when the null is incorrect, and also studied the stopping time of this test through a combination of theoretical results and simulation studies.
 While our application of detecting errors in simply randomized experiments focussed on a specific Multinomial-Dirichlet test, the same mathematical techniques can be obviously used to generalize these results to other Bayesian tests.
 With generalization in mind, there are some remaining comments and ideas for future work.
 
@@ -601,15 +593,18 @@ It follows that
 \end{proof}
 
 The application of this lemma to the multinomial Dirichlet model is then straight forward.
-Note that under model $M_0$, the prior on $\theta$ is a point mass at $\btheta_0$.
-Let the KL divergence of the null model from the true model be denoted $\delta_0$, it is clear that $\int_{A(q)} p(\btheta|M_0) d\btheta = 0$ if $q<\delta_0$ and 1 otherwise.
-Hence KL divergence of the null $\btheta_0$ from the true $\btheta_\star$ is the relevant $\delta_0$ for model $M_0$ in lemma \ref{lemma:walker}.
-The value of $\delta_1$ for the Dirichlet prior under model $M_1$, however, is zero.
+Note that under model $M_0$, the prior on $\btheta$ is a point mass at $\btheta_0$.
+Let the KL divergence of the null model from the true model be denoted $\delta_0$. When $q<\delta_0$ it is clear that $\int_{A(q)} p(\btheta|M_0) d\btheta = 0$ because $\btheta_0 \notin A(q)$. When $q\geq \delta_0$, $\int_{A(q)} p(\btheta|M_0) d\btheta = 1$ because $\btheta \in A(q)$. 
+Hence $\delta_0 = \KL (p(\cdot|\btheta_\star) || p(\cdot|\btheta_0, M_0))$ as in lemma \ref{lemma:walker}.
+Moreover, the posterior predictive does not evolve under $M_0$ i.e. $p(\cdot|x_{1:n},M_0) = p(\cdot|\btheta_0,M_0)$ because of the point mass prior on $\btheta_0$, and so 
+trivially  $\lim \inf_n D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:n}, M_0) ) \geq \delta_0$. 
+On the other hand, $\delta_1 = 0$ under $M_1$ as a consequence of the continuity of the Dirichlet prior over $\triangle^d$.
+It trivially follows that $\lim \inf_n D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:n}, M_1) ) \geq \delta_1$ from non negativity of the KL divergence.
 
 
 \section{Manipulating the Rejection Region}
 \label{sec:rejection_region}
-Our goal is to find some event $\mathcal R_n'\subseteq \mathcal R_n$ that is more amenable to computation; this allows us to obtain a bound on the power since
+Our goal is to find some event $\mathcal R_n'\subseteq \mathcal R_n$ that is more amenable to computation; this allows us to obtain a lower bound on the rejection probability since
 $\mathbb{P}(\mathcal R_n) \geq \mathbb{P}(\mathcal R_n')$.
 The proof is by explicit construction, and we begin by deriving a lower bound on 
 $
