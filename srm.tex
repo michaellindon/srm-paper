@@ -42,6 +42,7 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 \newcommand{\KL}{\mathrm{D}_{KL}}
 \newtheorem{thm}{Theorem}[section]
 \newtheorem{lemma}{Lemma}[section]
+\newtheorem{remark}{Remark}[section]
 \newtheorem{cor}{Corollary}[section]
 \newcommand{\df}{\vcentcolon=}
 \newcommand{\ex}{{\mathbb E}}
@@ -259,21 +260,22 @@ Consider the sequence of posterior odds $O_n(\btheta)$ defined as in Equation \e
 for all $u \in [0,1]$ and for all choices of $\balpha_0$.
 \end{thm}
 \noindent Each $I_n(u)$ is a convex subset of $\triangle^d$ (convexity following from concavity of the multinomial log-likelihood). 
-In practise, however, one may find it easier to work with confidence sequences on the individual components of $\btheta$, which can be found by projecting $I_n(u)$ onto the coordinate axis; that is, if we define $j_{n,i}^+(u)$ to be the value of
+In practise, however, one may find it easier to work with confidence sequences on the individual components of $\btheta$, which can be found by projecting $I_n(u)$ onto the coordinate axis
+\begin{remark}
+For $I_n(u)$ as in Theorem~\ref{thm:confidence_sequence}, let
 \begin{align*}
-  \max & \quad \theta_i, \\
-  \text{s.t.} &\quad  \btheta \in I_n(u),\\
+j_{n,i}^+(u) &= \max \{\theta_i : \btheta \in I_n(u)\}\\
+j_{n,i}^-(u) &= \min \{\theta_i : \btheta \in I_n(u)\}\\
 \end{align*}
-and 
-$j_{n,i}^-(u)$ to be the value of the same optimization but with $\min\theta_i$ as the objective, then 
+then 
 \begin{equation}
   \label{eq:marginal_confidence_sequence}
   \mathbb{P}_{\btheta}\left(
     \forall i: \theta_i \in \bigcap_{n=1}^{\infty} [j_{n,i}^-(u),j_{n,i}^+(u)]
   \right) \geq 1- u.
 \end{equation} 
-\noindent These provide intervals which posess a nominal frequentist coverage probability for all time $n$ over all components simultaneously.
-\todo[inline]{I would argue that this shouldn't be a corollary unless you provide a closed form solution of $j_{n,i}^l(i)$; otherwise, I think it should be a remark}
+\end{remark}
+\noindent These intervals can easily be obtained through convex programming and possess the desired frequentist coverage probability for all time $n$ over all components simultaneously.
 
 Control over Type-I error probabilities would be of little value if the test were not able to reject the null when $\btheta \neq \btheta_0$; that is, we want a test with high power. We prove that the test rejects the null when $\btheta \neq \btheta_0$ almost surely, or that the test is asymptotically power one in the words of \cite{robbins}.
 We first establish the following result for the consistency of the posterior odds.
