@@ -332,7 +332,7 @@ This lemma is then used to establish the following result.
 \begin{thm}
   \label{thm:finite_sample}
 \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$.
-Let $\tau = \inf \lbrace n \in \mathbb{N}: O_n(\btheta_0) \geq 1/u \rbrace$ be the random stopping time at which the null is rejected and define $N = \min \{n \in \mathbb{N} : \|\btheta_\star - \btheta_0\|_1 \geq (1/2)\underline{D}_n(u,\balpha)\}$, then for all $n\geq N$
+Let $\tau = \inf \lbrace n \in \mathbb{N}: O_n(\btheta_0) \geq 1/u \rbrace$ be the random stopping time at which the null is rejected and define $N = \min \{n \in \mathbb{N} : \|\btheta_\star - \btheta_0\|_1 \geq \sqrt{2\underline{D}_n(u,\balpha)}\}$, then for all $n\geq N$
 
 \begin{equation}
   \label{eq:finite_sample}
