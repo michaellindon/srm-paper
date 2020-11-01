@@ -416,10 +416,10 @@ Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until
     \label{fig:ssrm_reject}
   \end{figure}
   \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that while the rection region at time $n$ converges to $[0,1]\setminus \rho_0$, the MLE $\hat{\rho}(\bx_{1:n}) \rightarrow \rho_\star \neq \rho_0$ $a.s.$ as $n\rightarrow \infty$ by the strong law of large numbers, and is hence guaranteed to cross the rejection boundary.
-  This provides an alternative proof strategy to theorem \ref{thm:consistency}.
+  This provides an alternative proof strategy to Theorem~\ref{thm:consistency}.
 In this specific example, the region of indifference degenerates onto $\lbrace 0.5 \rbrace$, yet the sample paths of $\hat{\rho}(\bx_{1:n})$ are converging toward 0.6 and ultimately encounter the rejection boundary.
 \subsection{Asymptotic Properties of Posterior Odds}
-In this small section we illustrate the conclusion of theorem \ref{thm:consistency} with a simulation study.
+In this small section we illustrate the conclusion of Theorem~\ref{thm:consistency} with a simulation study.
 Consider null and true parameter value of $\btheta_0=[\frac{1}{2}\, \frac{1}{4}\, \frac{1}{4}]$ and $\btheta_\star=[\frac{1}{2}\, \frac{1}{8}\, \frac{3}{8}]$ respectively.
 The Kullback Leibler divergence of the null from the true multinomial distribution is $D_{KL}(p(\cdot|\btheta_\star)||p(\cdot||\btheta_0)) = 0.0654$ (to 4dp).
 A simulation of $10^5$ data points with $\bx_i \sim \text{Multinomial}(1, \btheta_\star)$ and a Dirichlet prior with $\balpha_0 = 100\btheta_0$ was used.
