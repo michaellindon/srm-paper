@@ -103,7 +103,7 @@ The simply randomized design can then be summarized by the following probabilist
 \end{equation}
 The statistician may not be personally involved with the data collection process and may simply be told the assignment mechanism after being presented with the data for analysis and 
 has a right for concern when they are provided with data which does not support the purported assignment mechanism.
-For simply randomized experiments, the total unit counts assigned to each treatment group can provide evidence that the model \eqref{eq:multinomialassignment} is not true.
+For simply randomized experiments, the total unit counts assigned to each treatment group can provide evidence that the model Equation~\ref{eq:multinomialassignment} is not true.
 Indeed, this is a strong indicator that the experiment has not been conducted as expected; for example, the assignment mechanism could be biased, there could be systematic data loss, or generally when the data can be considered ``missing not at random'' (MNAR) \citep{missing-data}.
 Such observations occurs frequently in OCEs and are colloquially referred to  as \textit{sample ratio mismatches} (SRMs).
 
@@ -112,7 +112,7 @@ It is unsurprising, therefore, that \cite{fabijan} report that 6\% of all experi
 The authors describe in detail the engineering architecture required for assignment and data collection in OCEs and highlight how SRMs frequently reveal bugs therein.
 They further provide a simple example of an experiment to study user engagement on an improved version of a web page is provided.
 Not all visitors to a web page are human, however, and data must be cleaned to remove non-human interactions with the page, such as from web crawlers and scrapers.
-Unfortunately the classification between human and non-human visitors is performed algorithmically, and some users in the treatment group were so engaged with the new page that they were accidentally classified as non-human and removed prior to the analysis - essentially removing units most in favour of the treatment, resulting in fewer units than expected being reported in the treatment group.
+Unfortunately the classification between human and non-human visitors is performed algorithmically, and some users in the treatment group were so engaged with the new page that they were accidentally classified as non-human and removed prior to the analysis - essentially removing units most in favor of the treatment, resulting in fewer units than expected being reported in the treatment group.
 This is not an issue with the assignment mechanism, but in the data collection.
 It is an example of a \textit{censoring} missing data mechanism, a special case of MNAR.
 
@@ -120,7 +120,7 @@ Noncompliance (\cite{imbens}) can also be revealed through SRMs. For example, \c
 
 
 Many other practical abnormalities can be revealed by considering the total counts in each treatment group after collection.
-For this reason, industry practitioners now consider performing a post-experiment $\chi^2$ test against the null in equation \eqref{eq:multinomialassignment} best practice \citep{linkedin}; such a test will identify a SRM.
+For this reason, industry practitioners now consider performing a post-experiment $\chi^2$ test against the null in Equation~\ref{eq:multinomialassignment} best practice \citep{linkedin}; such a test will identify a SRM.
 However, we note two deficiencies of this practice.
 First, one only learns about a problem in the data after data collection has completed.
 It is assumed that there is an implicit cost of including a unit in an experiment, and so ideally one would like to learn about such problems as soon as possible to prevent further units from entering an improperly executed-experiment.
@@ -151,7 +151,7 @@ The contributions of this paper focus, however, on obtaining frequentist propert
 The paper is outlined as follows.
 Section \ref{sec:srm_testing} defines a common Bayesian test through conjugate multinomial-Dirichlet models.
 Section \ref{sec:theory} establishes the Martingale properties of the posterior odds under the null hypothesis, enabling a modified test to be developed which allows control of the frequentist Type-I error probabilities under both optional stopping and continuation.
-This safely permits the online testing of hypothesis \eqref{eq:multinomialassignment} after every single observation, without inflating frequentist Type-I error, with the obvious advantage of being able to safely reject the null and discover a practical implementation error early in the beginning of an experiment - preventing experimental units being wasted on a faulty experiment.
+This safely permits the online testing of hypothesis Equation~\ref{eq:multinomialassignment} after every single observation, without inflating frequentist Type-I error, with the obvious advantage of being able to safely reject the null and discover a practical implementation error early in the beginning of an experiment - preventing experimental units being wasted on a faulty experiment.
 Instance-specific upper-bounds on time-to-rejection are provided in terms of the KL divergence  between $\btheta_0$ and the actual generating distribution of the samples.
 This sequential test is then inverted to define confidence sequences which possess nominal frequentist coverage probabilities.
 Section \ref{sec:simulation} presents a number of simulation studies illustrating how false positive probabilities are dramatically inflated through the repeated significance testing using a $\chi^2$ test compared to the guarantees afforded by the proposed test.
@@ -187,7 +187,7 @@ so that the MLE can be easily be defined as $\hat \btheta_n \df \bS_n/n$.
 In addition, we will use $|\bv| = \sum_{i} v_i$ to denote the elementwise sum of a vector $\bv$, 
 $\bv^{\bw} = \prod_{i} v_{i}^{w_i}$ to denote elementwise exponentiation of two vectors $\bv$ and $\bw$,
 and the multivariate Beta function $\Beta(\bv) \df (\prod_{i}\Gamma(v_i))/\Gamma(\sum_i v_i)$. 
-Equation \eqref{eq:bayes_factor} can then be succinctly expressed as 
+Equation~\ref{eq:bayes_factor} can then be succinctly expressed as 
 \begin{equation}
   \label{eq:simplified_bayes_factor}
  BF_{10}(\bx_{1:n}) = \frac{\Beta(\balpha_0 + \bS_n)}{\Beta(\balpha_0)}\frac{1}{\btheta_0^{\bS_n}}.
@@ -251,7 +251,7 @@ The following Theorem exploits the duality between p-values and confidence inter
 \begin{thm}(Confidence Sequences)
   \label{thm:confidence_sequence}
   \noindent Let $\bx_n\sim \mathrm{Multinomial}(1,\btheta)$ for all $n \in \mathbb{N}$.
-Consider the sequence of posterior odds $O_n(\btheta)$ defined as in Equation \eqref{eq:update_rule} with $O_0(\btheta)=1$ and
+Consider the sequence of posterior odds $O_n(\btheta)$ defined as in Equation~\ref{eq:update_rule} with $O_0(\btheta)=1$ and
  let $I_n(u) = \lbrace \btheta \in \triangle^d : O_n(\btheta) < 1/u  \rbrace$, then
 \begin{equation}
   \label{eq:confidence_sequence}
@@ -331,7 +331,7 @@ This lemma is then used to establish the following result.
 
 \begin{thm}
   \label{thm:finite_sample}
-\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$.
+\noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta_{\star})$ random variables with $\btheta_{\star} \neq \btheta_0$ and consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation~\ref{eq:update_rule} with $O_0(\btheta_0)=1$ and a given choice of $\balpha_0$.
 Let $\tau = \inf \lbrace n \in \mathbb{N}: O_n(\btheta_0) \geq 1/u \rbrace$ be the random stopping time at which the null is rejected and define $N = \min \{n \in \mathbb{N} : \|\btheta_\star - \btheta_0\|_1 \geq \sqrt{2\underline{D}_n(u,\balpha)}\}$, then for all $n\geq N$
 
 \begin{equation}
@@ -477,7 +477,7 @@ The Bayes factor after $n$ observations is analytically tractable, given by
 \end{equation}
 It is helpful to introduce some further notation to explicitly express the sequential nature inherent to the problem.
 
-The Posterior odds in favour of $M_1$ to $M_0$ after observing $\bx_{1:n}$ is defined as
+The Posterior odds in favor of $M_1$ to $M_0$ after observing $\bx_{1:n}$ is defined as
 \begin{align}
   \label{eq:general_posterior_odds}
   \frac{p(M_1|\bx_{1:n})}{p(M_0|\bx_{1:n})}  &= \frac{\int p(\bx_{1:n}|\btheta,M_1)p(\btheta,M_1)d\btheta}{p(\bx_{1:n}|M_0)}\frac{P(M_1)}{P(M_0)},\\
@@ -520,7 +520,7 @@ O_0(\btheta_0) = \frac{p(M_1)}{p(M_0)}.
 To result follows from the application of the following two lemmas.
 \begin{lemma}(Martingale property of posterior odds under the null hypothesis)
   
-  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta)$ random variables and consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_n(\btheta_0)$ is a non-negative martingale under $M_0$.
+  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta)$ random variables and consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation~\ref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_n(\btheta_0)$ is a non-negative martingale under $M_0$.
   \label{lem:posterior_odds_martingale}
     \end{lemma}
   \begin{proof}
@@ -544,7 +544,7 @@ To result follows from the application of the following two lemmas.
 \begin{proof}
   See Proof 6.1 of \cite{howard}
 \end{proof}
-The result of the Theorem is obtained by using lemma \ref{lem:posterior_odds_martingale} to establish that the posterior odds $O_n(\btheta_0)$ are a nonnnegative supermartingale under the null hypothesis, and using this obseravtion in lemma \ref{lem:durrett} together with  $O_0(\btheta_0) = 1$  to obtain the main inequality of the Theorem.
+The result of the Theorem is obtained by using Lemma~\ref{lem:posterior_odds_martingale} to establish that the posterior odds $O_n(\btheta_0)$ are a nonnnegative supermartingale under the null hypothesis, and using this obseravtion in Lemma~\ref{lem:durrett} together with  $O_0(\btheta_0) = 1$  to obtain the main inequality of the Theorem.
 \section{Asymptotic Properties of Bayes Factors}
 \label{app:asymptotics}
 We recall Theorem~1 of \cite{walker} for completeness in the following lemma, narrowing the scope for multinomial models.
@@ -595,7 +595,7 @@ It follows that
 The application of this lemma to the multinomial Dirichlet model is then straight forward.
 Note that under model $M_0$, the prior on $\btheta$ is a point mass at $\btheta_0$.
 Let the KL divergence of the null model from the true model be denoted $\delta_0$. When $q<\delta_0$ it is clear that $\int_{A(q)} p(\btheta|M_0) d\btheta = 0$ because $\btheta_0 \notin A(q)$. When $q\geq \delta_0$, $\int_{A(q)} p(\btheta|M_0) d\btheta = 1$ because $\btheta \in A(q)$. 
-Hence $\delta_0 = \KL (p(\cdot|\btheta_\star) || p(\cdot|\btheta_0, M_0))$ as in lemma \ref{lemma:walker}.
+Hence $\delta_0 = \KL (p(\cdot|\btheta_\star) || p(\cdot|\btheta_0, M_0))$ as in Lemma~\ref{lemma:walker}.
 Moreover, the posterior predictive distribution does not evolve under $M_0$ i.e. $p(\cdot|x_{1:n},M_0) = p(\cdot|\btheta_0,M_0)$ because of the point mass prior on $\btheta_0$, and so 
 trivially  $\lim \inf_n D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:n}, M_0) ) \geq \delta_0$. 
 On the other hand, $\delta_1 = 0$ under $M_1$ as a consequence of the continuity of the Dirichlet prior over $\triangle^d$.
@@ -635,7 +635,7 @@ in the numerator and the upper bound to the Gamma function in the denominator. T
 \noindent We can now finish the proof of Theorem~\ref{thm:calRprime}.
 \begin{proof}
 If a lower bound on the odds is greater than $1/u$, then the odds itself is greater than $1/u$. Let's first
-establish a lower bound on the odds using lemma \ref{lem:beta.lower.bound}.
+establish a lower bound on the odds using Lemma~\ref{lem:beta.lower.bound}.
 \begin{align*}
     \frac{\Beta(\balpha + \bS_n)}
   {\Beta(\balpha)} \theta_0^{-\bS_n}
@@ -671,7 +671,7 @@ establish a lower bound on the odds using lemma \ref{lem:beta.lower.bound}.
     \frac{n^{n}}{(|\balpha|+n)^{|\balpha| + n - 1/2}}
     \frac{ 1}{e^{\frac{1}{12(|\balpha|+n)}}\Beta(\balpha)}\\
 \end{align*}
-The first inequality follows from the lower bound derived in lemma \ref{lem:beta.lower.bound}.
+The first inequality follows from the lower bound derived in Lemma~\ref{lem:beta.lower.bound}.
 The second inequality follows from
 \begin{align*}
   \frac{ \prod_i (\alpha_i+S_i^n)^{\alpha_i + S_i^n-1/2}}
@@ -718,7 +718,7 @@ A simple lower bound can be obtained as follows
 The second inequality is simply stating that the probability of rejecting the null hypothesis is higher if
 we apply the test after every data point up to and including time $n$, than simply applying the test at time $n$.
 This makes sense, as there are simply more opportunities for the null to be rejected. 
-The last inequality follows from lemma \ref{thm:calRprime}.
+The last inequality follows from Lemma~\ref{thm:calRprime}.
 Note that the rejection region $\mathcal{R}_n'$ depends on $\bx_{1:n}$ only through the MLE $\hat{\btheta}(\bx_{1:n})$.
 In what follows it is helpful to consider $\hat{\btheta}(\bx_{1:n})$ as a test statistic at time $n$,
 and define a corresponding rejection region as a subset of $\triangle^d$ at time $n$.
