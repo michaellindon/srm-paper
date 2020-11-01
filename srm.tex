@@ -220,7 +220,7 @@ Time-uniform bounds under the null hypothesis are essential for proving correctn
 \begin{thm}  
   \label{thm:type_1_error}
   Let $\bx_n\sim \mathrm{Multinomial}(1,\btheta)$ for all $n \in \mathbb{N}$.
-Consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$. Then
+Consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation~\ref{eq:update_rule} with $O_0(\btheta_0)=1$. Then
 \begin{equation}
   \label{eq:type_1_error}
   \mathbb{P}_{\btheta = \btheta_0}\left( \exists n \in \mathbb{N}: O_n(\btheta_0) \geq 1/u \right) \leq u
@@ -520,7 +520,7 @@ O_0(\btheta_0) = \frac{p(M_1)}{p(M_0)}.
 To result follows from the application of the following two lemmas.
 \begin{lemma}(Martingale property of posterior odds under the null hypothesis)
   
-  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta)$ random variables and consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_n(\btheta_0)$ is a nonnegative martingale under $M_0$.
+  \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta)$ random variables and consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation \eqref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_n(\btheta_0)$ is a non-negative martingale under $M_0$.
   \label{lem:posterior_odds_martingale}
     \end{lemma}
   \begin{proof}
@@ -535,7 +535,7 @@ To result follows from the application of the following two lemmas.
 \begin{lemma}(Ville's Maximal Inequality)
   
 \label{lem:durrett}
-  \noindent If $Z_{n}$ is a nonnegative supermartingale with respect to the filtration $\mathcal{F}_n$, then
+  \noindent If $Z_{n}$ is a non-negative supermartingale with respect to the filtration $\mathcal{F}_n$, then
   \begin{equation}
     \label{eq:durrett}
     \mathbb{P}[\exists n \in \mathbb{N}\cup \lbrace 0 \rbrace : Z_n \geq u] \leq \frac{Z_0}{u}
@@ -596,10 +596,10 @@ The application of this lemma to the multinomial Dirichlet model is then straigh
 Note that under model $M_0$, the prior on $\btheta$ is a point mass at $\btheta_0$.
 Let the KL divergence of the null model from the true model be denoted $\delta_0$. When $q<\delta_0$ it is clear that $\int_{A(q)} p(\btheta|M_0) d\btheta = 0$ because $\btheta_0 \notin A(q)$. When $q\geq \delta_0$, $\int_{A(q)} p(\btheta|M_0) d\btheta = 1$ because $\btheta \in A(q)$. 
 Hence $\delta_0 = \KL (p(\cdot|\btheta_\star) || p(\cdot|\btheta_0, M_0))$ as in lemma \ref{lemma:walker}.
-Moreover, the posterior predictive does not evolve under $M_0$ i.e. $p(\cdot|x_{1:n},M_0) = p(\cdot|\btheta_0,M_0)$ because of the point mass prior on $\btheta_0$, and so 
+Moreover, the posterior predictive distribution does not evolve under $M_0$ i.e. $p(\cdot|x_{1:n},M_0) = p(\cdot|\btheta_0,M_0)$ because of the point mass prior on $\btheta_0$, and so 
 trivially  $\lim \inf_n D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:n}, M_0) ) \geq \delta_0$. 
 On the other hand, $\delta_1 = 0$ under $M_1$ as a consequence of the continuity of the Dirichlet prior over $\triangle^d$.
-It trivially follows that $\lim \inf_n D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:n}, M_1) ) \geq \delta_1$ from non negativity of the KL divergence.
+It trivially follows that $\lim \inf_n D_{KL}(p(\cdot|\btheta_\star)||p(\cdot|\bx_{1:n}, M_1) ) \geq \delta_1$ from non-negativity of the KL divergence.
 
 
 \section{Manipulating the Rejection Region}
