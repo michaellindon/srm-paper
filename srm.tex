@@ -121,31 +121,31 @@ Noncompliance (\cite{imbens}) can also be revealed through SRMs. For example, \c
 
 Many other practical abnormalities can be revealed by considering the total counts in each treatment group after collection.
 For this reason, industry practitioners now consider performing a $\chi^2$ test against the null in Equation~\ref{eq:multinomialassignment} best practice \citep{linkedin}; such a test can identify an SRM.
-We would like to underscore, however, one strong criticism of this practice.
-The difficulty lies in when exactly to perform the $\chi^2$ test.
-It is most common to perform this test after data collection and prior to analysis.
-This has the obvious shortcoming of surfacing a problem in the data collecting process only after data collection has completed.
-As there is always a cost associated with performing experiments, one would ideally have problems detected early on, as there is a large opportunity cost in allowing further experimental units to enter a faulty experiment.
-On the other hand, it is also common to perform the test fairly early on, perhaps on an initial set of experimental units, in order to "validate" the experiment implementation.
-Performing the $\chi^2$ test too early, however, and the test may lack sufficient power to detect such problems.
-This difficulty has led to a widespread misuse in the online experimentation space where practitioners incorrectly \textit{continuously monitor} their experiments - the repeated use of significance tests, often unplanned and ad-hoc, without any multiplicity correction, resulting in much higher false positive rates.
+We would like to underscore, however, one strong criticism of this practice,
+specifically,
+the difficulty in knowing when exactly to perform the test.
+While it is most common to perform this test after data collection and prior to analysis,
+this has the obvious shortcoming of surfacing a problem in the data collecting process only after the data collection has completed.
+As there is always a cost associated with performing experiments, one would ideally have problems detected early, as there is a large opportunity cost in allowing further experimental units to enter a faulty experiment.
+On the other hand, it is also fairly common to perform the test at the outset, perhaps on an initial set of experimental units, in order to "validate" the experiment implementation.
+If the test is performed too early, however, then the test may lack sufficient power to detect such problems.
+The tension between running the test early enough to prevent wasted units but late enough to have sufficient power has led to widespread misuse in the online experimentation space.
+Practitioners incorrectly \textit{continuously monitor} their experiments by repeatedly performing significance tests, usually in an ad hoc fashion, without any multiplicity correction, resulting in increased Type-I error rates.
+As an example, \cite{armitage} demonstrated for $\chi^2$ tests configured at the $0.05$ level that the Type-I error probability can increase up to $0.14$ with as few as $5$ repeated usages.
 This follows from the inability of the $\chi^2$ test to preserve Type-I error guarantees under \textit{optional stopping} and \textit{optional continuation}.
 Optional stopping refers to the practice of performing a significance test on the data collected so far, and using the outcome to determine whether to continue.
-This is frequently observed when a practitioner believes that there might be an underlying issue in the implementation, and performs an unplanned $\chi^2$ test to investigate,
+Such behaviour is often observed when a practitioner believes there is an underlying issue in the implementation, and performs an unplanned $\chi^2$ test to investigate,
 which may become one of many.
 Optional continuation, on the other hand, refers to the practice of letting the decision to perform a new test depend on the outcome of a previous test.
-This often arises when the outcome of an early "validation" test is inconclusive, and so another unplanned test is sought.
-This is also frequently observed when the result of an early "validation" test is somewhat inconclusive.
+This often seen when the outcome of an early ``validation" test is inconclusive, and so another unplanned test is sought.
 Many classical tests, such as the $\chi^2$ test and the likelihood ratio test, \textit{do not} preserve Type-I error guarantees under optional stopping/continuation,
 and will result in dramatically higher false positive rates without proper multiplicity adjustments.
-For instance, \cite{armitage} demonstrated for $\chi^2$ tests configured at the $0.05$ level that the Type-I error probability can increase up to $0.14$ with as little as $5$ repeated usages.
 Moreover, for many classical tests it is possible to sample to a foregone conclusion under optional continuation - rejecting the null almost surely when the null is in fact true \cite{anscombe}.
 In section \ref{sec:simulation} we will demonstrate that the Type-I error probability of a $\chi^2$ test configured at the Type-I error level of $0.05$ can rise in excess of $0.44$ when used to continuously monitor a running experiment.
-See \cite{psychological} for a further discussion of these practical problems caused by the classical null hypothesis significance testing (NHST) paradigm.
+See \cite{psychological} and \cite{safe} for further discussions on these issues.
 
 A \textit{sequential} hypothesis test, in contrast, preserves Type-I error guarantees under both optional stopping and continuation, allowing experiments to be continuously monitored for significance - even after every datapoint.
 The advantages are at least twofold. Firstly, it prevents the pitfalls mentioned in the preceding paragraph, providing maximum flexibility for performing significance tests.
-In the language of \cite{safe}, the test is said to be \textit{safe} under optional stopping and conntinuation.
 Secondly, significance tests can be executed after every datapoint, allowing SRMs in the current application to be detected as soon as possible.
 In this paper, we propose such a sequential test inspired by Bayesian methods.
 Bayesian methods are a natural choice for sequential procedures as most satisfy the \textit{stopping rule principle}, that that statistical conclusions provided by a hypothesis test should be independent of the reason for stopping the experiment, which is a direct consequence of the likelihood principle \citep{likelihood}.
