@@ -134,7 +134,7 @@ Practitioners incorrectly \textit{continuously monitor} their experiments by rep
 As an example, \cite{armitage} demonstrated for $\chi^2$ tests configured at the $0.05$ level that the Type-I error probability can increase up to $0.14$ with as few as $5$ repeated usages.
 This follows from the inability of the $\chi^2$ test to preserve Type-I error guarantees under \textit{optional stopping} and \textit{optional continuation}.
 Optional stopping refers to the practice of performing a significance test on the data collected so far, and using the outcome to determine whether to continue.
-Such behaviour is often observed when a practitioner believes there is an underlying issue in the implementation, and performs an unplanned $\chi^2$ test to investigate,
+Such behavior is often observed when a practitioner believes there is an underlying issue in the implementation, and performs an unplanned $\chi^2$ test to investigate,
 which may become one of many.
 Optional continuation, on the other hand, refers to the practice of letting the decision to perform a new test depend on the outcome of a previous test.
 This is often seen when the outcome of an early ``validation" test is inconclusive, and so another unplanned test is sought.
@@ -236,7 +236,7 @@ Simply stated, a practitioner who rejects the null hypothesis as soon as the pos
 The proof, based on Martingale maximal inequalities, can be found in appendix section \ref{app:type_1_error}.
 Results of this form can be found in the literature as early as \cite{ville}.
 An alternative and succinct proof, with applications to the special case of Binomial-Uniform families, can be found in section 1 of \cite{robbins}.
-Furthermore, the posterior odds are equal to the Bayes factor under prior odds of unity, and so Theorem~\ref{thm:type_1_error} can also be established as a corrollary of mixture sequential probability ratio test (mSPRT) of \cite{wald}.
+Furthermore, the posterior odds are equal to the Bayes factor under prior odds of unity, and so Theorem~\ref{thm:type_1_error} can also be established as a corollary of mixture sequential probability ratio test (mSPRT) of \cite{wald}.
 The test statistic in the mSPRT is formed by integrating the alternative likelihood divided by the null likelihood w.r.t.\ a \textit{weight} function over the unknown parameter, and the hypothesis is rejected as soon as this test statistic exceeds $1/u$.
 When the weight function is equal to the prior distribution, the mSPRT test statistic is simply the Bayes factor, and results of this form can be established for other Bayesian simple null vs.\ composite alternative hypothesis tests.
 In the language of \cite{johari} one can define a conservative sequential p-value process by
@@ -307,7 +307,7 @@ The first compares $M_{\star}$ to $M_1$, and the second compares $M_{\star}$ to 
 where  $p(\bx_i|M_\star)$ is the density of a $\text{Multinomial}(1,\btheta_{\star})$ distribution.
 When the $\bx_i$ are independently distributed according to $\text{Multinomial}(1, \btheta_\star)$, i.e.
 under model $M_\star$, then the second term converges to the Kullback-Leibler divergence between models $M_\star$ and $M_0$ by the strong law of large numbers.
-To adress the first term, note that as $n$ becomes large the Dirichlet posterior $p(\btheta|\bx_{1:n}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(\bx_{n+1}|\bx_{1:n},M_1) =\int p(\bx_{n+1}|\btheta,M_1),p(\btheta|\bx_{1:n},M_1) d\theta$ closer to the ``true'' density $p(\bx_{n+1}|M_{\star})$.
+To address the first term, note that as $n$ becomes large the Dirichlet posterior $p(\btheta|\bx_{1:n}, M_1)$ concentrates mass on $\btheta_\star$, consequently bringing the posterior predictive $p(\bx_{n+1}|\bx_{1:n},M_1) =\int p(\bx_{n+1}|\btheta,M_1),p(\btheta|\bx_{1:n},M_1) d\theta$ closer to the ``true'' density $p(\bx_{n+1}|M_{\star})$.
 For $n$ large the logarithm of the fraction of densities becomes zero, and these zero terms then overwhelm the earlier non-zero terms in the sum.
 
 To facilitate the discussion of how quickly the null is rejected, we define the rejection region at time $n$ for a given $u>0$ as $\mathcal{R}_n = \{ \bx_{1:n} : O_n(\theta_0) \geq u \}$,
@@ -422,7 +422,7 @@ Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until
 }
     \label{fig:ssrm_reject}
   \end{figure}
-  \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that while the rection region at time $n$ converges to $[0,1]\setminus \rho_0$, the MLE $\hat{\rho}(\bx_{1:n}) \rightarrow \rho_\star \neq \rho_0$ $a.s.$ as $n\rightarrow \infty$ by the strong law of large numbers, and is hence guaranteed to cross the rejection boundary.
+  \noindent To add some intuition to figure \ref{fig:ssrm_reject}, it can be shown that while the rejection region at time $n$ converges to $[0,1]\setminus \rho_0$, the MLE $\hat{\rho}(\bx_{1:n}) \rightarrow \rho_\star \neq \rho_0$ $a.s.$ as $n\rightarrow \infty$ by the strong law of large numbers, and is hence guaranteed to cross the rejection boundary.
   This provides an alternative proof strategy to Theorem~\ref{thm:consistency}.
 In this specific example, the region of indifference degenerates onto $\lbrace 0.5 \rbrace$, yet the sample paths of $\hat{\rho}(\bx_{1:n})$ are converging toward 0.6 and ultimately encounter the rejection boundary.
 \subsection{Asymptotic Properties of Posterior Odds}
@@ -445,7 +445,7 @@ The main purpose of this paper was to provide a tool that can be used sequential
 The proposed test permits optional stopping and continuation, allowing experiments to be continuously monitored.
 The hypothesis can be tested, therefore, after every single data point so as to detect errors as quickly as possible.
 While Bayesian in construction, we provided sequential guarantees of the frequentist Type-I error probability, proved that it rejects the null almost surely when the null is incorrect, and also studied the stopping time of this test through a combination of theoretical results and simulation studies.
-While our application of detecting errors in simply randomized experiments focussed on a specific Multinomial-Dirichlet test, the same mathematical techniques can be obviously used to generalize these results to other Bayesian tests.
+While our application of detecting errors in simply randomized experiments focused on a specific Multinomial-Dirichlet test, the same mathematical techniques can be obviously used to generalize these results to other Bayesian tests.
 With generalization in mind, there are some remaining comments and ideas for future work.
 
 We first address the differences in the purely Bayesian approach and the test proposed here.
@@ -463,7 +463,7 @@ To see this it is necessary to express the Bayes factor in terms of the Savage-D
     BF(\bx_{1:n}|\btheta_0) = \frac{p(\btheta_0| M_1)}{p(\btheta_0|\bx_{1:n},M_1)}.
 \end{equation}
 This, with $O_0(\btheta_0)=1$, implies that $I_n(u) = \lbrace \btheta \in \triangle^d : O_n(\btheta) \leq 1/u \rbrace = \lbrace \btheta  \in \triangle^d : p(\btheta| M_1)\leq p(\btheta|\bx_{1:n}, M_1)/u \rbrace $, which is identified as the Bayesian \textit{support interval} proposed by \cite{support_interval}.
-The authors proposed this as an alternative to the more commonly reported Bayesian credible intervals, argueing that the support interval is based on evidence in the data (how the data changes belief), whereas credible intervals are based on posterior belief directly.
+The authors proposed this as an alternative to the more commonly reported Bayesian credible intervals, arguing that the support interval is based on evidence in the data (how the data changes belief), whereas credible intervals are based on posterior belief directly.
 These intervals have some intuitive appeal as they are the parameter values for which their posterior density has increased beyond some factor of their prior density after observing the data.
 We are the first, however, to identify the sequential frequentist coverage probabilities, in the sense of Theorem~\ref{thm:confidence_sequence}, of these support intervals.
 
@@ -551,7 +551,7 @@ To result follows from the application of the following two lemmas.
 \begin{proof}
   See Proof 6.1 of \cite{howard}
 \end{proof}
-The result of the Theorem is obtained by using Lemma~\ref{lem:posterior_odds_martingale} to establish that the posterior odds $O_n(\btheta_0)$ are a nonnnegative supermartingale under the null hypothesis, and using this obseravtion in Lemma~\ref{lem:durrett} together with  $O_0(\btheta_0) = 1$  to obtain the main inequality of the Theorem.
+The result of the Theorem is obtained by using Lemma~\ref{lem:posterior_odds_martingale} to establish that the posterior odds $O_n(\btheta_0)$ are a nonnnegative supermartingale under the null hypothesis, and using this observation in Lemma~\ref{lem:durrett} together with  $O_0(\btheta_0) = 1$  to obtain the main inequality of the Theorem.
 \section{Asymptotic Properties of Bayes Factors}
 \label{app:asymptotics}
 We recall Theorem~1 of \cite{walker} for completeness in the following lemma, narrowing the scope for multinomial models.
@@ -636,7 +636,7 @@ which can be verified in \cite{specialfunctions}.
 Together these bounds provide a bound on the error of the lower bound.
 In particular $|\log \Gamma(x) - \frac{1}{2}\log (2\pi) - (x-\frac{1}{2})\log x + x| \leq \frac{1}{12x}$, which shows
 that the lower bound error will become vanishingly small as $x\rightarrow \infty$, which is the case for our application. 
-These ideas follow through to lower bounding the Beta function. The lower bound on the Beta function follows by applying the lower bound to the Gamma funcitons
+These ideas follow through to lower bounding the Beta function. The lower bound on the Beta function follows by applying the lower bound to the Gamma functions
 in the numerator and the upper bound to the Gamma function in the denominator. The upper bound follows similarly.
 \end{proof}
 \noindent We can now finish the proof of Theorem~\ref{thm:calRprime}.
