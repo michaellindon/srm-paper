@@ -74,7 +74,7 @@ citecolor=RoyalBlue2  % colour of citations linked in text
 %\thispagestyle{empty}
 \begin{abstract}
   Simply randomized designs are one of the most common controlled experiments used to study causal effects.
-  Failure of the assignment mechanism, to provide proper randomization of units across treatments, or the data collection mechanism, when data is ``missing not at random'', can render subsequent analysis invalid if not properly identified.
+  Failure of the assignment mechanism, to provide proper randomization of units across treatments, or the data collection mechanism, when data is missing not at random, can render subsequent analysis invalid if not properly identified.
 In this paper we demonstrate that such practical implementation errors can often be identified, fortunately, through consideration of the total unit counts resulting in each treatment group.
   Based on this observation, we introduce a sequential hypothesis test constructed from Bayesian multinomial-Dirichlet families for detecting practical implementation errors in simply randomized experiments.
 By establishing a Martingale property of the posterior odds under the null hypothesis, frequentist Type-I error is controlled under both optional stopping and continuation via maximal inequalities, preventing practitioners from potentially inflating false positive probabilities through continuous monitoring.
@@ -372,7 +372,7 @@ This interval for $\btheta_0 = [\frac{1}{2}\, \frac{1}{2}]$, $\balpha_0 = 100\bt
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.35]{images/critical_regions.png}
-  \caption{Rejection boundaries for the proposed test ($\balpha_0 = 100\btheta_0$) in magenta and the $\chi^2$ test in orange for testing the null hypothesis $\btheta_0 = [\frac{1}{2} \, \frac{1}{2}]$ at a $u=0.05$ level.
+  \caption{Rejection boundaries for the proposed test ($\balpha_0 = 100\btheta_0$) in magenta and the $\chi^2$ test in green for testing the null hypothesis $\btheta_0 = [\frac{1}{2} \, \frac{1}{2}]$ at a $u=0.05$ level.
 }
     \label{fig:critical}
   \end{figure}
@@ -389,7 +389,7 @@ This is shown in figure \ref{fig:chi_fp}.
   \includegraphics[scale=0.35]{images/chi_fp.png}
   \caption{Simulation Study of False Positives produced by continuously monitoring with a $\chi^2$ test.
 The orange and magenta curves are the same as in figure \ref{fig:critical}.
-Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until $t=1000$ or the first $n$ for which it crosses the rejection boundary of the $\chi^2$ test,visualized with a red dot, whichever comes sooner.
+Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until $t=1000$ or the first $n$ for which it crosses the rejection boundary of the $\chi^2$ test, visualized with a red dot, whichever comes sooner.
 }
     \label{fig:chi_fp}
   \end{figure}
@@ -402,7 +402,7 @@ of false positives, whereas the proposed sequential test controls the false posi
   \includegraphics[scale=0.35]{images/ssrm_fp.png}
   \caption{Simulation Study of False Positives produced by continuously monitoring with the proposed test.
 The orange and magenta curves are the same as in figure \ref{fig:critical}.
-Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until $t=1000$ or the first $n$ for which it crosses the rejection boundary of the $\chi^2$ test,visualized with a red dot, whichever comes sooner.
+Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until $t=1000$ or the first $n$ for which it crosses the rejection boundary of the proposed test, visualized with a red dot, whichever comes sooner.
 }
     \label{fig:ssrm_fp}
   \end{figure}
@@ -418,7 +418,7 @@ While the $\chi^2$ test can only safely be used at the end of the experiment,
   \includegraphics[scale=0.35]{images/ssrm_reject.png}
   \caption{Simulation Study of time to reject the null under the proposed test.
 The magenta curve is the same as in figure \ref{fig:critical}.
-Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until $t=1000$ or the first $n$ for which it crosses the rejection boundary of the $\chi^2$ test,visualized with a red dot, whichever comes sooner.
+Each blue trace is an independent simulation of $\hat{\rho}(\bx_{1:n})$ up until $t=1000$ or the first $n$ for which it crosses the rejection boundary of the proposed test, visualized with a red dot, whichever comes sooner.
 }
     \label{fig:ssrm_reject}
   \end{figure}
@@ -524,7 +524,7 @@ O_0(\btheta_0) = \frac{p(M_1)}{p(M_0)}.
 
 \section{Uniform Bounds on the Type-I Error}
 \label{app:type_1_error}
-To result follows from the application of the following two lemmas.
+This result follows from the application of the following two lemmas.
 \begin{lemma}(Martingale property of posterior odds under the null hypothesis)
   
   \noindent Let $\bx_i,$ be a sequence of $\text{Multinomial}(1,\btheta)$ random variables and consider the sequence of posterior odds $O_n(\btheta_0)$ defined as in Equation~\ref{eq:update_rule} with $O_0(\btheta_0)=1$, then $O_n(\btheta_0)$ is a non-negative martingale under $M_0$.
